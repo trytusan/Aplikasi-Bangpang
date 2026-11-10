@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../review_bast/review_bast_screen.dart';
 import 'widgets/camera_capture_dialog.dart';
@@ -27,11 +28,10 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
         guideText: guide,
         onPhotoCaptured: (newUrl) {
           onCaptured(newUrl);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('✓ Foto berhasil diambil dengan Geotag GPS akurat (±3.2m)!'),
-              backgroundColor: Color(0xFF059669),
-            ),
+          CenterAlert.showSuccess(
+            context,
+            title: 'Foto Berhasil Disimpan',
+            message: 'Watermark Geotag GPS (±3.2m) & verifikasi OCR valid.',
           );
         },
       ),

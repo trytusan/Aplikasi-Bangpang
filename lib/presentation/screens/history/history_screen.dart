@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../camera_geotag/camera_geotag_screen.dart';
 import '../delivery_type/delivery_type_screen.dart';
@@ -62,11 +63,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
       _isKetutSynced = true;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('✓ Data transaksi Ketut Artika (Perwakilan 1 KK) berhasil disinkronkan ke Server Pusat!'),
-        backgroundColor: Color(0xFF059669),
-      ),
+    CenterAlert.showSuccess(
+      context,
+      title: 'Sinkronisasi Berhasil',
+      message: 'Data penyerahan Ketut Artika telah terkirim ke Server BULOG Pusat.',
     );
   }
 

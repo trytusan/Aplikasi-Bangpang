@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
+import '../../widgets/common/center_alert.dart';
 import '../login/login_screen.dart';
 import 'widgets/offline_sync.dart';
 import 'widgets/server_status.dart';
@@ -53,21 +54,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (!mounted) return;
       Navigator.pop(context); // Tutup dialog loading
       setState(() => _cacheSize = '0.0 MB');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('✓ Seluruh data transaksi lokal & foto berhasil disinkronkan ke Pusat!'),
-          backgroundColor: Color(0xFF059669),
-        ),
+      CenterAlert.showSuccess(
+        context,
+        title: 'Data Berhasil Disimpan',
+        message: '14 berkas foto KPM dan 3 tanda tangan telah tersinkronisasi ke server pusat.',
       );
     });
   }
 
   void _handleRefreshCoordinates() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('✓ Koordinat GPS diperbarui: -8.109613, 115.0914146 (Akurasi Tinggi: ±2.8m)'),
-        backgroundColor: Color(0xFF1E3A8A),
-      ),
+    CenterAlert.showInfo(
+      context,
+      title: 'Titik Lokasi Diperbarui',
+      message: 'Koordinat GPS terkunci: -8.109613, 115.0914146 (Akurasi: ±2.8m)',
     );
   }
 
@@ -184,8 +183,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE88B00), foregroundColor: Colors.black),
             onPressed: () {
               Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('✓ PIN Otorisasi BAST berhasil diperbarui!'), backgroundColor: Color(0xFF059669)),
+              CenterAlert.showSuccess(
+                context,
+                title: 'PIN Berhasil Disimpan',
+                message: 'PIN otorisasi BAST baru aktif untuk transaksi.',
               );
             },
             child: const Text('Simpan PIN'),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../widgets/common/center_alert.dart';
 import '../login/login_screen.dart';
 import 'widgets/otp_input.dart';
 
@@ -156,17 +157,15 @@ class _OtpScreenState extends State<OtpScreen> {
                     }
 
                     Navigator.pop(ctx); // Tutup modal
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('✓ Kata sandi berhasil diperbarui! Silakan masuk dengan sandi baru.'),
-                        backgroundColor: Color(0xFF059669),
-                      ),
-                    );
-
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()),
                       (route) => false,
+                    );
+                    CenterAlert.showSuccess(
+                      context,
+                      title: 'Kata Sandi Diperbarui',
+                      message: 'Kata sandi baru berhasil disimpan. Silakan masuk kembali.',
                     );
                   },
                   child: const Text('Simpan Kata Sandi Baru', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),

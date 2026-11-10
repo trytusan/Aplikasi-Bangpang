@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import 'widgets/bast_success_dialog.dart';
 import 'widgets/beneficiary_card.dart';
@@ -28,12 +29,10 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
           setState(() {
             _signaturePoints = points;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Tanda tangan digital penerima berhasil disimpan!'),
-              backgroundColor: Color(0xFF059669),
-              duration: Duration(seconds: 2),
-            ),
+          CenterAlert.showSuccess(
+            context,
+            title: 'Data Berhasil Disimpan',
+            message: 'Tanda tangan digital penerima telah tercatat sah dalam BAST.',
           );
         },
       ),
