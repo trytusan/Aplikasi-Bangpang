@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
-import '../otp/otp_screen.dart';
+import '../dashboard/dashboard_screen.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -17,12 +17,12 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat();
 
-    // Auto transisi ke Layar OTP setelah simulasi loading cepat
-    Future.delayed(const Duration(milliseconds: 1400), () {
+    // Auto transisi langsung ke Dashboard setelah validasi login cepat
+    Future.delayed(const Duration(milliseconds: 1300), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const OtpScreen()),
+          MaterialPageRoute(builder: (_) => const DashboardScreen()),
         );
       }
     });
@@ -91,6 +91,11 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
             const Text(
               'MEMVALIDASI DATA LAPANGAN...',
               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textMain, letterSpacing: 1),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Menghubungkan ke Server BULOG Titik Bagi Desa Banjar Bali',
+              style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
             ),
           ],
         ),

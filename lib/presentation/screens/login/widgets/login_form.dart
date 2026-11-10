@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../otp/otp_screen.dart';
 
 class LoginForm extends StatefulWidget {
   final TextEditingController phoneController;
@@ -21,39 +22,114 @@ class _LoginFormState extends State<LoginForm> {
   bool _rememberMe = true;
   bool _isLoading = false;
 
-  void _showForgotPasswordDialog() {
-    showDialog(
+  void _showForgotPasswordModal() {
+    final resetPhoneController = TextEditingController(text: widget.phoneController.text);
+
+    showModalBottomSheet(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        title: const Row(
-          children: [
-            Icon(Icons.help_outline, color: Color(0xFFE88B00), size: 20),
-            SizedBox(width: 8),
-            Text('Lupa Kata Sandi?', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
-          ],
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
-        content: const Column(
+        padding: EdgeInsets.fromLTRB(20, 16, 20, MediaQuery.of(ctx).viewInsets.bottom + 24),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Reset kata sandi petugas lapangan dilakukan oleh Administrator IT Perum BULOG / Koordinator Satgas Wilayah.',
-              style: TextStyle(fontSize: 12, color: Color(0xFF475569), height: 1.3),
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(2)),
+              ),
             ),
-            SizedBox(height: 12),
-            Text(
-              'Kontak Satgas IT Wilayah Bali:\n• Hotline: (0361) 223456\n• WhatsApp IT Helpdesk: 0811-3800-999',
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF1E3A8A), height: 1.4),
+            const SizedBox(height: 14),
+
+            Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(10)),
+                  child: const Icon(Icons.lock_reset, color: Color(0xFF1E3A8A), size: 20),
+                ),
+                const SizedBox(width: 10),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Lupa Kata Sandi?', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                    Text('Kirim kode verifikasi OTP untuk reset kata sandi', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            const Text(
+              'Masukkan nomor WhatsApp / ID Petugas yang terdaftar pada sistem penugasan BULOG:',
+              style: TextStyle(fontSize: 11, color: Color(0xFF475569), height: 1.3),
+            ),
+            const SizedBox(height: 12),
+
+            TextField(
+              controller: resetPhoneController,
+              keyboardType: TextInputType.phone,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.phone, size: 18, color: Color(0xFF1E3A8A)),
+                hintText: 'Contoh: 081234567890',
+                filled: true,
+                fillColor: const Color(0xFFF8FAFC),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE88B00), width: 1.5)),
+              ),
+            ),
+            const SizedBox(height: 18),
+
+            SizedBox(
+              width: double.infinity,
+              height: 46,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE88B00),
+                  foregroundColor: Colors.black,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                onPressed: () {
+                  final phone = resetPhoneController.text.trim();
+                  if (phone.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Nomor handphone tidak boleh kosong.')),
+                    );
+                    return;
+                  }
+
+                  Navigator.pop(ctx); // Tutup modal
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('✓ Kode OTP verifikasi dikirimkan ke WhatsApp $phone'),
+                      backgroundColor: const Color(0xFF059669),
+                    ),
+                  );
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => OtpScreen(phoneNumber: phone),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.mark_email_read_outlined, size: 18),
+                label: const Text('Kirim Kode OTP Verifikasi', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900)),
+              ),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Mengerti', style: TextStyle(fontWeight: FontWeight.w800)),
-          ),
-        ],
       ),
     );
   }
@@ -245,7 +321,7 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               ),
               TextButton(
-                onPressed: _showForgotPasswordDialog,
+                onPressed: _showForgotPasswordModal,
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   minimumSize: Size.zero,
@@ -287,9 +363,9 @@ class _LoginFormState extends State<LoginForm> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Masuk ke Sistem',
+                          'Masuk ke Sistem Lapangan',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 13.5,
                             fontWeight: FontWeight.w800,
                             color: Colors.black,
                           ),
