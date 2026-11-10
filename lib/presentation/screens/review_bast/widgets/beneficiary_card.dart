@@ -1,0 +1,292 @@
+import 'package:flutter/material.dart';
+import 'signature_pad_dialog.dart';
+
+class BeneficiaryCard extends StatelessWidget {
+  final List<Offset?>? signaturePoints;
+  final VoidCallback? onTapSignature;
+  final VoidCallback? onTapRicePhoto;
+  final VoidCallback? onTapSptjmPhoto;
+
+  const BeneficiaryCard({
+    super.key,
+    this.signaturePoints,
+    this.onTapSignature,
+    this.onTapRicePhoto,
+    this.onTapSptjmPhoto,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool hasSignature = signaturePoints != null && signaturePoints!.isNotEmpty;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 2)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.badge_outlined, size: 18, color: Color(0xFF1E3A8A)),
+                  SizedBox(width: 8),
+                  Text(
+                    'Data Penerima\nManfaat',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.15),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(20)),
+                child: const Row(
+                  children: [
+                    Icon(Icons.check_circle, size: 12, color: Color(0xFF059669)),
+                    SizedBox(width: 4),
+                    Text('Kemendagri\nValid', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF065F46), height: 1.1)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+
+          // Profil KPM Pengganti
+          Row(
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  image: const DecorationImage(
+                    image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('LUH SUMANTRI ARYANI', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                    SizedBox(height: 2),
+                    Text('KPM Pengganti Sah', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFFD97706))),
+                    Text('NIK: 5108065209840002', style: TextStyle(fontSize: 10, fontFamily: 'monospace', color: Color(0xFF64748B))),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Nomor Kartu Keluarga', style: TextStyle(fontSize: 9, color: Color(0xFF64748B))),
+                      SizedBox(height: 2),
+                      Text('5108061204090011', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, fontFamily: 'monospace')),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('KPM Sebelumnya (Diganti)', style: TextStyle(fontSize: 9, color: Color(0xFF64748B))),
+                      SizedBox(height: 2),
+                      Text('I GEDE SUARDIKA', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
+                      Text('(Meninggal Dunia)', style: TextStyle(fontSize: 8.5, color: Color(0xFF64748B))),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Alokasi Bantuan Pangan
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFFBEB),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: const Color(0xFFFDE68A)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(color: const Color(0xFFE88B00), borderRadius: BorderRadius.circular(10)),
+                  child: const Icon(Icons.inventory_2, color: Colors.white, size: 20),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('ALOKASI BANTUAN PANGAN', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF92400E))),
+                      Text('Beras Medium CPP 10 Kg', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                    ],
+                  ),
+                ),
+                const Text(
+                  '1 Karung',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFF1E3A8A)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Alamat Domisili
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Alamat Domisili KPM', style: TextStyle(fontSize: 9, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+                SizedBox(height: 2),
+                Text(
+                  'Banjar Dinas Bale Agung, RT 02 / RW 01, Banjar Bali, Buleleng, Kabupaten Buleleng, Bali',
+                  style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: Color(0xFF0F172A), height: 1.3),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // 3 Lampiran Bukti Penyerahan
+          const Text('LAMPIRAN BUKTI PENYERAHAN', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF64748B))),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              // Lampiran 1: Fisik Beras
+              Expanded(
+                child: GestureDetector(
+                  onTap: onTapRicePhoto,
+                  child: Container(
+                    height: 70,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      image: const DecorationImage(
+                        image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: double.infinity,
+                      color: Colors.black.withValues(alpha: 0.7),
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: const Text('Fisik Beras', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.w800)),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+
+              // Lampiran 2: Surat SPTJM
+              Expanded(
+                child: GestureDetector(
+                  onTap: onTapSptjmPhoto,
+                  child: Container(
+                    height: 70,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      image: const DecorationImage(
+                        image: NetworkImage('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=200'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: double.infinity,
+                      color: Colors.black.withValues(alpha: 0.7),
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: const Text('Surat SPTJM', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.w800)),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+
+              // Lampiran 3: Tanda Tangan Interaktif
+              Expanded(
+                child: InkWell(
+                  onTap: onTapSignature,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 70,
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: hasSignature ? const Color(0xFFF0FDF4) : const Color(0xFFEFF6FF),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: hasSignature ? const Color(0xFF86EFAC) : const Color(0xFFBFDBFE),
+                      ),
+                    ),
+                    child: hasSignature
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 36,
+                                width: double.infinity,
+                                child: CustomPaint(
+                                  painter: SignaturePainter(points: signaturePoints!),
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              const Text(
+                                '✓ Tanda Tangan Sah',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800, color: Color(0xFF166534)),
+                              ),
+                            ],
+                          )
+                        : const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.edit_note, color: Color(0xFF2563EB), size: 24),
+                              SizedBox(height: 2),
+                              Text(
+                                'Tanda Tangan\n(Klik di Sini)',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A), height: 1.1),
+                              ),
+                            ],
+                          ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

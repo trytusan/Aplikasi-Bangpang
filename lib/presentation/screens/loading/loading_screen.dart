@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
-import '01c_otp_assignment_screen.dart';
+import '../../../core/constants/app_colors.dart';
+import '../otp/otp_screen.dart';
 
-class LoadingTransitionScreen extends StatefulWidget {
-  const LoadingTransitionScreen({super.key});
+class LoadingScreen extends StatefulWidget {
+  const LoadingScreen({super.key});
 
   @override
-  State<LoadingTransitionScreen> createState() => _LoadingTransitionScreenState();
+  State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
-class _LoadingTransitionScreenState extends State<LoadingTransitionScreen> with SingleTickerProviderStateMixin {
+class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -17,12 +17,12 @@ class _LoadingTransitionScreenState extends State<LoadingTransitionScreen> with 
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat();
 
-    // Auto transisi ke Layar 01c setelah simulasi loading cepat
+    // Auto transisi ke Layar OTP setelah simulasi loading cepat
     Future.delayed(const Duration(milliseconds: 1400), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const OtpAssignmentScreen()),
+          MaterialPageRoute(builder: (_) => const OtpScreen()),
         );
       }
     });
