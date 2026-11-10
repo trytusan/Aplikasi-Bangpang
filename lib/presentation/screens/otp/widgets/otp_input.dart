@@ -1,17 +1,88 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 
-class OtpInput extends StatelessWidget {
+class OtpInput extends StatefulWidget {
   final List<TextEditingController> controllers;
+  final VoidCallback? onOtpComplete;
 
   const OtpInput({
     super.key,
     required this.controllers,
+    this.onOtpComplete,
   });
 
   @override
+  State<OtpInput> createState() => _OtpInputState();
+}
+
+class _OtpInputState extends State<OtpInput> {
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  int _secondsLeft = 60;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    setState(() => _secondsLeft = 60);
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_secondsLeft > 0) {
+        setState(() => _secondsLeft--);
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void _resendOtp() {
+    _startTimer();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('✓ Kode OTP baru telah dikirimkan ke WhatsApp resmi petugas!'),
+        backgroundColor: Color(0xFF059669),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    for (var node in _focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onDigitChanged(String val, int index) {
+    if (val.isNotEmpty) {
+      if (index < 5) {
+        _focusNodes[index + 1].requestFocus();
+      } else {
+        _focusNodes[index].unfocus();
+        widget.onOtpComplete?.call();
+      }
+    } else {
+      if (index > 0) {
+        _focusNodes[index - 1].requestFocus();
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final String timerText = '00:${_secondsLeft.toString().padLeft(2, '0')}';
+
     return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFFE2E8F0)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -38,7 +109,7 @@ class OtpInput extends StatelessWidget {
             ),
             const SizedBox(height: 14),
 
-            // 6-Digit OTP Boxes
+            // 6-Digit OTP Boxes with Auto-Advance Focus
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: List.generate(6, (index) {
@@ -46,14 +117,18 @@ class OtpInput extends StatelessWidget {
                   width: 44,
                   height: 48,
                   child: TextField(
-                    controller: controllers[index],
+                    controller: widget.controllers[index],
+                    focusNode: _focusNodes[index],
+                    keyboardType: TextInputType.number,
+                    maxLength: 1,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
                       color: AppColors.textMain,
                     ),
                     decoration: InputDecoration(
+                      counterText: '',
                       contentPadding: EdgeInsets.zero,
                       filled: true,
                       fillColor: AppColors.background,
@@ -66,6 +141,7 @@ class OtpInput extends StatelessWidget {
                         borderSide: const BorderSide(color: AppColors.primaryAmber, width: 2),
                       ),
                     ),
+                    onChanged: (val) => _onDigitChanged(val, index),
                   ),
                 );
               }),
@@ -74,23 +150,23 @@ class OtpInput extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Kirim ulang dalam 01:42',
-                  style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+                Text(
+                  _secondsLeft > 0 ? 'Kirim ulang dalam $timerText' : 'Belum menerima OTP?',
+                  style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: _secondsLeft == 0 ? _resendOtp : null,
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: const Text(
+                  child: Text(
                     'Kirim Ulang',
                     style: TextStyle(
                       fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.navyPrimary,
+                      fontWeight: FontWeight.w800,
+                      color: _secondsLeft == 0 ? AppColors.navyPrimary : Colors.grey,
                     ),
                   ),
                 ),

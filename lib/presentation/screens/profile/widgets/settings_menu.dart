@@ -2,10 +2,20 @@ import 'package:flutter/material.dart';
 
 class SettingsMenu extends StatelessWidget {
   final VoidCallback onLogout;
+  final VoidCallback? onTechSupport;
+  final VoidCallback? onJuknisPdf;
+  final VoidCallback? onRegulations;
+  final VoidCallback? onChangePin;
+  final VoidCallback? onDeviceRegistered;
 
   const SettingsMenu({
     super.key,
     required this.onLogout,
+    this.onTechSupport,
+    this.onJuknisPdf,
+    this.onRegulations,
+    this.onChangePin,
+    this.onDeviceRegistered,
   });
 
   @override
@@ -35,6 +45,7 @@ class SettingsMenu extends StatelessWidget {
                 iconColor: const Color(0xFF1E3A8A),
                 title: 'Layanan Teknis & Bantuan',
                 subtitle: 'Call center Satgas BULOG & hotline Wilayah Bali',
+                onTap: onTechSupport,
               ),
               const Divider(height: 1, indent: 56),
               _menuItem(
@@ -44,6 +55,7 @@ class SettingsMenu extends StatelessWidget {
                 subtitle: 'Tata cara BAST, foto KTP, dan penanganan kendala fisik',
                 badge: 'PDF',
                 trailingIcon: Icons.open_in_new,
+                onTap: onJuknisPdf,
               ),
               const Divider(height: 1, indent: 56),
               _menuItem(
@@ -51,6 +63,7 @@ class SettingsMenu extends StatelessWidget {
                 iconColor: const Color(0xFFB45309),
                 title: 'Syarat & Regulasi Distribusi',
                 subtitle: 'Keputusan Kepala Bapanas No. 01/2025 tentang Bapang',
+                onTap: onRegulations,
               ),
             ],
           ),
@@ -79,6 +92,7 @@ class SettingsMenu extends StatelessWidget {
                 iconColor: const Color(0xFF0F172A),
                 title: 'Ubah Kata Sandi & PIN BAST',
                 subtitle: 'Terakhir diubah 10 hari lalu',
+                onTap: onChangePin,
               ),
               const Divider(height: 1, indent: 56),
               _menuItem(
@@ -86,6 +100,7 @@ class SettingsMenu extends StatelessWidget {
                 iconColor: const Color(0xFF059669),
                 title: 'Perangkat Lapangan Terdaftar',
                 subtitle: 'Samsung Tab Active4 Pro (IMEI terdaftar)',
+                onTap: onDeviceRegistered,
               ),
             ],
           ),
@@ -98,13 +113,13 @@ class SettingsMenu extends StatelessWidget {
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFFE4E6),
-              foregroundColor: const Color(0xFFBE123C),
+              foregroundColor: const Color(0xFFE11D48),
               elevation: 0,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             onPressed: onLogout,
             icon: const Icon(Icons.logout, size: 16),
-            label: const Text('Keluar dari Sistem Lapangan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900)),
+            label: const Text('Keluar dari Sistem Lapangan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
           ),
         ),
         const SizedBox(height: 6),
@@ -159,41 +174,46 @@ class SettingsMenu extends StatelessWidget {
     required String subtitle,
     String? badge,
     IconData? trailingIcon,
+    VoidCallback? onTap,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-      child: Row(
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, color: iconColor, size: 16),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(title, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
-                    if (badge != null) ...[
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                        decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(4)),
-                        child: Text(badge, style: const TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900, color: Color(0xFF065F46))),
-                      ),
-                    ],
-                  ],
-                ),
-                Text(subtitle, style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
-              ],
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(8)),
+              child: Icon(icon, color: iconColor, size: 16),
             ),
-          ),
-          Icon(trailingIcon ?? Icons.chevron_right, size: 16, color: const Color(0xFF94A3B8)),
-        ],
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(title, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                      if (badge != null) ...[
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                          decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(4)),
+                          child: Text(badge, style: const TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900, color: Color(0xFF065F46))),
+                        ),
+                      ],
+                    ],
+                  ),
+                  Text(subtitle, style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                ],
+              ),
+            ),
+            Icon(trailingIcon ?? Icons.chevron_right, size: 16, color: const Color(0xFF94A3B8)),
+          ],
+        ),
       ),
     );
   }
