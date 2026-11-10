@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
-import '../../data/models/kpm_model.dart';
+import '03_step1_delivery_type_screen.dart';
 
 class HistoryListScreen extends StatefulWidget {
   const HistoryListScreen({super.key});
@@ -10,138 +10,637 @@ class HistoryListScreen extends StatefulWidget {
 }
 
 class _HistoryListScreenState extends State<HistoryListScreen> {
-  String _selectedFilter = 'ALL'; // 'ALL' | 'DONE' | 'PENDING' | 'SPTJM'
-  final _searchController = TextEditingController();
+  int _selectedFilter = 1; // 0: Semua (45), 1: Diterima (38), 2: Belum Verifikasi
 
   @override
   Widget build(BuildContext context) {
-    final listKpm = KpmModel.sampleData;
-
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Riwayat Penyerahan BAST', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Verifikasi Kpm',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), letterSpacing: -0.3),
+                ),
+                Text(
+                  'Badan Pangan Nasional / Perum BULOG',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
+                ),
+              ],
+            ),
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: const Color(0xFFF59E0B), width: 1.5),
+                image: const DecorationImage(
+                  image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // Horizontal Filter Chips
-              SingleChildScrollView(
+        child: Column(
+          children: [
+            // Horizontal Filter Chips Bar
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              color: Colors.white,
+              child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _filterChip('Semua (48)', 'ALL'),
+                    _filterTab(
+                      label: 'Semua',
+                      count: '45',
+                      isSelected: _selectedFilter == 0,
+                      onTap: () => setState(() => _selectedFilter = 0),
+                    ),
                     const SizedBox(width: 8),
-                    _filterChip('Tersalur (43)', 'DONE'),
+                    _filterTab(
+                      label: '✓ Diterima',
+                      count: '38',
+                      countColor: const Color(0xFF34D399),
+                      isSelected: _selectedFilter == 1,
+                      onTap: () => setState(() => _selectedFilter = 1),
+                    ),
                     const SizedBox(width: 8),
-                    _filterChip('Sisa / Pending (5)', 'PENDING'),
-                    const SizedBox(width: 8),
-                    _filterChip('Pengganti SPTJM (2)', 'SPTJM'),
+                    _filterTab(
+                      label: 'Belum Verifikasi',
+                      isSelected: _selectedFilter == 2,
+                      onTap: () => setState(() => _selectedFilter = 2),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
+            ),
 
-              // Search Bar
-              TextField(
-                controller: _searchController,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                decoration: InputDecoration(
-                  hintText: 'Cari berdasarkan NIK atau Nama KPM...',
-                  hintStyle: const TextStyle(fontSize: 11, color: AppColors.textSubtle),
-                  prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.textMuted),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.borderLight)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.borderLight)),
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // List of History Cards
-              Expanded(
-                child: ListView.separated(
-                  itemCount: listKpm.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final item = listKpm[index];
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
+            // Scrollable History Cards List
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                children: [
+                  // ================= CARD 1: PBP NORMAL (TERVERIFIKASI) =================
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2)),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(left: BorderSide(color: Color(0xFF059669), width: 4)),
+                        ),
+                        padding: const EdgeInsets.all(14),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(item.nama, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.textMain)),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: item.isDiserahkan ? AppColors.successGreenLight : AppColors.warningOrangeLight,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    item.isDiserahkan ? '☁️ TERSINKRON' : '⏳ BELUM AMBIL',
-                                    style: TextStyle(
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.w800,
-                                      color: item.isDiserahkan ? AppColors.successGreen : AppColors.primaryAmberDark,
-                                    ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(6)),
+                                  child: const Text('PBP NORMAL', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(10)),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.check_circle, size: 12, color: Color(0xFF059669)),
+                                      SizedBox(width: 4),
+                                      Text('Diterima (Terverifikasi)', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF065F46))),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 2),
-                            Text('NIK: ${item.nik}', style: const TextStyle(fontSize: 10, fontFamily: 'monospace', color: AppColors.textMuted)),
-                            const Divider(height: 14),
+                            const SizedBox(height: 10),
+
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  item.isDiserahkan ? '${item.waktuSerah} • ${item.nomorBast}' : item.dusun,
-                                  style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                                const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('JRO NYOMAN SETIASIH', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                                    SizedBox(height: 2),
+                                    Text(
+                                      '510806******0001 • No. PBP: 5108062...',
+                                      style: TextStyle(fontSize: 10, fontFamily: 'monospace', color: Color(0xFF64748B)),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  item.isSptjm ? 'Pengganti SPTJM' : '10 Kg Beras',
-                                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: AppColors.navyPrimary),
+                                // Geotag OK Image
+                                Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: const DecorationImage(
+                                      image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    width: double.infinity,
+                                    color: Colors.black.withValues(alpha: 0.75),
+                                    padding: const EdgeInsets.symmetric(vertical: 1),
+                                    child: const Text('GEOTAG OK', textAlign: TextAlign.center, style: TextStyle(color: Color(0xFF34D399), fontSize: 7, fontWeight: FontWeight.w900)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+
+                            // Detail Alokasi & Waktu
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
+                              child: const Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('📦 10 kg Beras CBP', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                                      Text('BAST-2026095108062005', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, fontFamily: 'monospace', color: Color(0xFF1E3A8A))),
+                                    ],
+                                  ),
+                                  SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.access_time, size: 11, color: Color(0xFF64748B)),
+                                      SizedBox(width: 4),
+                                      Text('23 Juli 2025, 09:44 WITA  •  📍 Banjar Bali, Buleleng', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(height: 16),
+
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.circle, size: 8, color: Color(0xFF059669)),
+                                    SizedBox(width: 6),
+                                    Text('Tersinkronisasi ke Pusat', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('Lihat Detail BAST', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                                    Icon(Icons.chevron_right, size: 14, color: Color(0xFF1E3A8A)),
+                                  ],
                                 ),
                               ],
                             ),
                           ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+
+                  // ================= CARD 2: ALUR PENGGANTI (SPTJM) =================
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2)),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(left: BorderSide(color: Color(0xFFF59E0B), width: 4)),
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(6)),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.swap_horiz, size: 12, color: Color(0xFFB45309)),
+                                      SizedBox(width: 4),
+                                      Text('ALUR PENGGANTI (SPTJM)', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFFB45309))),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(10)),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.check_circle, size: 12, color: Color(0xFF059669)),
+                                      SizedBox(width: 4),
+                                      Text('Diterima (Pengganti)', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF065F46))),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+
+                            const Text('LUH SUMANTRI ARYANI', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                            const SizedBox(height: 2),
+                            const Text(
+                              'Menggantikan: I Gede Suardika (Meninggal Dunia)',
+                              style: TextStyle(fontSize: 10, color: Color(0xFFB45309), fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 10),
+
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
+                              child: const Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('📦 10 kg Beras CBP (1 Karung)', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                                      Text('5108062005000024', style: TextStyle(fontSize: 9.5, fontFamily: 'monospace', color: Color(0xFF64748B))),
+                                    ],
+                                  ),
+                                  SizedBox(height: 4),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.access_time, size: 11, color: Color(0xFF64748B)),
+                                          SizedBox(width: 4),
+                                          Text('23 Juli 2025, 09:15 WITA', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                                        ],
+                                      ),
+                                      Text('BAST-2026095108062006', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, fontFamily: 'monospace', color: Color(0xFF1E3A8A))),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(height: 16),
+
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.description_outlined, size: 14, color: Color(0xFF059669)),
+                                    SizedBox(width: 6),
+                                    Text('Dokumen SPTJM Terlampir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('Lihat Berita Acara', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                                    Icon(Icons.chevron_right, size: 14, color: Color(0xFF1E3A8A)),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // ================= CARD 3: PERWAKILAN (1 KK) - MENUNGGU SERVER =================
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2)),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(left: BorderSide(color: Color(0xFF64748B), width: 4)),
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(6)),
+                                  child: const Text('PERWAKILAN (1 KK)', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(10)),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.sync, size: 12, color: Color(0xFF4F46E5)),
+                                      SizedBox(width: 4),
+                                      Text('Menunggu Server', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF4F46E5))),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+
+                            const Text('KETUT ARTIKA', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                            const SizedBox(height: 2),
+                            const Text(
+                              '👥 Diambil oleh: Putu Eka (Anak Kandung)',
+                              style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 10),
+
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('10 kg Beras CBP', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                                      Text('23 Juli 2025, 08:30 WITA', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                                    ],
+                                  ),
+                                  Text('PBP: 510806192700029', style: TextStyle(fontSize: 9.5, fontFamily: 'monospace', color: Color(0xFF64748B))),
+                                ],
+                              ),
+                            ),
+                            const Divider(height: 16),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Row(
+                                  children: [
+                                    Icon(Icons.circle, size: 8, color: Color(0xFFD97706)),
+                                    SizedBox(width: 6),
+                                    Text('Tersimpan di Penyimpanan\nLokal', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: Color(0xFFD97706), height: 1.15)),
+                                  ],
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(8)),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.cloud_upload_outlined, size: 12, color: Color(0xFFB45309)),
+                                      SizedBox(width: 4),
+                                      Text('Sinkronkan', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFB45309))),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // ================= CARD 4: DITOLAK / FOTO BURAM =================
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2)),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(left: BorderSide(color: Color(0xFFE11D48), width: 4)),
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(color: const Color(0xFFFEE2E2), borderRadius: BorderRadius.circular(6)),
+                                  child: const Text('PBP NORMAL', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFFBE123C))),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(color: const Color(0xFFFFF1F2), borderRadius: BorderRadius.circular(10)),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.error_outline, size: 12, color: Color(0xFFE11D48)),
+                                      SizedBox(width: 4),
+                                      Text('Ditolak / Foto Buram', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+
+                            const Text('WAYAN SUJANA', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                            const SizedBox(height: 2),
+                            const Text('NIK: 510806******0008', style: TextStyle(fontSize: 10, fontFamily: 'monospace', color: Color(0xFF64748B))),
+                            const SizedBox(height: 10),
+
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(color: const Color(0xFFFFF1F2), borderRadius: BorderRadius.circular(10)),
+                              child: const Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(Icons.info_outline, size: 14, color: Color(0xFFE11D48)),
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'Dokumentasi foto KTP tidak jelas / NIK terpotong. Perlu foto ulang bersama fisik beras di lapangan.',
+                                      style: TextStyle(fontSize: 9.5, color: Color(0xFFBE123C), height: 1.3),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFBE123C),
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                ),
+                                onPressed: () {},
+                                icon: const Icon(Icons.camera_alt, size: 14),
+                                label: const Text('Perbaiki Dokumentasi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+
+            // Bottom Sticky Bar (Summary & Catat Penyerahan Baru)
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.description_outlined, size: 16, color: Color(0xFF1E3A8A)),
+                          const SizedBox(width: 6),
+                          RichText(
+                            text: const TextSpan(
+                              text: 'Total 45 Tercatat ',
+                              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                              children: [
+                                TextSpan(text: 'di Desa Banjar...', style: TextStyle(fontWeight: FontWeight.normal, color: Color(0xFF64748B))),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(6)),
+                            child: const Text('38 Sukses', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF065F46))),
+                          ),
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(color: const Color(0xFFFFE4E6), borderRadius: BorderRadius.circular(6)),
+                            child: const Text('2 Gagal', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFE88B00),
+                        foregroundColor: Colors.black,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const Step1DeliveryTypeScreen()));
+                      },
+                      icon: const Icon(Icons.add_circle_outline, size: 18, color: Colors.black),
+                      label: const Text('Catat Penyerahan Baru', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _filterChip(String label, String value) {
-    final bool isSelected = _selectedFilter == value;
+  Widget _filterTab({required String label, String? count, Color? countColor, required bool isSelected, required VoidCallback onTap}) {
     return GestureDetector(
-      onTap: () => setState(() => _selectedFilter = value),
+      onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryAmber : Colors.white,
+          color: isSelected ? const Color(0xFF1E3A8A) : Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? AppColors.primaryAmberDark : AppColors.borderLight),
+          border: Border.all(color: isSelected ? const Color(0xFF1E3A8A) : const Color(0xFFE2E8F0)),
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w800,
-            color: isSelected ? AppColors.navyDark : AppColors.textMuted,
-          ),
+        child: Row(
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                color: isSelected ? Colors.white : const Color(0xFF64748B),
+              ),
+            ),
+            if (count != null) ...[
+              const SizedBox(width: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                decoration: BoxDecoration(
+                  color: isSelected ? (countColor ?? Colors.white24) : const Color(0xFFEEF2F6),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  count,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: isSelected ? Colors.black : const Color(0xFF0F172A),
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
