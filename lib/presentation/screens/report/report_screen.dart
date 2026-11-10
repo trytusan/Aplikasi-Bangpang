@@ -14,6 +14,180 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   int _activeFilter = 1;
+  String _selectedVillage = 'Banjar Bali, Buleleng';
+  String _selectedRegency = 'KAB. BULELENG, BALI';
+
+  void _chooseLocation() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Pilih Titik Lokasi Bagi',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Pilih desa / kelurahan penugasan penyaluran beras bantuan.',
+              style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+            ),
+            const SizedBox(height: 14),
+            _locationTile(
+              'Banjar Bali, Buleleng',
+              'KAB. BULELENG, BALI • Kuota 48 KPM (Aktif)',
+              isSelected: _selectedVillage.startsWith('Banjar Bali'),
+              onTap: () {
+                Navigator.pop(ctx);
+                setState(() {
+                  _selectedVillage = 'Banjar Bali, Buleleng';
+                  _selectedRegency = 'KAB. BULELENG, BALI';
+                });
+              },
+            ),
+            _locationTile(
+              'Kaliuntu, Buleleng',
+              'KAB. BULELENG, BALI • Kuota 62 KPM',
+              isSelected: _selectedVillage.startsWith('Kaliuntu'),
+              onTap: () {
+                Navigator.pop(ctx);
+                setState(() {
+                  _selectedVillage = 'Kaliuntu, Buleleng';
+                  _selectedRegency = 'KAB. BULELENG, BALI';
+                });
+              },
+            ),
+            _locationTile(
+              'Temukus, Banjar',
+              'KAB. BULELENG, BALI • Kuota 55 KPM',
+              isSelected: _selectedVillage.startsWith('Temukus'),
+              onTap: () {
+                Navigator.pop(ctx);
+                setState(() {
+                  _selectedVillage = 'Temukus, Banjar';
+                  _selectedRegency = 'KAB. BULELENG, BALI';
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _locationTile(String title, String subtitle, {required bool isSelected, required VoidCallback onTap}) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: CircleAvatar(
+        backgroundColor: isSelected ? const Color(0xFFD1FAE5) : const Color(0xFFEFF6FF),
+        child: Icon(Icons.location_on, color: isSelected ? const Color(0xFF059669) : const Color(0xFF1E3A8A), size: 18),
+      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+      subtitle: Text(subtitle, style: const TextStyle(fontSize: 10)),
+      trailing: isSelected ? const Icon(Icons.check, color: Color(0xFF059669)) : null,
+      onTap: onTap,
+    );
+  }
+
+  void _handleDownloadReport() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Unduh Rekapitulasi Berita Acara (BAST)',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Pilih format file laporan rekapitulasi penyaluran beras titik bagi Desa Banjar Bali.',
+              style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+            ),
+            const SizedBox(height: 14),
+            ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Color(0xFFFEE2E2),
+                child: Icon(Icons.picture_as_pdf, color: Color(0xFFDC2626)),
+              ),
+              title: const Text('Dokumen PDF Resmi (.PDF)', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+              subtitle: const Text('Lengkap dengan tanda tangan, geotag & rekap foto BAST', style: TextStyle(fontSize: 10)),
+              onTap: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('✓ Berkas "REKAP_BAST_BANJAR_BALI_2025.PDF" berhasil diunduh ke folder Dokumen!'),
+                    backgroundColor: Color(0xFF059669),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Color(0xFFDCFCE7),
+                child: Icon(Icons.table_chart, color: Color(0xFF16A34A)),
+              ),
+              title: const Text('Lembar Kerja Excel (.XLSX)', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+              subtitle: const Text('Format spreadsheet tabel data KPM untuk arsip dinas', style: TextStyle(fontSize: 10)),
+              onTap: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('✓ Berkas "REKAP_BAST_BANJAR_BALI_2025.XLSX" berhasil diekspor!'),
+                    backgroundColor: Color(0xFF059669),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _sendBroadcastReminder() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Kirim Pengingat ke 5 KPM?'),
+        content: const Text(
+          'Sistem akan mengirimkan pesan notifikasi WhatsApp/SMS otomatis kepada 5 KPM yang belum mengambil beras bantuan di Balai Desa Banjar Bali.',
+          style: TextStyle(fontSize: 12, height: 1.3),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFE88B00),
+              foregroundColor: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('✓ Notifikasi pengingat penyerahan beras berhasil terkirim ke 5 nomor KPM!'),
+                  backgroundColor: Color(0xFF059669),
+                ),
+              );
+            },
+            child: const Text('Kirim Sekarang'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +203,11 @@ class _ReportScreenState extends State<ReportScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const LocationCard(),
+                    LocationCard(
+                      village: _selectedVillage,
+                      regency: _selectedRegency,
+                      onTap: _chooseLocation,
+                    ),
                     const SizedBox(height: 14),
                     const DonutChart(),
                     const SizedBox(height: 16),
@@ -38,7 +216,9 @@ class _ReportScreenState extends State<ReportScreen> {
                       onFilterChanged: (val) => setState(() => _activeFilter = val),
                     ),
                     const SizedBox(height: 16),
-                    const BastDownloadCard(),
+                    BastDownloadCard(
+                      onDownload: _handleDownloadReport,
+                    ),
                   ],
                 ),
               ),
@@ -61,11 +241,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Notifikasi pengingat berhasil dikirim ke 5 KPM!')),
-                    );
-                  },
+                  onPressed: _sendBroadcastReminder,
                   icon: const Icon(Icons.forward_to_inbox, size: 18, color: Colors.black),
                   label: const Text('Kirim Pengingat KPM Sisa (5)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black)),
                 ),

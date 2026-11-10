@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class BastDownloadCard extends StatelessWidget {
-  const BastDownloadCard({super.key});
+  final VoidCallback? onDownload;
+
+  const BastDownloadCard({super.key, this.onDownload});
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +40,7 @@ class BastDownloadCard extends StatelessWidget {
                 elevation: 0,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Mengunduh berkas BAST (.PDF / .XLS)...')),
-                );
-              },
+              onPressed: onDownload,
               icon: const Icon(Icons.download, size: 14),
               label: const Text('Unduh Rekapitulasi BAST (.PDF / .XLS)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
             ),

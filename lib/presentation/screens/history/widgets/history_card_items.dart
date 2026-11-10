@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HistoryCardNormal extends StatelessWidget {
-  const HistoryCardNormal({super.key});
+  final VoidCallback? onViewDetail;
+
+  const HistoryCardNormal({super.key, this.onViewDetail});
 
   @override
   Widget build(BuildContext context) {
@@ -98,10 +100,22 @@ class HistoryCardNormal extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(Icons.access_time, size: 11, color: Color(0xFF64748B)),
-                        SizedBox(width: 4),
-                        Text('23 Juli 2025, 09:44 WITA  •  📍 Banjar Bali, Buleleng', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                        Row(
+                          children: [
+                            Icon(Icons.access_time, size: 11, color: Color(0xFF64748B)),
+                            SizedBox(width: 4),
+                            Text('23 Juli 2025, 09:44 WITA', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.location_on, size: 11, color: Color(0xFF64748B)),
+                            SizedBox(width: 4),
+                            Text('Banjar Bali, Buleleng', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                          ],
+                        ),
                       ],
                     ),
                   ],
@@ -109,21 +123,24 @@ class HistoryCardNormal extends StatelessWidget {
               ),
               const Divider(height: 16),
 
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Icon(Icons.circle, size: 8, color: Color(0xFF059669)),
                       SizedBox(width: 6),
                       Text('Tersinkronisasi ke Pusat', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Text('Lihat Detail BAST', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
-                      Icon(Icons.chevron_right, size: 14, color: Color(0xFF1E3A8A)),
-                    ],
+                  InkWell(
+                    onTap: onViewDetail,
+                    child: const Row(
+                      children: [
+                        Text('Lihat Detail BAST', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                        Icon(Icons.chevron_right, size: 14, color: Color(0xFF1E3A8A)),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -136,7 +153,9 @@ class HistoryCardNormal extends StatelessWidget {
 }
 
 class HistoryCardReplacement extends StatelessWidget {
-  const HistoryCardReplacement({super.key});
+  final VoidCallback? onViewDetail;
+
+  const HistoryCardReplacement({super.key, this.onViewDetail});
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +173,7 @@ class HistoryCardReplacement extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Container(
           decoration: const BoxDecoration(
-            border: Border(left: BorderSide(color: Color(0xFFF59E0B), width: 4)),
+            border: Border(left: BorderSide(color: Color(0xFFD97706), width: 4)),
           ),
           padding: const EdgeInsets.all(14),
           child: Column(
@@ -165,12 +184,12 @@ class HistoryCardReplacement extends StatelessWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(6)),
+                    decoration: BoxDecoration(color: const Color(0xFFFFFBEB), borderRadius: BorderRadius.circular(6)),
                     child: const Row(
                       children: [
-                        Icon(Icons.swap_horiz, size: 12, color: Color(0xFFB45309)),
+                        Icon(Icons.swap_horiz, size: 12, color: Color(0xFFD97706)),
                         SizedBox(width: 4),
-                        Text('ALUR PENGGANTI (SPTJM)', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFFB45309))),
+                        Text('ALUR PENGGANTI (SPTJM)', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFFB45309))),
                       ],
                     ),
                   ),
@@ -193,7 +212,7 @@ class HistoryCardReplacement extends StatelessWidget {
               const SizedBox(height: 2),
               const Text(
                 'Menggantikan: I Gede Suardika (Meninggal Dunia)',
-                style: TextStyle(fontSize: 10, color: Color(0xFFB45309), fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 10),
 
@@ -228,21 +247,24 @@ class HistoryCardReplacement extends StatelessWidget {
               ),
               const Divider(height: 16),
 
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Icon(Icons.description_outlined, size: 14, color: Color(0xFF059669)),
                       SizedBox(width: 6),
                       Text('Dokumen SPTJM Terlampir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Text('Lihat Berita Acara', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
-                      Icon(Icons.chevron_right, size: 14, color: Color(0xFF1E3A8A)),
-                    ],
+                  InkWell(
+                    onTap: onViewDetail,
+                    child: const Row(
+                      children: [
+                        Text('Lihat Berita Acara', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                        Icon(Icons.chevron_right, size: 14, color: Color(0xFF1E3A8A)),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -255,7 +277,18 @@ class HistoryCardReplacement extends StatelessWidget {
 }
 
 class HistoryCardRepresentative extends StatelessWidget {
-  const HistoryCardRepresentative({super.key});
+  final bool isSynced;
+  final bool isSyncing;
+  final VoidCallback? onSync;
+  final VoidCallback? onViewDetail;
+
+  const HistoryCardRepresentative({
+    super.key,
+    this.isSynced = false,
+    this.isSyncing = false,
+    this.onSync,
+    this.onViewDetail,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -272,8 +305,8 @@ class HistoryCardRepresentative extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          decoration: const BoxDecoration(
-            border: Border(left: BorderSide(color: Color(0xFF64748B), width: 4)),
+          decoration: BoxDecoration(
+            border: Border(left: BorderSide(color: isSynced ? const Color(0xFF059669) : const Color(0xFF64748B), width: 4)),
           ),
           padding: const EdgeInsets.all(14),
           child: Column(
@@ -289,12 +322,22 @@ class HistoryCardRepresentative extends StatelessWidget {
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(color: const Color(0xFFEEF2FF), borderRadius: BorderRadius.circular(10)),
-                    child: const Row(
+                    decoration: BoxDecoration(
+                      color: isSynced ? const Color(0xFFD1FAE5) : const Color(0xFFEEF2FF),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
                       children: [
-                        Icon(Icons.sync, size: 12, color: Color(0xFF4F46E5)),
-                        SizedBox(width: 4),
-                        Text('Menunggu Server', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF4F46E5))),
+                        Icon(isSynced ? Icons.check_circle : Icons.sync, size: 12, color: isSynced ? const Color(0xFF059669) : const Color(0xFF4F46E5)),
+                        const SizedBox(width: 4),
+                        Text(
+                          isSynced ? 'Diterima (Terverifikasi)' : 'Menunggu Server',
+                          style: TextStyle(
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w900,
+                            color: isSynced ? const Color(0xFF065F46) : const Color(0xFF4F46E5),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -332,24 +375,49 @@ class HistoryCardRepresentative extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      Icon(Icons.circle, size: 8, color: Color(0xFFD97706)),
-                      SizedBox(width: 6),
-                      Text('Tersimpan di Penyimpanan\nLokal', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: Color(0xFFD97706), height: 1.15)),
+                      Icon(Icons.circle, size: 8, color: isSynced ? const Color(0xFF059669) : const Color(0xFFD97706)),
+                      const SizedBox(width: 6),
+                      Text(
+                        isSynced ? 'Tersinkronisasi ke Pusat' : 'Tersimpan di Penyimpanan\nLokal',
+                        style: TextStyle(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w700,
+                          color: isSynced ? const Color(0xFF059669) : const Color(0xFFD97706),
+                          height: 1.15,
+                        ),
+                      ),
                     ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(8)),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.cloud_upload_outlined, size: 12, color: Color(0xFFB45309)),
-                        SizedBox(width: 4),
-                        Text('Sinkronkan', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFB45309))),
-                      ],
+                  if (!isSynced)
+                    InkWell(
+                      onTap: isSyncing ? null : onSync,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(8)),
+                        child: Row(
+                          children: [
+                            isSyncing
+                                ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFB45309)))
+                                : const Icon(Icons.cloud_upload_outlined, size: 12, color: Color(0xFFB45309)),
+                            const SizedBox(width: 4),
+                            Text(isSyncing ? 'Mengunggah...' : 'Sinkronkan', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFB45309))),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    InkWell(
+                      onTap: onViewDetail,
+                      child: const Row(
+                        children: [
+                          Text('Lihat Detail BAST', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                          Icon(Icons.chevron_right, size: 14, color: Color(0xFF1E3A8A)),
+                        ],
+                      ),
                     ),
-                  ),
                 ],
               ),
             ],
@@ -361,7 +429,9 @@ class HistoryCardRepresentative extends StatelessWidget {
 }
 
 class HistoryCardRejected extends StatelessWidget {
-  const HistoryCardRejected({super.key});
+  final VoidCallback? onFixPhoto;
+
+  const HistoryCardRejected({super.key, this.onFixPhoto});
 
   @override
   Widget build(BuildContext context) {
@@ -441,7 +511,7 @@ class HistoryCardRejected extends StatelessWidget {
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  onPressed: () {},
+                  onPressed: onFixPhoto,
                   icon: const Icon(Icons.camera_alt, size: 14),
                   label: const Text('Perbaiki Dokumentasi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
                 ),
