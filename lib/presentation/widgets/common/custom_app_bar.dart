@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -8,56 +9,124 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const CustomAppBar({
     super.key,
-    this.title = 'Verifikasi Kpm',
+    this.title = 'Verifikasi KPM',
     this.subtitle = 'Badan Pangan Nasional / Perum BULOG',
     this.onBack,
     this.trailing,
   });
 
+  void _showOfficerProfile(BuildContext context) {
+    HapticFeedback.lightImpact();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: const Row(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundImage: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Petugas Lapangan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
+                  Text('Satgas BAPANAS / BULOG', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+                ],
+              ),
+            ),
+          ],
+        ),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('• Nama: Putu Yogik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+            SizedBox(height: 3),
+            Text('• NIP: 198507232010121002', style: TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+            SizedBox(height: 3),
+            Text('• Penugasan: Desa Banjar Bali, Kab. Buleleng', style: TextStyle(fontSize: 11, color: Color(0xFF1E3A8A), fontWeight: FontWeight.w700)),
+            SizedBox(height: 3),
+            Text('• Status: Aktif Bertugas (Online)', style: TextStyle(fontSize: 11, color: Color(0xFF059669), fontWeight: FontWeight.w700)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Tutup', style: TextStyle(fontWeight: FontWeight.w800)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool canPop = Navigator.canPop(context);
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
-        onPressed: onBack ?? () => Navigator.pop(context),
-      ),
+      leading: (canPop || onBack != null)
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                if (onBack != null) {
+                  onBack!();
+                } else if (canPop) {
+                  Navigator.pop(context);
+                }
+              },
+            )
+          : null,
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: Color(0xFF0F172A),
-                  letterSpacing: -0.3,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF0F172A),
+                    letterSpacing: -0.3,
+                  ),
                 ),
-              ),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF64748B),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+          const SizedBox(width: 8),
           trailing ??
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFF59E0B), width: 1.5),
-                  image: const DecorationImage(
-                    image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
-                    fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () => _showOfficerProfile(context),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: const Color(0xFFF59E0B), width: 1.5),
+                    image: const DecorationImage(
+                      image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

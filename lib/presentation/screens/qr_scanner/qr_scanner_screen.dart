@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../camera_geotag/camera_geotag_screen.dart';
 import 'widgets/camera_viewfinder.dart';
@@ -52,11 +53,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
               subtitle: const Text('Terdeteksi: No. PBP 51080610270001', style: TextStyle(fontSize: 10)),
               onTap: () {
                 Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('✓ Berhasil membaca QR KPM: I Made Sukadana (51080610270001)'),
-                    backgroundColor: Color(0xFF059669),
-                  ),
+                CenterAlert.showSuccess(
+                  context,
+                  title: 'QR KPM Terverifikasi',
+                  message: 'I Made Sukadana (51080610270001) terdaftar sebagai penerima bantuan.',
                 );
               },
             ),
@@ -70,7 +70,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        title: 'Pindai Undangan PBP',
+        subtitle: 'Tahap 2: Pemindaian QR & Barcode KPM',
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -211,11 +214,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                 ),
                                 onPressed: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('✓ Data PBP "${_manualPbpController.text}" ditemukan!'),
-                                      backgroundColor: const Color(0xFF059669),
-                                    ),
+                                  CenterAlert.showSuccess(
+                                    context,
+                                    title: 'Data PBP Ditemukan',
+                                    message: 'No. PBP ${_manualPbpController.text} cocok dengan basis data Bapanas.',
                                   );
                                 },
                                 icon: const Icon(Icons.search, size: 16),
@@ -254,11 +256,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Sensor pemindai di-reset. Siap memindai QR baru.'),
-                              duration: Duration(milliseconds: 900),
-                            ),
+                          CenterAlert.showInfo(
+                            context,
+                            title: 'Sensor Direset',
+                            message: 'Pemindai kamera siap membaca kode QR baru.',
                           );
                         },
                         child: const Text('Scan Ulang', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),

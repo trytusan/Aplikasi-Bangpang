@@ -75,7 +75,10 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        title: 'Dokumentasi & Geotag',
+        subtitle: 'Tahap 3: Foto Fisik Beras & KTP',
+      ),
       body: SafeArea(
         child: Column(
           children: [

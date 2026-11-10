@@ -160,7 +160,10 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        title: 'Review Berita Acara',
+        subtitle: 'Tahap Akhir: Pengesahan BAST',
+      ),
       body: SafeArea(
         child: Column(
           children: [

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../../../widgets/common/center_alert.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class OtpInput extends StatefulWidget {
@@ -41,11 +42,10 @@ class _OtpInputState extends State<OtpInput> {
 
   void _resendOtp() {
     _startTimer();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('✓ Kode OTP baru telah dikirimkan ke WhatsApp resmi petugas!'),
-        backgroundColor: Color(0xFF059669),
-      ),
+    CenterAlert.showSuccess(
+      context,
+      title: 'OTP Terkirim Ulang',
+      message: 'Kode OTP baru telah dikirimkan ke WhatsApp resmi petugas.',
     );
   }
 

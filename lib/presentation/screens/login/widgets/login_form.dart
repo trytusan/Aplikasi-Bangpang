@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../widgets/common/center_alert.dart';
 import '../../otp/otp_screen.dart';
 
 class LoginForm extends StatefulWidget {
@@ -103,18 +104,19 @@ class _LoginFormState extends State<LoginForm> {
                 onPressed: () {
                   final phone = resetPhoneController.text.trim();
                   if (phone.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Nomor handphone tidak boleh kosong.')),
+                    CenterAlert.showWarning(
+                      context,
+                      title: 'Nomor Tidak Boleh Kosong',
+                      message: 'Harap masukkan nomor handphone / ID Petugas Anda.',
                     );
                     return;
                   }
 
                   Navigator.pop(ctx); // Tutup modal
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('✓ Kode OTP verifikasi dikirimkan ke WhatsApp $phone'),
-                      backgroundColor: const Color(0xFF059669),
-                    ),
+                  CenterAlert.showSuccess(
+                    context,
+                    title: 'Kode OTP Terkirim',
+                    message: 'Kode 6-digit verifikasi telah dikirimkan ke WhatsApp $phone.',
                   );
 
                   Navigator.push(
@@ -136,21 +138,19 @@ class _LoginFormState extends State<LoginForm> {
 
   void _handleFormSubmit() {
     if (widget.phoneController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Nomor Handphone / ID Petugas tidak boleh kosong.'),
-          backgroundColor: Color(0xFFDC2626),
-        ),
+      CenterAlert.showWarning(
+        context,
+        title: 'ID Petugas Kosong',
+        message: 'Nomor Handphone / ID Petugas tidak boleh kosong.',
       );
       return;
     }
 
     if (widget.passwordController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Kata sandi tidak boleh kosong.'),
-          backgroundColor: Color(0xFFDC2626),
-        ),
+      CenterAlert.showWarning(
+        context,
+        title: 'Kata Sandi Kosong',
+        message: 'Kata sandi akun petugas tidak boleh kosong.',
       );
       return;
     }

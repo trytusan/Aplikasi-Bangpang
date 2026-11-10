@@ -98,7 +98,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        title: 'Riwayat Transaksi BAST',
+        subtitle: 'Monitoring Penyerahan Beras Bapanas',
+      ),
       body: SafeArea(
         child: Column(
           children: [

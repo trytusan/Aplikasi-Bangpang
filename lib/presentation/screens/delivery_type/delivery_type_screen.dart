@@ -37,7 +37,10 @@ class _DeliveryTypeScreenState extends State<DeliveryTypeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        title: 'Pilih Alur Penyerahan',
+        subtitle: 'Tahap 1: Identifikasi Penerima Manfaat',
+      ),
       body: SafeArea(
         child: Column(
           children: [

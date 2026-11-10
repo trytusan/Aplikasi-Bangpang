@@ -191,7 +191,10 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        title: 'Laporan Distribusi Beras',
+        subtitle: 'Realisasi Penyaluran CPP Titik Bagi',
+      ),
       body: SafeArea(
         child: Column(
           children: [

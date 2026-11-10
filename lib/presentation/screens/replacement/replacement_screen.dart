@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../camera_geotag/camera_geotag_screen.dart';
 import 'widgets/original_pbp_card.dart';
@@ -61,8 +62,10 @@ class _ReplacementScreenState extends State<ReplacementScreen> {
               onTap: () {
                 Navigator.pop(ctx);
                 setState(() => _sptjmFile = 'FOTO_SPTJM_${DateTime.now().millisecondsSinceEpoch}.JPG');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Foto dokumen SPTJM berhasil dilampirkan!'), backgroundColor: Color(0xFF059669)),
+                CenterAlert.showSuccess(
+                  context,
+                  title: 'Data Berhasil Disimpan',
+                  message: 'Foto fisik surat SPTJM berstempel dinas berhasil dilampirkan.',
                 );
               },
             ),
@@ -76,8 +79,10 @@ class _ReplacementScreenState extends State<ReplacementScreen> {
               onTap: () {
                 Navigator.pop(ctx);
                 setState(() => _sptjmFile = 'SPTJM-510806-2024-008-SIGNED.PDF');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Berkas PDF SPTJM berhasil dimuat!'), backgroundColor: Color(0xFF059669)),
+                CenterAlert.showSuccess(
+                  context,
+                  title: 'Data Berhasil Disimpan',
+                  message: 'Berkas PDF SPTJM kelurahan berhasil dimuat.',
                 );
               },
             ),
@@ -89,11 +94,10 @@ class _ReplacementScreenState extends State<ReplacementScreen> {
 
   void _proceedToDocumentation() {
     if (_namaPenggantiController.text.trim().isEmpty || _nikPenggantiController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Harap lengkapi Nama dan NIK KPM Pengganti terlebih dahulu.'),
-          backgroundColor: Color(0xFFDC2626),
-        ),
+      CenterAlert.showWarning(
+        context,
+        title: 'Data Belum Lengkap',
+        message: 'Harap lengkapi Nama dan NIK KPM Pengganti terlebih dahulu.',
       );
       return;
     }
@@ -108,7 +112,10 @@ class _ReplacementScreenState extends State<ReplacementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        title: 'Alur Pengganti SPTJM',
+        subtitle: 'Tahap Khusus: Pengesahan Pengganti KPM',
+      ),
       body: SafeArea(
         child: Column(
           children: [
