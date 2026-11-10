@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../widgets/common/center_alert.dart';
 import '../../dashboard/dashboard_screen.dart';
 
 class BastSuccessDialog extends StatelessWidget {
@@ -123,17 +124,10 @@ class BastSuccessDialog extends StatelessWidget {
                   foregroundColor: const Color(0xFFB45309),
                 ),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Row(
-                        children: [
-                          const Icon(Icons.picture_as_pdf, color: Colors.white, size: 16),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text('Bukti BAST "$bastNumber.pdf" berhasil diunduh ke perangkat!')),
-                        ],
-                      ),
-                      backgroundColor: const Color(0xFF059669),
-                    ),
+                  CenterAlert.showSuccess(
+                    context,
+                    title: 'Data Berhasil Disimpan',
+                    message: 'Bukti BAST "$bastNumber.pdf" berhasil diunduh ke perangkat.',
                   );
                 },
                 icon: const Icon(Icons.download_for_offline_outlined, size: 18),

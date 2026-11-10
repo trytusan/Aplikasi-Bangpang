@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../widgets/common/center_alert.dart';
 
 class BastDetailSheet extends StatelessWidget {
   final String bastNo;
@@ -147,8 +148,10 @@ class BastDetailSheet extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Tautan dokumen "$bastNo" berhasil disalin!')),
+                    CenterAlert.showInfo(
+                      context,
+                      title: 'Tautan Berhasil Disalin',
+                      message: 'Tautan dokumen "$bastNo" siap dibagikan.',
                     );
                   },
                   icon: const Icon(Icons.share, size: 16, color: Color(0xFF1E3A8A)),
@@ -166,11 +169,10 @@ class BastDetailSheet extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Dokumen BAST "$bastNo.pdf" berhasil diunduh!'),
-                        backgroundColor: const Color(0xFF059669),
-                      ),
+                    CenterAlert.showSuccess(
+                      context,
+                      title: 'Data Berhasil Disimpan',
+                      message: 'Dokumen BAST "$bastNo.pdf" berhasil diunduh ke memori perangkat.',
                     );
                   },
                   icon: const Icon(Icons.picture_as_pdf, size: 16, color: Colors.black),

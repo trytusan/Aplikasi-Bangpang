@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import 'widgets/bast_download_card.dart';
 import 'widgets/donut_chart.dart';
@@ -122,11 +123,10 @@ class _ReportScreenState extends State<ReportScreen> {
               subtitle: const Text('Lengkap dengan tanda tangan, geotag & rekap foto BAST', style: TextStyle(fontSize: 10)),
               onTap: () {
                 Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('✓ Berkas "REKAP_BAST_BANJAR_BALI_2025.PDF" berhasil diunduh ke folder Dokumen!'),
-                    backgroundColor: Color(0xFF059669),
-                  ),
+                CenterAlert.showSuccess(
+                  context,
+                  title: 'Data Berhasil Disimpan',
+                  message: 'Berkas "REKAP_BAST_BANJAR_BALI_2025.PDF" berhasil diunduh.',
                 );
               },
             ),
@@ -139,11 +139,10 @@ class _ReportScreenState extends State<ReportScreen> {
               subtitle: const Text('Format spreadsheet tabel data KPM untuk arsip dinas', style: TextStyle(fontSize: 10)),
               onTap: () {
                 Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('✓ Berkas "REKAP_BAST_BANJAR_BALI_2025.XLSX" berhasil diekspor!'),
-                    backgroundColor: Color(0xFF059669),
-                  ),
+                CenterAlert.showSuccess(
+                  context,
+                  title: 'Data Berhasil Disimpan',
+                  message: 'Berkas "REKAP_BAST_BANJAR_BALI_2025.XLSX" berhasil diekspor.',
                 );
               },
             ),
@@ -175,11 +174,10 @@ class _ReportScreenState extends State<ReportScreen> {
             ),
             onPressed: () {
               Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('✓ Notifikasi pengingat penyerahan beras berhasil terkirim ke 5 nomor KPM!'),
-                  backgroundColor: Color(0xFF059669),
-                ),
+              CenterAlert.showSuccess(
+                context,
+                title: 'Pengingat Terkirim',
+                message: 'Pesan notifikasi berhasil disebarkan ke 5 warga KPM.',
               );
             },
             child: const Text('Kirim Sekarang'),
