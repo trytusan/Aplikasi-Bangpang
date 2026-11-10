@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HistoryCardNormal extends StatelessWidget {
   final VoidCallback? onViewDetail;
@@ -79,7 +80,7 @@ class HistoryCardNormal extends StatelessWidget {
                       width: double.infinity,
                       color: Colors.black.withValues(alpha: 0.75),
                       padding: const EdgeInsets.symmetric(vertical: 1),
-                      child: const Text('GEOTAG OK', textAlign: TextAlign.center, style: TextStyle(color: Color(0xFF34D399), fontSize: 7, fontWeight: FontWeight.w900)),
+                      child: const Text('GEOTAG OK', textAlign: TextAlign.center, style: TextStyle(color: Color(0xFF34D399), fontSize: 8.5, fontWeight: FontWeight.w900)),
                     ),
                   ),
                 ],
@@ -134,7 +135,10 @@ class HistoryCardNormal extends StatelessWidget {
                     ],
                   ),
                   InkWell(
-                    onTap: onViewDetail,
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      onViewDetail?.call();
+                    },
                     child: const Row(
                       children: [
                         Text('Lihat Detail BAST', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
@@ -258,7 +262,10 @@ class HistoryCardReplacement extends StatelessWidget {
                     ],
                   ),
                   InkWell(
-                    onTap: onViewDetail,
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      onViewDetail?.call();
+                    },
                     child: const Row(
                       children: [
                         Text('Lihat Berita Acara', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
@@ -392,7 +399,10 @@ class HistoryCardRepresentative extends StatelessWidget {
                   ),
                   if (!isSynced)
                     InkWell(
-                      onTap: isSyncing ? null : onSync,
+                      onTap: () {
+                        HapticFeedback.mediumImpact();
+                        if (!isSyncing) onSync?.call();
+                      },
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -511,7 +521,10 @@ class HistoryCardRejected extends StatelessWidget {
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  onPressed: onFixPhoto,
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    onFixPhoto?.call();
+                  },
                   icon: const Icon(Icons.camera_alt, size: 14),
                   label: const Text('Perbaiki Dokumentasi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
                 ),

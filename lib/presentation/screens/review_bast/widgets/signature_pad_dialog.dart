@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SignaturePadDialog extends StatefulWidget {
   final List<Offset?>? initialPoints;
@@ -172,6 +173,7 @@ class _SignaturePadDialogState extends State<SignaturePadDialog> {
                       onPressed: _points.isEmpty
                           ? null
                           : () {
+                              HapticFeedback.mediumImpact();
                               widget.onSaved(_points);
                               Navigator.pop(context);
                             },

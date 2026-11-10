@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../delivery_type/delivery_type_screen.dart';
 import '../../replacement/replacement_screen.dart';
 
@@ -13,6 +14,7 @@ class KpmPendingList extends StatelessWidget {
   });
 
   void _showContactDialog(BuildContext context, String name, String phone) {
+    HapticFeedback.lightImpact();
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -67,6 +69,7 @@ class KpmPendingList extends StatelessWidget {
   }
 
   void _showDeliveryScheduleDialog(BuildContext context, String name) {
+    HapticFeedback.lightImpact();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -118,6 +121,7 @@ class KpmPendingList extends StatelessWidget {
   }
 
   void _callQueue(BuildContext context, String number, String name) {
+    HapticFeedback.mediumImpact();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -143,9 +147,9 @@ class KpmPendingList extends StatelessWidget {
           children: [
             Text(
               'Daftar Penerima Bantuan\n(PBP)',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.15),
+              style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.15),
             ),
-            Text('Update 10:24\nWITA', textAlign: TextAlign.right, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: Color(0xFF64748B))),
+            Text('Update 10:24\nWITA', textAlign: TextAlign.right, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: Color(0xFF64748B))),
           ],
         ),
         const SizedBox(height: 10),
@@ -177,6 +181,7 @@ class KpmPendingList extends StatelessWidget {
             nama: 'JRO NYOMAN SETIASIH',
             pbp: '510806102700001',
             alamat: 'Banjar Dinas Bale Agung, RT 01',
+            accentColor: const Color(0xFF059669),
             badge: 'Sudah Diterima',
             badgeColor: const Color(0xFFD1FAE5),
             badgeTextColor: const Color(0xFF065F46),
@@ -185,6 +190,7 @@ class KpmPendingList extends StatelessWidget {
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(backgroundColor: const Color(0xFFEFF6FF), side: BorderSide.none, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                   onPressed: () {
+                    HapticFeedback.selectionClick();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('BAST: BAST-2026095108062005 (10 kg Beras CBP Diserahkan)')),
                     );
@@ -202,6 +208,7 @@ class KpmPendingList extends StatelessWidget {
             nama: 'LUH SUMANTRI ARYANI',
             pbp: '5108062005000024',
             alamat: 'Banjar Dinas Bale Agung, RT 02',
+            accentColor: const Color(0xFF059669),
             badge: 'Sudah Diterima (SPTJM)',
             badgeColor: const Color(0xFFD1FAE5),
             badgeTextColor: const Color(0xFF065F46),
@@ -210,6 +217,7 @@ class KpmPendingList extends StatelessWidget {
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(backgroundColor: const Color(0xFFEFF6FF), side: BorderSide.none, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                   onPressed: () {
+                    HapticFeedback.selectionClick();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('BAST: BAST-2026095108062006 (Pengganti Sah)')),
                     );
@@ -231,6 +239,7 @@ class KpmPendingList extends StatelessWidget {
             nama: 'I KETUT WIDIA',
             pbp: '510806102700021',
             alamat: 'Banjar Dinas Bale Agung, RT 01',
+            accentColor: const Color(0xFFE11D48),
             badge: 'Belum Diambil',
             badgeColor: const Color(0xFFFFE4E6),
             badgeTextColor: const Color(0xFFE11D48),
@@ -247,7 +256,10 @@ class KpmPendingList extends StatelessWidget {
               Expanded(
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE88B00), foregroundColor: Colors.black, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen())),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()));
+                  },
                   icon: const Icon(Icons.inventory_2_outlined, size: 14),
                   label: const Text('Salurkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
                 ),
@@ -263,6 +275,7 @@ class KpmPendingList extends StatelessWidget {
             nama: 'NI MADE WARTI',
             pbp: '510806200500008',
             alamat: 'Banjar Dinas Bale Agung, RT 02',
+            accentColor: const Color(0xFFD97706),
             badge: '[+] Keluarga Sakit',
             badgeColor: const Color(0xFFFEF3C7),
             badgeTextColor: const Color(0xFFB45309),
@@ -287,6 +300,7 @@ class KpmPendingList extends StatelessWidget {
             nama: 'KOMANG ARYA',
             pbp: '510806102700095',
             alamat: 'Banjar Bali, RT 03',
+            accentColor: const Color(0xFFDC2626),
             badge: 'Alamat Tdk Ditemukan',
             badgeColor: const Color(0xFFFFE4E6),
             badgeTextColor: const Color(0xFFE11D48),
@@ -295,6 +309,7 @@ class KpmPendingList extends StatelessWidget {
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(backgroundColor: const Color(0xFFEEF2FF), side: BorderSide.none, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                   onPressed: () {
+                    HapticFeedback.lightImpact();
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const ReplacementScreen()));
                   },
                   icon: const Icon(Icons.cancel_outlined, size: 14, color: Color(0xFFE11D48)),
@@ -312,6 +327,7 @@ class KpmPendingList extends StatelessWidget {
             nama: 'DESAK PUTU SUCI',
             pbp: '510806200500112',
             alamat: 'Banjar Bali, RT 02',
+            accentColor: const Color(0xFFE11D48),
             badge: 'Belum Diambil',
             badgeColor: const Color(0xFFFFE4E6),
             badgeTextColor: const Color(0xFFE11D48),
@@ -328,7 +344,10 @@ class KpmPendingList extends StatelessWidget {
               Expanded(
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE88B00), foregroundColor: Colors.black, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen())),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()));
+                  },
                   icon: const Icon(Icons.inventory_2_outlined, size: 14),
                   label: const Text('Salurkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
                 ),
@@ -344,6 +363,7 @@ class KpmPendingList extends StatelessWidget {
             nama: 'WAYAN GEDE SUKA',
             pbp: '510806102700140',
             alamat: 'Banjar Bali, RT 04',
+            accentColor: const Color(0xFFE11D48),
             badge: 'Belum Diambil',
             badgeColor: const Color(0xFFFFE4E6),
             badgeTextColor: const Color(0xFFE11D48),
@@ -360,7 +380,10 @@ class KpmPendingList extends StatelessWidget {
               Expanded(
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE88B00), foregroundColor: Colors.black, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen())),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()));
+                  },
                   icon: const Icon(Icons.inventory_2_outlined, size: 14),
                   label: const Text('Salurkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
                 ),
@@ -374,9 +397,12 @@ class KpmPendingList extends StatelessWidget {
 
   Widget _filterChip(String label, {required bool isSelected, Color? selectedBg, required VoidCallback onTap}) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
         decoration: BoxDecoration(
           color: isSelected ? (selectedBg ?? const Color(0xFF1E3A8A)) : Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -384,7 +410,7 @@ class KpmPendingList extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: isSelected ? Colors.white : const Color(0xFF64748B)),
+          style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: isSelected ? Colors.white : const Color(0xFF64748B)),
         ),
       ),
     );
@@ -396,6 +422,7 @@ class KpmPendingList extends StatelessWidget {
     required String nama,
     required String pbp,
     required String alamat,
+    required Color accentColor,
     required String badge,
     required Color badgeColor,
     required Color badgeTextColor,
@@ -403,78 +430,86 @@ class KpmPendingList extends StatelessWidget {
     required List<Widget> actions,
   }) {
     return Container(
-      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 1)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2)),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(left: BorderSide(color: accentColor, width: 4.5)),
+          ),
+          padding: const EdgeInsets.all(13),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CircleAvatar(
-                    radius: 11,
-                    backgroundColor: const Color(0xFFEFF6FF),
-                    child: Text(number, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF1E3A8A))),
-                  ),
-                  const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      Text(nama, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-                      Text('PBP: $pbp', style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontFamily: 'monospace')),
+                      CircleAvatar(
+                        radius: 12,
+                        backgroundColor: const Color(0xFFEFF6FF),
+                        child: Text(number, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF1E3A8A))),
+                      ),
+                      const SizedBox(width: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(nama, style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                          Text('PBP: $pbp', style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontFamily: 'monospace')),
+                        ],
+                      ),
                     ],
                   ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(color: badgeColor, borderRadius: BorderRadius.circular(6)),
+                    child: Text(badge, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: badgeTextColor)),
+                  ),
                 ],
               ),
+              const SizedBox(height: 8),
+
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(color: badgeColor, borderRadius: BorderRadius.circular(6)),
-                child: Text(badge, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: badgeTextColor)),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(8)),
+                child: Row(
+                  children: [
+                    const Icon(Icons.location_on_outlined, size: 13, color: Color(0xFF64748B)),
+                    const SizedBox(width: 5),
+                    Expanded(child: Text(alamat, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600))),
+                  ],
+                ),
               ),
+
+              if (note != null) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: const Color(0xFFFFFBEB), borderRadius: BorderRadius.circular(8)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.info_outline, size: 13, color: Color(0xFFD97706)),
+                      const SizedBox(width: 6),
+                      Expanded(child: Text(note, style: const TextStyle(fontSize: 10, color: Color(0xFF92400E), fontWeight: FontWeight.w600))),
+                    ],
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 10),
+              Row(children: actions),
             ],
           ),
-          const SizedBox(height: 8),
-
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(8)),
-            child: Row(
-              children: [
-                const Icon(Icons.location_on_outlined, size: 12, color: Color(0xFF64748B)),
-                const SizedBox(width: 4),
-                Expanded(child: Text(alamat, style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B)))),
-              ],
-            ),
-          ),
-
-          if (note != null) ...[
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: const Color(0xFFFFFBEB), borderRadius: BorderRadius.circular(8)),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.info_outline, size: 12, color: Color(0xFFD97706)),
-                  const SizedBox(width: 6),
-                  Expanded(child: Text(note, style: const TextStyle(fontSize: 9.5, color: Color(0xFF92400E)))),
-                ],
-              ),
-            ),
-          ],
-
-          const SizedBox(height: 10),
-          Row(children: actions),
-        ],
+        ),
       ),
     );
   }

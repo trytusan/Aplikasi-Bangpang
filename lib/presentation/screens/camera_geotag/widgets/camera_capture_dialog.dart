@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CameraCaptureDialog extends StatefulWidget {
   final String title;
@@ -29,6 +30,7 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
   ];
 
   Future<void> _takePicture() async {
+    HapticFeedback.heavyImpact();
     setState(() {
       _flashAnimation = true;
       _isCapturing = true;

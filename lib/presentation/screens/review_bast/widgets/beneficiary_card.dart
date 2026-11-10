@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'signature_pad_dialog.dart';
 
 class BeneficiaryCard extends StatelessWidget {
@@ -26,7 +27,7 @@ class BeneficiaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 3)),
         ],
       ),
       child: Column(
@@ -37,11 +38,11 @@ class BeneficiaryCard extends StatelessWidget {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.badge_outlined, size: 18, color: Color(0xFF1E3A8A)),
+                  Icon(Icons.badge_outlined, size: 20, color: Color(0xFF1E3A8A)),
                   SizedBox(width: 8),
                   Text(
                     'Data Penerima\nManfaat',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.15),
+                    style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.15),
                   ),
                 ],
               ),
@@ -50,9 +51,9 @@ class BeneficiaryCard extends StatelessWidget {
                 decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(20)),
                 child: const Row(
                   children: [
-                    Icon(Icons.check_circle, size: 12, color: Color(0xFF059669)),
+                    Icon(Icons.check_circle, size: 13, color: Color(0xFF059669)),
                     SizedBox(width: 4),
-                    Text('Kemendagri\nValid', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF065F46), height: 1.1)),
+                    Text('Kemendagri\nValid', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF065F46), height: 1.1)),
                   ],
                 ),
               ),
@@ -64,10 +65,10 @@ class BeneficiaryCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 46,
-                height: 46,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(10),
                   image: const DecorationImage(
                     image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
                     fit: BoxFit.cover,
@@ -81,8 +82,8 @@ class BeneficiaryCard extends StatelessWidget {
                   children: [
                     Text('LUH SUMANTRI ARYANI', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
                     SizedBox(height: 2),
-                    Text('KPM Pengganti Sah', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFFD97706))),
-                    Text('NIK: 5108065209840002', style: TextStyle(fontSize: 10, fontFamily: 'monospace', color: Color(0xFF64748B))),
+                    Text('KPM Pengganti Sah', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFFD97706))),
+                    Text('NIK: 5108065209840002', style: TextStyle(fontSize: 11, fontFamily: 'monospace', color: Color(0xFF475569))),
                   ],
                 ),
               ),
@@ -99,9 +100,9 @@ class BeneficiaryCard extends StatelessWidget {
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Nomor Kartu Keluarga', style: TextStyle(fontSize: 9, color: Color(0xFF64748B))),
-                      SizedBox(height: 2),
-                      Text('5108061204090011', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, fontFamily: 'monospace')),
+                      Text('Nomor Kartu Keluarga', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+                      SizedBox(height: 3),
+                      Text('5108061204090011', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, fontFamily: 'monospace', color: Color(0xFF0F172A))),
                     ],
                   ),
                 ),
@@ -114,10 +115,10 @@ class BeneficiaryCard extends StatelessWidget {
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('KPM Sebelumnya (Diganti)', style: TextStyle(fontSize: 9, color: Color(0xFF64748B))),
-                      SizedBox(height: 2),
-                      Text('I GEDE SUARDIKA', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
-                      Text('(Meninggal Dunia)', style: TextStyle(fontSize: 8.5, color: Color(0xFF64748B))),
+                      Text('KPM Sebelumnya (Diganti)', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+                      SizedBox(height: 3),
+                      Text('I GEDE SUARDIKA', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
+                      Text('(Meninggal Dunia)', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
                     ],
                   ),
                 ),
@@ -137,24 +138,24 @@ class BeneficiaryCard extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 38,
-                  height: 38,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(color: const Color(0xFFE88B00), borderRadius: BorderRadius.circular(10)),
-                  child: const Icon(Icons.inventory_2, color: Colors.white, size: 20),
+                  child: const Icon(Icons.inventory_2, color: Colors.white, size: 22),
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('ALOKASI BANTUAN PANGAN', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF92400E))),
-                      Text('Beras Medium CPP 10 Kg', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                      Text('ALOKASI BANTUAN PANGAN', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF92400E))),
+                      Text('Beras Medium CPP 10 Kg', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
                     ],
                   ),
                 ),
                 const Text(
                   '1 Karung',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFF1E3A8A)),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF1E3A8A)),
                 ),
               ],
             ),
@@ -163,16 +164,16 @@ class BeneficiaryCard extends StatelessWidget {
 
           // Alamat Domisili
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(11),
             decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Alamat Domisili KPM', style: TextStyle(fontSize: 9, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
-                SizedBox(height: 2),
+                Text('Alamat Domisili KPM', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w700)),
+                SizedBox(height: 3),
                 Text(
                   'Banjar Dinas Bale Agung, RT 02 / RW 01, Banjar Bali, Buleleng, Kabupaten Buleleng, Bali',
-                  style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: Color(0xFF0F172A), height: 1.3),
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F172A), height: 1.35),
                 ),
               ],
             ),
@@ -180,16 +181,19 @@ class BeneficiaryCard extends StatelessWidget {
           const SizedBox(height: 14),
 
           // 3 Lampiran Bukti Penyerahan
-          const Text('LAMPIRAN BUKTI PENYERAHAN', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF64748B))),
+          const Text('LAMPIRAN BUKTI PENYERAHAN', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF64748B))),
           const SizedBox(height: 8),
           Row(
             children: [
               // Lampiran 1: Fisik Beras
               Expanded(
                 child: GestureDetector(
-                  onTap: onTapRicePhoto,
+                  onTap: () {
+                    HapticFeedback.selectionClick();
+                    onTapRicePhoto?.call();
+                  },
                   child: Container(
-                    height: 70,
+                    height: 74,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       image: const DecorationImage(
@@ -200,9 +204,9 @@ class BeneficiaryCard extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       width: double.infinity,
-                      color: Colors.black.withValues(alpha: 0.7),
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: const Text('Fisik Beras', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.w800)),
+                      color: Colors.black.withValues(alpha: 0.75),
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      child: const Text('Fisik Beras', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.w800)),
                     ),
                   ),
                 ),
@@ -212,9 +216,12 @@ class BeneficiaryCard extends StatelessWidget {
               // Lampiran 2: Surat SPTJM
               Expanded(
                 child: GestureDetector(
-                  onTap: onTapSptjmPhoto,
+                  onTap: () {
+                    HapticFeedback.selectionClick();
+                    onTapSptjmPhoto?.call();
+                  },
                   child: Container(
-                    height: 70,
+                    height: 74,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       image: const DecorationImage(
@@ -225,9 +232,9 @@ class BeneficiaryCard extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       width: double.infinity,
-                      color: Colors.black.withValues(alpha: 0.7),
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: const Text('Surat SPTJM', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.w800)),
+                      color: Colors.black.withValues(alpha: 0.75),
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      child: const Text('Surat SPTJM', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.w800)),
                     ),
                   ),
                 ),
@@ -237,10 +244,13 @@ class BeneficiaryCard extends StatelessWidget {
               // Lampiran 3: Tanda Tangan Interaktif
               Expanded(
                 child: InkWell(
-                  onTap: onTapSignature,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    onTapSignature?.call();
+                  },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
-                    height: 70,
+                    height: 74,
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: hasSignature ? const Color(0xFFF0FDF4) : const Color(0xFFEFF6FF),
@@ -254,7 +264,7 @@ class BeneficiaryCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
-                                height: 36,
+                                height: 38,
                                 width: double.infinity,
                                 child: CustomPaint(
                                   painter: SignaturePainter(points: signaturePoints!),
@@ -264,19 +274,19 @@ class BeneficiaryCard extends StatelessWidget {
                               const Text(
                                 '✓ Tanda Tangan Sah',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800, color: Color(0xFF166534)),
+                                style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF166534)),
                               ),
                             ],
                           )
                         : const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.edit_note, color: Color(0xFF2563EB), size: 24),
+                              Icon(Icons.edit_note, color: Color(0xFF2563EB), size: 26),
                               SizedBox(height: 2),
                               Text(
                                 'Tanda Tangan\n(Klik di Sini)',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A), height: 1.1),
+                                style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A), height: 1.1),
                               ),
                             ],
                           ),
