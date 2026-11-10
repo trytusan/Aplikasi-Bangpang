@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../widgets/common/center_alert.dart';
+import '../../../widgets/common/center_alert.dart';
 import '../../dashboard/dashboard_screen.dart';
 
 class BastSuccessDialog extends StatelessWidget {

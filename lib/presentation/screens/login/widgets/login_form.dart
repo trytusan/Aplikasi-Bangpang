@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../widgets/common/center_alert.dart';
+import '../../../widgets/common/center_alert.dart';
 import '../../otp/otp_screen.dart';
 
 class LoginForm extends StatefulWidget {

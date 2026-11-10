@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../../widgets/common/center_alert.dart';
+import '../../../widgets/common/center_alert.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class OtpInput extends StatefulWidget {
