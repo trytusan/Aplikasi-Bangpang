@@ -371,11 +371,11 @@ class _Step3SptjmReplacementScreenState extends State<Step3SptjmReplacementScree
                           const SizedBox(height: 12),
 
                           // NIK Penerima Pengganti
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('NIK Penerima Pengganti *', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
-                              const Text('✓ 16 / 16 Karakter', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
+                              Text('NIK Penerima Pengganti *', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
+                              Text('✓ 16 / 16 Karakter', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
                             ],
                           ),
                           const SizedBox(height: 6),

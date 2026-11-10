@@ -139,7 +139,7 @@ class _DistributionReportScreenState extends State<DistributionReportScreen> {
                           const SizedBox(height: 16),
 
                           // Donut Chart Progress Lingkaran
-                          Center(
+                          const Center(
                             child: SizedBox(
                               width: 140,
                               height: 140,
@@ -152,11 +152,11 @@ class _DistributionReportScreenState extends State<DistributionReportScreen> {
                                     child: CircularProgressIndicator(
                                       value: 0.896,
                                       strokeWidth: 14,
-                                      backgroundColor: const Color(0xFFE11D48), // Segmen Merah Sisa 10.4%
-                                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF047857)), // Segmen Hijau Selesai 89.6%
+                                      backgroundColor: Color(0xFFE11D48), // Segmen Merah Sisa 10.4%
+                                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF047857)), // Segmen Hijau Selesai 89.6%
                                     ),
                                   ),
-                                  const Column(
+                                  Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text('48', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1)),
@@ -290,14 +290,14 @@ class _DistributionReportScreenState extends State<DistributionReportScreen> {
                     const SizedBox(height: 16),
 
                     // 3. Section Daftar Penerima Bantuan (PBP)
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Daftar Penerima Bantuan\n(PBP)',
                           style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.15),
                         ),
-                        const Text('Update 10:24\nWITA', textAlign: TextAlign.right, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: Color(0xFF64748B))),
+                        Text('Update 10:24\nWITA', textAlign: TextAlign.right, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: Color(0xFF64748B))),
                       ],
                     ),
                     const SizedBox(height: 10),

@@ -14,7 +14,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _currentTab = 0; // 0: Penyerahan, 1: Pengaturan
-  bool _isOnline = true;
+  final bool _isOnline = true;
 
   @override
   Widget build(BuildContext context) {

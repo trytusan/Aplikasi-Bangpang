@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
 import '04_step2_qr_scanner_screen.dart';
 import '05_step3_sptjm_replacement_screen.dart';
 

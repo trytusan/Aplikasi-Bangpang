@@ -470,15 +470,15 @@ class _Step2QrScannerScreenState extends State<Step2QrScannerScreen> {
                               color: const Color(0xFFF1F5F9),
                               borderRadius: BorderRadius.circular(14),
                             ),
-                            child: Column(
+                            child: const Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Nama Kepala Keluarga / KPM', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
-                                const SizedBox(height: 2),
-                                const Text('JRO NYOMAN SETIASIH', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-                                const SizedBox(height: 8),
+                                Text('Nama Kepala Keluarga / KPM', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+                                SizedBox(height: 2),
+                                Text('JRO NYOMAN SETIASIH', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                                SizedBox(height: 8),
 
-                                const Row(
+                                Row(
                                   children: [
                                     Expanded(
                                       child: Column(
@@ -500,10 +500,10 @@ class _Step2QrScannerScreenState extends State<Step2QrScannerScreen> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 8),
+                                SizedBox(height: 8),
 
-                                const Text('Nomor Dokumen BAST', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
-                                const Text('BAST-2026095108062005', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, fontFamily: 'monospace', color: Color(0xFF1E3A8A))),
+                                Text('Nomor Dokumen BAST', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                                Text('BAST-2026095108062005', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, fontFamily: 'monospace', color: Color(0xFF1E3A8A))),
                               ],
                             ),
                           ),

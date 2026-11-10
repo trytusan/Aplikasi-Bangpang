@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
 import '02_dashboard_screen.dart';
 
 class Step5ReviewBastScreen extends StatelessWidget {

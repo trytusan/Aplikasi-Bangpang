@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
 import '03_step1_delivery_type_screen.dart';
 
 class HistoryListScreen extends StatefulWidget {

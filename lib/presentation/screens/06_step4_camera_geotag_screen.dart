@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
 import '07_step5_review_bast_screen.dart';
 
 class Step4CameraGeotagScreen extends StatelessWidget {
