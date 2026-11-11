@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../review_bast/review_bast_screen.dart';
@@ -39,6 +40,7 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
   }
 
   void _showImageLightbox(String title, String imageUrl) {
+    HapticFeedback.lightImpact();
     showDialog(
       context: context,
       builder: (_) => Dialog(
@@ -51,19 +53,19 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                  icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
             ),
             ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(18),
               child: Image.network(imageUrl, fit: BoxFit.contain),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
               title,
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w800),
+              style: const TextStyle(color: Colors.white, fontSize: 13.5, fontWeight: FontWeight.w800),
             ),
           ],
         ),
@@ -82,35 +84,56 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            // Status Akurasi GPS RTK Bar
             const GpsSubbar(),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Banner Petunjuk Validasi
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       decoration: BoxDecoration(
                         color: const Color(0xFFEFF6FF),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFFDBEAFE)),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFBFDBFE)),
                       ),
                       child: const Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.info_outline, color: Color(0xFF2563EB), size: 16),
-                          SizedBox(width: 8),
+                          Icon(Icons.shield_outlined, color: Color(0xFF2563EB), size: 18),
+                          SizedBox(width: 10),
                           Expanded(
-                            child: Text(
-                              'Pastikan foto KTP/KK dan penerima terlihat jelas, tidak buram, dan GPS aktif dengan akurasi tinggi (< 10 meter) untuk validasi BAST.',
-                              style: TextStyle(fontSize: 10, color: Color(0xFF1E3A8A), fontWeight: FontWeight.w500, height: 1.35),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Standar Verifikasi Dokumen BAST',
+                                  style: TextStyle(
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF1E3A8A),
+                                  ),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'Pastikan fisik KTP/KK dan wajah penerima tampak jelas, tidak silau/buram, serta GPS terkunci akurat (< 10 meter) untuk keabsahan hukum penyerahan.',
+                                  style: TextStyle(
+                                    fontSize: 10.5,
+                                    color: Color(0xFF3B82F6),
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.35,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
 
                     // Foto KTP Card
                     KtpPhotoCard(
@@ -140,37 +163,54 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
                     ),
                     const SizedBox(height: 14),
 
+                    // Ringkasan Data KPM
                     const KpmSummary(),
                   ],
                 ),
               ),
             ),
 
-            // Bottom Buttons
+            // Bottom Sticky Bar (Kembali & Lanjut ke Review BAST)
             Container(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-              decoration: const BoxDecoration(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+              decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 20,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
+                border: const Border(
+                  top: BorderSide(color: Color(0xFFF1F5F9), width: 1.2),
+                ),
               ),
               child: Row(
                 children: [
+                  // Tombol Kembali
                   Expanded(
                     child: SizedBox(
                       height: 48,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFEEF2FF),
-                          foregroundColor: const Color(0xFF1E3A8A),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: const Color(0xFFF8FAFC),
+                          foregroundColor: const Color(0xFF475569),
+                          side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.2),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         ),
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Kembali', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Kembali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
                       ),
                     ),
                   ),
                   const SizedBox(width: 10),
+
+                  // Tombol Lanjut ke Review BAST
                   Expanded(
                     flex: 2,
                     child: SizedBox(
@@ -178,11 +218,12 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFE88B00),
-                          foregroundColor: Colors.black,
+                          foregroundColor: const Color(0xFF0F172A),
                           elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         ),
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (_) => const ReviewBastScreen()),
@@ -193,10 +234,15 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
                           children: [
                             Text(
                               'Lanjut ke Review BAST',
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.black),
+                              style: TextStyle(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF0F172A),
+                                letterSpacing: -0.2,
+                              ),
                             ),
                             SizedBox(width: 6),
-                            Icon(Icons.arrow_forward, size: 16, color: Colors.black),
+                            Icon(Icons.arrow_forward_rounded, size: 18, color: Color(0xFF0F172A)),
                           ],
                         ),
                       ),
