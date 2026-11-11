@@ -111,27 +111,34 @@ class _HistoryScreenState extends State<HistoryScreen> {
               onSelectFilter: (val) => setState(() => _selectedFilter = val),
             ),
 
-            // Search Bar Input
+            // Search Bar Input Modern
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 6, 16, 4),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
               child: Container(
-                height: 40,
+                height: 44,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFCBD5E1)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.02),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: TextField(
                   controller: _searchController,
                   onChanged: (val) => setState(() => _searchQuery = val),
-                  style: const TextStyle(fontSize: 11.5, color: Color(0xFF0F172A)),
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
                   decoration: InputDecoration(
                     hintText: 'Cari nama KPM, NIK, atau No. BAST...',
-                    hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-                    prefixIcon: const Icon(Icons.search, size: 18, color: Color(0xFF64748B)),
+                    hintStyle: const TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
+                    prefixIcon: const Icon(Icons.search_rounded, size: 20, color: Color(0xFF1E3A8A)),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.close, size: 16, color: Color(0xFF64748B)),
+                            icon: const Icon(Icons.cancel_rounded, size: 18, color: Color(0xFF64748B)),
                             onPressed: () {
                               _searchController.clear();
                               setState(() => _searchQuery = '');
@@ -139,7 +146,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           )
                         : null,
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 9),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 11),
                   ),
                 ),
               ),
