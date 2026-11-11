@@ -193,25 +193,45 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
 
             // Bottom Buttons (Kembali & Kirim Penyerahan)
             Container(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-              decoration: const BoxDecoration(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+              decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 20,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
+                border: const Border(
+                  top: BorderSide(color: Color(0xFFF1F5F9), width: 1.2),
+                ),
               ),
               child: Row(
                 children: [
                   Expanded(
                     child: SizedBox(
                       height: 48,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFEEF2FF),
-                          foregroundColor: const Color(0xFF1E3A8A),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: const Color(0xFFF8FAFC),
+                          foregroundColor: const Color(0xFF475569),
+                          side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.2),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         ),
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('← Kembali', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          Navigator.pop(context);
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.arrow_back_rounded, size: 16, color: Color(0xFF64748B)),
+                            SizedBox(width: 4),
+                            Text('Kembali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -223,15 +243,23 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFE88B00),
-                          foregroundColor: Colors.black,
+                          foregroundColor: const Color(0xFF0F172A),
                           elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         ),
-                        onPressed: _isSubmitting ? null : _handleSubmitBast,
-                        icon: const Icon(Icons.cloud_upload_outlined, size: 16, color: Colors.black),
+                        onPressed: _isSubmitting ? null : () {
+                          HapticFeedback.lightImpact();
+                          _handleSubmitBast();
+                        },
+                        icon: const Icon(Icons.cloud_upload_rounded, size: 18, color: Color(0xFF0F172A)),
                         label: const Text(
                           'Kirim Penyerahan',
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.black),
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF0F172A),
+                            letterSpacing: -0.2,
+                          ),
                         ),
                       ),
                     ),

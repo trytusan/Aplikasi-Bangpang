@@ -24,36 +24,56 @@ class BeneficiaryCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 3)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header Judul & Status Kemendagri
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Row(
                 children: [
-                  Icon(Icons.badge_outlined, size: 20, color: Color(0xFF1E3A8A)),
+                  Icon(Icons.badge_rounded, size: 20, color: Color(0xFF1E3A8A)),
                   SizedBox(width: 8),
                   Text(
-                    'Data Penerima\nManfaat',
-                    style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.15),
+                    'Data Penerima Manfaat',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF0F172A),
+                    ),
                   ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(20)),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3.5),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFECFDF5),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFFA7F3D0)),
+                ),
                 child: const Row(
                   children: [
-                    Icon(Icons.check_circle, size: 13, color: Color(0xFF059669)),
+                    Icon(Icons.check_circle_rounded, size: 12, color: Color(0xFF059669)),
                     SizedBox(width: 4),
-                    Text('Kemendagri\nValid', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: Color(0xFF065F46), height: 1.1)),
+                    Text(
+                      'Kemendagri Valid',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF047857),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -68,7 +88,8 @@ class BeneficiaryCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
                   image: const DecorationImage(
                     image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
                     fit: BoxFit.cover,
@@ -76,14 +97,35 @@ class BeneficiaryCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('LUH SUMANTRI ARYANI', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-                    SizedBox(height: 2),
-                    Text('KPM Pengganti Sah', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFFD97706))),
-                    Text('NIK: 5108065209840002', style: TextStyle(fontSize: 11, fontFamily: 'monospace', color: Color(0xFF475569))),
+                    const Text(
+                      'LUH SUMANTRI ARYANI',
+                      style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFEF3C7),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Text(
+                            'KPM Pengganti Sah',
+                            style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFFB45309)),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Text(
+                          'NIK: 5108065209840002',
+                          style: TextStyle(fontSize: 11, fontFamily: 'monospace', color: Color(0xFF475569), fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -91,12 +133,17 @@ class BeneficiaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
+          // Grid KK & KPM Sebelumnya
           Row(
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.all(11),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -110,15 +157,19 @@ class BeneficiaryCard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.all(11),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF1F2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFFECDD3)),
+                  ),
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('KPM Sebelumnya (Diganti)', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+                      Text('KPM Sebelumnya (Diganti)', style: TextStyle(fontSize: 9.5, color: Color(0xFF9F1239), fontWeight: FontWeight.w600)),
                       SizedBox(height: 3),
                       Text('I GEDE SUARDIKA', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
-                      Text('(Meninggal Dunia)', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                      Text('(Meninggal Dunia)', style: TextStyle(fontSize: 9.5, color: Color(0xFFBE123C))),
                     ],
                   ),
                 ),
@@ -140,8 +191,11 @@ class BeneficiaryCard extends StatelessWidget {
                 Container(
                   width: 40,
                   height: 40,
-                  decoration: BoxDecoration(color: const Color(0xFFE88B00), borderRadius: BorderRadius.circular(10)),
-                  child: const Icon(Icons.inventory_2, color: Colors.white, size: 22),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE88B00),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.inventory_2_rounded, color: Colors.white, size: 22),
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
@@ -149,31 +203,52 @@ class BeneficiaryCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('ALOKASI BANTUAN PANGAN', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF92400E))),
-                      Text('Beras Medium CPP 10 Kg', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                      SizedBox(height: 1),
+                      Text('Beras Medium CPP 10 Kg', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
                     ],
                   ),
                 ),
-                const Text(
-                  '1 Karung',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF1E3A8A)),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E3A8A),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    '1 Karung',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.white),
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 12),
 
-          // Alamat Domisili
+          // Alamat Domisili KPM
           Container(
             padding: const EdgeInsets.all(11),
-            decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
-            child: const Column(
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Alamat Domisili KPM', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w700)),
-                SizedBox(height: 3),
-                Text(
-                  'Banjar Dinas Bale Agung, RT 02 / RW 01, Banjar Bali, Buleleng, Kabupaten Buleleng, Bali',
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F172A), height: 1.35),
+                Icon(Icons.location_on_rounded, size: 16, color: Color(0xFFE88B00)),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Alamat Domisili KPM', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w700)),
+                      SizedBox(height: 2),
+                      Text(
+                        'Banjar Dinas Bale Agung, RT 02 / RW 01, Banjar Bali, Buleleng, Kabupaten Buleleng, Bali',
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F172A), height: 1.35),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -181,7 +256,14 @@ class BeneficiaryCard extends StatelessWidget {
           const SizedBox(height: 14),
 
           // 3 Lampiran Bukti Penyerahan
-          const Text('LAMPIRAN BUKTI PENYERAHAN', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF64748B))),
+          const Row(
+            children: [
+              Text(
+                'LAMPIRAN BUKTI PENYERAHAN',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF64748B), letterSpacing: 0.3),
+              ),
+            ],
+          ),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -193,9 +275,10 @@ class BeneficiaryCard extends StatelessWidget {
                     onTapRicePhoto?.call();
                   },
                   child: Container(
-                    height: 74,
+                    height: 80,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
                       image: const DecorationImage(
                         image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
                         fit: BoxFit.cover,
@@ -204,8 +287,11 @@ class BeneficiaryCard extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       width: double.infinity,
-                      color: Colors.black.withValues(alpha: 0.75),
-                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.75),
+                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(11)),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: const Text('Fisik Beras', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.w800)),
                     ),
                   ),
@@ -221,9 +307,10 @@ class BeneficiaryCard extends StatelessWidget {
                     onTapSptjmPhoto?.call();
                   },
                   child: Container(
-                    height: 74,
+                    height: 80,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
                       image: const DecorationImage(
                         image: NetworkImage('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=200'),
                         fit: BoxFit.cover,
@@ -232,8 +319,11 @@ class BeneficiaryCard extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       width: double.infinity,
-                      color: Colors.black.withValues(alpha: 0.75),
-                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.75),
+                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(11)),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: const Text('Surat SPTJM', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.w800)),
                     ),
                   ),
@@ -241,52 +331,56 @@ class BeneficiaryCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
 
-              // Lampiran 3: Tanda Tangan Interaktif
+              // Lampiran 3: Tanda Tangan Digital
               Expanded(
-                child: InkWell(
+                child: GestureDetector(
                   onTap: () {
-                    HapticFeedback.lightImpact();
+                    HapticFeedback.selectionClick();
                     onTapSignature?.call();
                   },
-                  borderRadius: BorderRadius.circular(10),
                   child: Container(
-                    height: 74,
-                    padding: const EdgeInsets.all(4),
+                    height: 80,
                     decoration: BoxDecoration(
                       color: hasSignature ? const Color(0xFFF0FDF4) : const Color(0xFFEFF6FF),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: hasSignature ? const Color(0xFF86EFAC) : const Color(0xFFBFDBFE),
+                        width: 1.2,
                       ),
                     ),
                     child: hasSignature
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        ? Stack(
+                            alignment: Alignment.center,
                             children: [
-                              SizedBox(
-                                height: 38,
-                                width: double.infinity,
-                                child: CustomPaint(
-                                  painter: SignaturePainter(points: signaturePoints!),
-                                ),
+                              CustomPaint(
+                                size: const Size(60, 40),
+                                painter: SignaturePainter(points: signaturePoints!),
                               ),
-                              const SizedBox(height: 2),
-                              const Text(
-                                '✓ Tanda Tangan Sah',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF166534)),
+                              Positioned(
+                                bottom: 4,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF059669),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: const Text(
+                                    '✓ TTD Sah',
+                                    style: TextStyle(color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.w900),
+                                  ),
+                                ),
                               ),
                             ],
                           )
                         : const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.edit_note, color: Color(0xFF2563EB), size: 26),
-                              SizedBox(height: 2),
+                              Icon(Icons.draw_rounded, size: 20, color: Color(0xFF2563EB)),
+                              SizedBox(height: 4),
                               Text(
                                 'Tanda Tangan\n(Klik di Sini)',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A), height: 1.1),
+                                style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A), height: 1.2),
                               ),
                             ],
                           ),
