@@ -183,11 +183,19 @@ class _CameraViewfinderState extends State<CameraViewfinder> with SingleTickerPr
               decoration: BoxDecoration(
                 color: Colors.black.withValues(alpha: 0.75),
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white24),
               ),
-              child: const Text(
-                'Arahkan kamera ke QR Code pada Lembar BAST /\nUndangan PBP',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600, height: 1.25),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.center_focus_strong_rounded, size: 13, color: Color(0xFFF59E0B)),
+                  SizedBox(width: 6),
+                  Text(
+                    'Posisikan QR Code di dalam bingkai bidik',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white, fontSize: 10.5, fontWeight: FontWeight.w700),
+                  ),
+                ],
               ),
             ),
           ),
