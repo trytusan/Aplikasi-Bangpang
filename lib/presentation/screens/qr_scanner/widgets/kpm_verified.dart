@@ -150,18 +150,18 @@ class KpmVerified extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: const Color(0xFFA7F3D0)),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
                         Container(
                           width: 6,
                           height: 6,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Color(0xFF10B981),
                             shape: BoxShape.circle,
                           ),
                         ),
-                        SizedBox(width: 5),
-                        Text(
+                        const SizedBox(width: 5),
+                        const Text(
                           'Siap Diserahkan',
                           style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF047857)),
                         ),
