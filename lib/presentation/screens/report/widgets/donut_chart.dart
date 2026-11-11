@@ -70,47 +70,48 @@ class DonutChart extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Diagram Donat
-          const Center(
-            child: SizedBox(
-              width: 140,
-              height: 140,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    width: 130,
-                    height: 130,
-                    child: CircularProgressIndicator(
-                      value: 0.896,
-                      strokeWidth: 14,
-                      backgroundColor: Color(0xFFF43F5E),
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF059669)),
-                    ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '48',
-                        style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'KPM',
-                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF64748B)),
-                      ),
-                      Text(
-                        'Total Kuota Desa',
-                        style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+          // Horizontal Bar Breakdown Chart (Menggantikan diagram lingkaran)
+          _buildCategoryBarItem(
+            title: 'Diserahkan Langsung',
+            subtitle: 'PBP Normal',
+            count: 41,
+            unit: 'KPM',
+            percentage: 85,
+            barColor: const Color(0xFF059669),
           ),
-          const SizedBox(height: 14),
+          _buildCategoryBarItem(
+            title: 'Penerima Pengganti',
+            subtitle: 'SPTJM Sah',
+            count: 2,
+            unit: 'KPM',
+            percentage: 4,
+            barColor: const Color(0xFF4F46E5),
+          ),
+          _buildCategoryBarItem(
+            title: 'Keluarga Sakit',
+            subtitle: 'Antar ke Rumah',
+            count: 1,
+            unit: 'KPM',
+            percentage: 2,
+            barColor: const Color(0xFFF59E0B),
+          ),
+          _buildCategoryBarItem(
+            title: 'Alamat Tdk Ditemukan',
+            subtitle: 'Verifikasi Desa',
+            count: 1,
+            unit: 'KPM',
+            percentage: 2,
+            barColor: const Color(0xFFE11D48),
+          ),
+          _buildCategoryBarItem(
+            title: 'Belum Hadir / Antre',
+            subtitle: 'Meja Penyaluran',
+            count: 3,
+            unit: 'KPM',
+            percentage: 7,
+            barColor: const Color(0xFF0284C7),
+          ),
+          const SizedBox(height: 6),
 
           // Total Kg Disalurkan Pill
           Container(
@@ -243,6 +244,107 @@ class DonutChart extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryBarItem({
+    required String title,
+    required String subtitle,
+    required int count,
+    required String unit,
+    required double percentage,
+    required Color barColor,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF0F172A),
+                        letterSpacing: -0.1,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Flexible(
+                      child: Text(
+                        '($subtitle)',
+                        style: const TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF64748B),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '$count $unit',
+                    style: const TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF0F172A),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  SizedBox(
+                    width: 32,
+                    child: Text(
+                      '${percentage.toStringAsFixed(0)}%',
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF64748B),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          // Progress Bar Track & Fill
+          Container(
+            height: 6.5,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F5F9),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: percentage > 0
+                ? FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: (percentage / 100).clamp(0.0, 1.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: barColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ),
         ],
       ),
