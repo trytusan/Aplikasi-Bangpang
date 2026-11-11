@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../qr_scanner/qr_scanner_screen.dart';
 import '../replacement/replacement_screen.dart';
@@ -33,6 +34,23 @@ class _DeliveryTypeScreenState extends State<DeliveryTypeScreen> {
     }
   }
 
+  Color get _selectedAccentColor {
+    switch (_selectedOption) {
+      case 'NORMAL':
+        return const Color(0xFFE88B00);
+      case '1KK':
+        return const Color(0xFF2563EB);
+      case 'BEDAKK':
+        return const Color(0xFF7C3AED);
+      case 'PENGGANTI':
+        return const Color(0xFFE11D48);
+      case 'KOLEKTIF':
+        return const Color(0xFF059669);
+      default:
+        return const Color(0xFFE88B00);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,66 +64,108 @@ class _DeliveryTypeScreenState extends State<DeliveryTypeScreen> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Stepper Progres Langkah
                     const StepProgress(
                       currentStep: 1,
                       totalSteps: 4,
                       stageTitle: 'Tahap Identifikasi',
                     ),
-                    const SizedBox(height: 12),
-                    const DeliveryInfo(),
                     const SizedBox(height: 14),
 
-                    // 5 Pilihan Mode Penyerahan
+                    // Banner Instruksi Petugas
+                    const DeliveryInfo(),
+                    const SizedBox(height: 16),
+
+                    const Text(
+                      'Pilih Metode Serah Terima:',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF64748B),
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // 1. Normal
                     DeliveryOption(
                       id: 'NORMAL',
-                      title: 'Normal',
+                      title: 'Normal (PBP Langsung)',
                       badge: 'Paling Sering',
-                      icon: Icons.person_add_alt_1_outlined,
-                      description: 'PBP menerima bantuan secara langsung. Contoh: PBP hadir langsung dan menerima sendiri beras bantuan dengan membawa KTP asli.',
+                      badgeColor: const Color(0xFFFEF3C7),
+                      badgeTextColor: const Color(0xFFB45309),
+                      icon: Icons.how_to_reg_rounded,
+                      accentColor: const Color(0xFFE88B00),
+                      description: 'PBP hadir langsung dan menerima sendiri beras bantuan 10 Kg.',
+                      requirement: 'Syarat: KTP Asli PBP Penerima',
                       isSelected: _selectedOption == 'NORMAL',
                       onSelect: (val) => setState(() => _selectedOption = val),
                     ),
                     const SizedBox(height: 10),
 
+                    // 2. Perwakilan 1 KK
                     DeliveryOption(
                       id: '1KK',
                       title: 'Perwakilan (1 KK)',
-                      icon: Icons.people_outline,
-                      description: 'Diterima anggota keluarga dalam SATU KK dengan PBP. Contoh: pasangan (suami/istri) atau anak yang tercatat dalam KK yang sama.',
+                      badge: 'Keluarga Serumah',
+                      badgeColor: const Color(0xFFEFF6FF),
+                      badgeTextColor: const Color(0xFF1D4ED8),
+                      icon: Icons.family_restroom_rounded,
+                      accentColor: const Color(0xFF2563EB),
+                      description: 'Diterima oleh pasangan (suami/istri) atau anak yang terdaftar di KK yang sama.',
+                      requirement: 'Syarat: KTP Pengambil + KK Asli',
                       isSelected: _selectedOption == '1KK',
                       onSelect: (val) => setState(() => _selectedOption = val),
                     ),
                     const SizedBox(height: 10),
 
+                    // 3. Perwakilan Beda KK
                     DeliveryOption(
                       id: 'BEDAKK',
                       title: 'Perwakilan (Beda KK)',
-                      icon: Icons.badge_outlined,
-                      description: 'Diterima orang lain dari BEDA KK dengan PBP. Contoh: tetangga atau kerabat beda KK dengan melampirkan surat kuasa RT/Desa.',
+                      badge: 'Surat Kuasa',
+                      badgeColor: const Color(0xFFF3E8FF),
+                      badgeTextColor: const Color(0xFF7E22CE),
+                      icon: Icons.badge_rounded,
+                      accentColor: const Color(0xFF7C3AED),
+                      description: 'Diterima tetangga atau kerabat beda KK karena penerima berhalangan sementara.',
+                      requirement: 'Syarat: Surat Kuasa RT/Desa + KTP Pengambil',
                       isSelected: _selectedOption == 'BEDAKK',
                       onSelect: (val) => setState(() => _selectedOption = val),
                     ),
                     const SizedBox(height: 10),
 
+                    // 4. Pengganti SPTJM
                     DeliveryOption(
                       id: 'PENGGANTI',
-                      title: 'Pengganti',
-                      icon: Icons.swap_horiz,
-                      description: 'Penerima baru menggantikan penerima yang tidak lagi memenuhi kriteria. Contoh: penerima sebelumnya sudah mampu, pindah domisili, ASN/TNI/Polri, atau meninggal dunia.',
+                      title: 'Pengganti (SPTJM Desa)',
+                      badge: 'Khusus Kendala',
+                      badgeColor: const Color(0xFFFFF1F2),
+                      badgeTextColor: const Color(0xFFE11D48),
+                      icon: Icons.published_with_changes_rounded,
+                      accentColor: const Color(0xFFE11D48),
+                      description: 'Penggantian penerima yang telah meninggal, pindah domisili, atau mampu.',
+                      requirement: 'Syarat: Form SPTJM Resmi & Rekomendasi Desa',
                       isSelected: _selectedOption == 'PENGGANTI',
                       onSelect: (val) => setState(() => _selectedOption = val),
                     ),
                     const SizedBox(height: 10),
 
+                    // 5. Kolektif Daerah 3T
                     DeliveryOption(
                       id: 'KOLEKTIF',
-                      title: 'Kolektif',
-                      icon: Icons.local_shipping_outlined,
-                      description: 'Bantuan disalurkan bersama melalui kepala dusun/perwakilan di daerah pelosok/3T yang sudah disetujui resmi oleh BULOG.',
+                      title: 'Kolektif Daerah 3T',
+                      badge: 'Pelosok / Terpencil',
+                      badgeColor: const Color(0xFFECFDF5),
+                      badgeTextColor: const Color(0xFF047857),
+                      icon: Icons.local_shipping_rounded,
+                      accentColor: const Color(0xFF059669),
+                      description: 'Penyaluran terpusat melalui kepala dusun untuk wilayah yang sulit dijangkau.',
+                      requirement: 'Syarat: Berita Acara Kolektif BULOG',
                       isSelected: _selectedOption == 'KOLEKTIF',
                       onSelect: (val) => setState(() => _selectedOption = val),
                     ),
@@ -116,10 +176,20 @@ class _DeliveryTypeScreenState extends State<DeliveryTypeScreen> {
 
             // Bottom Sticky Bar: Jenis Terpilih & Tombol Lanjut
             Container(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-              decoration: const BoxDecoration(
+              padding: const EdgeInsets.fromLTRB(18, 14, 18, 16),
+              decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 20,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
+                border: const Border(
+                  top: BorderSide(color: Color(0xFFF1F5F9), width: 1.2),
+                ),
               ),
               child: Column(
                 children: [
@@ -128,49 +198,60 @@ class _DeliveryTypeScreenState extends State<DeliveryTypeScreen> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.touch_app_outlined, size: 16, color: Color(0xFFB45309)),
+                          Icon(Icons.touch_app_rounded, size: 16, color: _selectedAccentColor),
                           const SizedBox(width: 6),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Jenis Terpilih: ',
-                              style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
-                              children: [
-                                TextSpan(
-                                  text: _selectedLabel,
-                                  style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
-                                ),
-                              ],
+                          Text(
+                            'Alur: ',
+                            style: const TextStyle(
+                              fontSize: 11.5,
+                              color: Color(0xFF64748B),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            _selectedLabel,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF0F172A),
                             ),
                           ),
                         ],
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE8FDF3),
-                          borderRadius: BorderRadius.circular(6),
+                          color: const Color(0xFFECFDF5),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: const Color(0xFFA7F3D0)),
                         ),
                         child: const Text(
                           'Siap',
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF059669)),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF047857),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
                     height: 48,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFE88B00),
-                        foregroundColor: Colors.black,
+                        foregroundColor: const Color(0xFF0F172A),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(14),
                         ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                       ),
                       onPressed: () {
+                        HapticFeedback.lightImpact();
                         if (_selectedOption == 'PENGGANTI') {
                           Navigator.push(
                             context,
@@ -187,11 +268,18 @@ class _DeliveryTypeScreenState extends State<DeliveryTypeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            _selectedOption == 'PENGGANTI' ? 'Lanjut ke Form SPTJM' : 'Lanjut ke Scan PBP',
-                            style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w800, color: Colors.black),
+                            _selectedOption == 'PENGGANTI'
+                                ? 'Lanjut ke Form SPTJM'
+                                : 'Lanjut ke Scan PBP',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF0F172A),
+                              letterSpacing: -0.2,
+                            ),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward, size: 18, color: Colors.black),
+                          const Icon(Icons.arrow_forward_rounded, size: 18, color: Color(0xFF0F172A)),
                         ],
                       ),
                     ),
