@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../widgets/common/app_confirmation_dialog.dart';
+import '../../../widgets/common/center_alert.dart';
 import '../../delivery_type/delivery_type_screen.dart';
 import '../../replacement/replacement_screen.dart';
 
@@ -68,56 +70,47 @@ class KpmPendingList extends StatelessWidget {
     );
   }
 
-  void _showDeliveryScheduleDialog(BuildContext context, String name) {
+  void _showDeliveryScheduleDialog(BuildContext context, String name) async {
     HapticFeedback.lightImpact();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Jadwal Antar ke Rumah: $name'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+    final confirmed = await AppConfirmationDialog.show(
+      context,
+      icon: Icons.local_shipping_rounded,
+      iconColor: const Color(0xFF1E3A8A),
+      iconBackgroundColor: const Color(0xFFDBEAFE),
+      title: 'Jadwal Antar ke Rumah',
+      message: 'Distribusi langsung ke rumah KPM $name (kategori lansia/sakit) melalui Satgas Desa Banjar Bali.',
+      confirmText: 'Tetapkan Jadwal',
+      confirmColor: const Color(0xFF1E3A8A),
+      confirmTextColor: Colors.white,
+      cancelText: 'Tutup',
+      customContent: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: const Row(
           children: [
-            const Text(
-              'Distribusi khusus untuk KPM sakit/lansia melalui Satgas Desa Banjar Bali.',
-              style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(10)),
-              child: const Row(
-                children: [
-                  Icon(Icons.calendar_today, size: 16, color: Color(0xFF1E3A8A)),
-                  SizedBox(width: 8),
-                  Text('Hari Ini, 14:00 WITA (Sesi Sore)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
-                ],
-              ),
+            Icon(Icons.calendar_today_rounded, size: 16, color: Color(0xFF1E3A8A)),
+            SizedBox(width: 8),
+            Text(
+              'Hari Ini, 14:00 WITA (Sesi Sore)',
+              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
             ),
           ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Tutup')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1E3A8A),
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('✓ Jadwal pengantaran untuk $name berhasil dikonfirmasi ke Satgas!'),
-                  backgroundColor: const Color(0xFF059669),
-                ),
-              );
-            },
-            child: const Text('Tetapkan Jadwal Antar'),
-          ),
-        ],
       ),
     );
+
+    if (confirmed == true && context.mounted) {
+      CenterAlert.showSuccess(
+        context,
+        title: 'Jadwal Ditetapkan',
+        message: 'Pengantaran untuk $name berhasil dikonfirmasi ke Satgas.',
+      );
+    }
   }
 
   void _callQueue(BuildContext context, String number, String name) {

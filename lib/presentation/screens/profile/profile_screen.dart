@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/app_confirmation_dialog.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
 import '../../widgets/common/center_alert.dart';
 import '../login/login_screen.dart';
@@ -71,185 +72,182 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showTechSupportDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
-          children: [
-            Icon(Icons.support_agent, color: Color(0xFF1E3A8A), size: 22),
-            SizedBox(width: 8),
-            Text('Layanan Teknis & Bantuan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
-          ],
+    AppConfirmationDialog.show(
+      context,
+      icon: Icons.support_agent_rounded,
+      iconColor: const Color(0xFF1E3A8A),
+      iconBackgroundColor: const Color(0xFFDBEAFE),
+      title: 'Layanan Teknis & Bantuan',
+      message: 'Pusat Bantuan Satgas Pangan BULOG Wilayah Bali siap melayani kendala operasional lapangan.',
+      confirmText: 'Tutup',
+      cancelText: null,
+      customContent: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Pusat Bantuan Satgas Pangan BULOG Wilayah Bali:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
-            SizedBox(height: 8),
-            Text('• Call Center: 1500-BULOG (Bebas Pulsa)\n• Hotline Korlap Buleleng: 0812-3456-7890\n• Helpdesk IT Bapanas: it-support@bapanas.go.id', style: TextStyle(fontSize: 10.5, color: Color(0xFF475569), height: 1.4)),
+            Text('• Call Center: 1500-BULOG (Bebas Pulsa)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
+            SizedBox(height: 4),
+            Text('• Hotline Buleleng: 0812-3456-7890', style: TextStyle(fontSize: 11, color: Color(0xFF475569))),
+            SizedBox(height: 4),
+            Text('• Helpdesk: it-support@bapanas.go.id', style: TextStyle(fontSize: 11, color: Color(0xFF475569))),
           ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Tutup')),
-        ],
       ),
     );
   }
 
   void _showJuknisDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+    AppConfirmationDialog.show(
+      context,
+      icon: Icons.menu_book_rounded,
+      iconColor: const Color(0xFF4F46E5),
+      iconBackgroundColor: const Color(0xFFEEF2FF),
+      title: 'Juknis Penyerahan CPP 2025',
+      message: 'Petunjuk Teknis Penyaluran Cadangan Beras Pemerintah untuk Keluarga Penerima Manfaat.',
+      confirmText: 'Unduh PDF',
+      confirmColor: const Color(0xFF4F46E5),
+      confirmTextColor: Colors.white,
+      cancelText: 'Tutup',
+      customContent: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.menu_book, color: Color(0xFF4F46E5), size: 20),
-            SizedBox(width: 8),
-            Text('Juknis Penyerahan CPP 2025', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
+            Text('1. Setiap KPM berhak menerima 10 Kg Beras Medium.', style: TextStyle(fontSize: 11, color: Color(0xFF334155))),
+            SizedBox(height: 4),
+            Text('2. Wajib verifikasi fisik KTP/KK & geotagging koordinat.', style: TextStyle(fontSize: 11, color: Color(0xFF334155))),
+            SizedBox(height: 4),
+            Text('3. Jika berhalangan tetap/meninggal, wajib sertakan SPTJM.', style: TextStyle(fontSize: 11, color: Color(0xFF334155))),
           ],
         ),
-        content: const Text(
-          'Petunjuk Teknis Penyaluran Cadangan Beras Pemerintah:\n1. Setiap KPM berhak menerima 10 Kg Beras Medium CPP.\n2. Wajib verifikasi fisik KTP/KK dan geotagging koordinat di titik bagi.\n3. Apabila KPM berhalangan tetap/meninggal, wajib dilengkapi Surat Pertanggungjawaban Mutlak (SPTJM) Desa.',
-          style: TextStyle(fontSize: 11, color: Color(0xFF475569), height: 1.35),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Tutup')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5), foregroundColor: Colors.white),
-            onPressed: () {
-              Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Mengunduh dokumen PDF Juknis Resmi...')),
-              );
-            },
-            child: const Text('Unduh PDF Lengkap'),
-          ),
-        ],
       ),
-    );
+    ).then((proceed) {
+      if (proceed == true && mounted) {
+        CenterAlert.show(
+          context,
+          title: 'Mengunduh PDF',
+          message: 'Berkas Juknis CPP 2025 tersimpan di folder Dokumen.',
+          type: CenterAlertType.info,
+        );
+      }
+    });
   }
 
   void _showRegulationsDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Syarat & Regulasi Distribusi'),
-        content: const Text(
-          'Keputusan Kepala Badan Pangan Nasional (Bapanas) Republik Indonesia Nomor 01/2025 tentang Penyaluran Bantuan Pangan Beras untuk Keluarga Penerima Manfaat.',
-          style: TextStyle(fontSize: 11, color: Color(0xFF475569), height: 1.3),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Tutup')),
-        ],
-      ),
+    AppConfirmationDialog.showInfo(
+      context,
+      icon: Icons.gavel_rounded,
+      title: 'Syarat & Regulasi Distribusi',
+      message: 'Keputusan Kepala Badan Pangan Nasional (Bapanas) Republik Indonesia Nomor 01/2025 tentang Penyaluran Bantuan Pangan Beras untuk Keluarga Penerima Manfaat.',
+      confirmText: 'Tutup',
     );
   }
 
   void _showChangePinDialog() {
     final pinController = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Ubah PIN Otorisasi BAST'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Masukkan 6-digit PIN keamanan baru untuk pengesahan BAST:', style: TextStyle(fontSize: 11, color: Color(0xFF64748B))),
-            const SizedBox(height: 12),
-            TextField(
-              controller: pinController,
-              keyboardType: TextInputType.number,
-              obscureText: true,
-              maxLength: 6,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: 4),
-              decoration: InputDecoration(
-                counterText: '',
-                hintText: '••••••',
-                filled: true,
-                fillColor: const Color(0xFFF8FAFC),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              ),
-            ),
-          ],
+    AppConfirmationDialog.show(
+      context,
+      icon: Icons.pin_rounded,
+      iconColor: const Color(0xFFE88B00),
+      iconBackgroundColor: const Color(0xFFFEF3C7),
+      title: 'Ubah PIN Otorisasi BAST',
+      message: 'Masukkan 6 digit angka PIN baru untuk pengesahan berita acara serah terima di lapangan:',
+      confirmText: 'Simpan PIN',
+      cancelText: 'Batal',
+      confirmColor: const Color(0xFFE88B00),
+      confirmTextColor: const Color(0xFF0F172A),
+      customContent: TextField(
+        controller: pinController,
+        keyboardType: TextInputType.number,
+        obscureText: true,
+        maxLength: 6,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: 6),
+        decoration: InputDecoration(
+          counterText: '',
+          hintText: '••••••',
+          hintStyle: const TextStyle(color: Color(0xFF94A3B8), letterSpacing: 6),
+          filled: true,
+          fillColor: const Color(0xFFF8FAFC),
+          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFCBD5E1))),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE88B00), width: 1.8)),
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE88B00), foregroundColor: Colors.black),
-            onPressed: () {
-              Navigator.pop(ctx);
-              CenterAlert.showSuccess(
-                context,
-                title: 'PIN Berhasil Disimpan',
-                message: 'PIN otorisasi BAST baru aktif untuk transaksi.',
-              );
-            },
-            child: const Text('Simpan PIN'),
-          ),
-        ],
       ),
-    );
+    ).then((confirmed) {
+      if (confirmed == true && mounted) {
+        CenterAlert.showSuccess(
+          context,
+          title: 'PIN Berhasil Disimpan',
+          message: 'PIN otorisasi BAST baru aktif untuk transaksi.',
+        );
+      }
+    });
   }
 
   void _showDeviceRegisteredDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Perangkat Lapangan Terdaftar'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
+    AppConfirmationDialog.show(
+      context,
+      icon: Icons.verified_user_rounded,
+      iconColor: const Color(0xFF059669),
+      iconBackgroundColor: const Color(0xFFD1FAE5),
+      title: 'Perangkat Terdaftar',
+      message: 'Perangkat ini telah terdaftar dan terotorisasi resmi dalam sistem MDM Bulog.',
+      confirmText: 'Tutup',
+      cancelText: null,
+      customContent: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('• Model: Samsung Tab Active4 Pro', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+            Text('• Model: Samsung Tab Active4 Pro', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
+            SizedBox(height: 3),
             Text('• IMEI: 358920192847192 (MDM Enrolled)', style: TextStyle(fontSize: 10.5, fontFamily: 'monospace', color: Color(0xFF64748B))),
-            Text('• Status Enkripsi: Knox Enterprise Security Valid', style: TextStyle(fontSize: 10.5, color: Color(0xFF059669), fontWeight: FontWeight.w700)),
-            Text('• Petugas Otorisasi: Putu Yogik (NIP. 198507232010121002)', style: TextStyle(fontSize: 10.5, color: Color(0xFF475569))),
+            SizedBox(height: 3),
+            Text('• Enkripsi: Knox Enterprise Valid', style: TextStyle(fontSize: 10.5, color: Color(0xFF059669), fontWeight: FontWeight.w700)),
+            SizedBox(height: 3),
+            Text('• Petugas: Putu Yogik (NIP. 198507232010121002)', style: TextStyle(fontSize: 10.5, color: Color(0xFF475569))),
           ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Tutup')),
-        ],
       ),
     );
   }
 
-  void _handleLogout() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Keluar dari Sistem Lapangan?'),
-        content: const Text(
-          'Pastikan seluruh data penyerahan BAST telah disinkronkan ke server pusat BULOG sebelum keluar.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFE11D48),
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(ctx);
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-                (route) => false,
-              );
-            },
-            child: const Text('Ya, Keluar'),
-          ),
-        ],
-      ),
+  void _handleLogout() async {
+    final confirmed = await AppConfirmationDialog.showDanger(
+      context,
+      title: 'Keluar dari Sistem Lapangan?',
+      message: 'Pastikan seluruh data penyerahan BAST telah disinkronkan ke server pusat BULOG sebelum keluar.',
+      confirmText: 'Ya, Keluar',
+      cancelText: 'Batal',
     );
+
+    if (confirmed == true && mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (route) => false,
+      );
+    }
   }
 
   @override

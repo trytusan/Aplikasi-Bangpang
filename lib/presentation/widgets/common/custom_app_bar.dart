@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'app_confirmation_dialog.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -17,47 +18,35 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   void _showOfficerProfile(BuildContext context) {
     HapticFeedback.lightImpact();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        title: const Row(
-          children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundImage: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Petugas Lapangan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
-                  Text('Satgas BAPANAS / BULOG', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
-                ],
-              ),
-            ),
-          ],
+    AppConfirmationDialog.show(
+      context,
+      icon: Icons.badge_rounded,
+      iconColor: const Color(0xFF1E3A8A),
+      iconBackgroundColor: const Color(0xFFDBEAFE),
+      title: 'Putu Yogik',
+      message: 'Petugas Lapangan Resmi Penyaluran Bantuan Pangan Beras CPP.',
+      confirmText: 'Tutup',
+      cancelText: null,
+      customContent: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('• Nama: Putu Yogik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+            Text('• Satuan: Satgas BAPANAS / BULOG', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
             SizedBox(height: 3),
-            Text('• NIP: 198507232010121002', style: TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+            Text('• NIP: 198507232010121002', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
             SizedBox(height: 3),
-            Text('• Penugasan: Desa Banjar Bali, Kab. Buleleng', style: TextStyle(fontSize: 11, color: Color(0xFF1E3A8A), fontWeight: FontWeight.w700)),
+            Text('• Wilayah: Desa Banjar Bali, Kab. Buleleng', style: TextStyle(fontSize: 11, color: Color(0xFF1E3A8A), fontWeight: FontWeight.w700)),
             SizedBox(height: 3),
-            Text('• Status: Aktif Bertugas (Online)', style: TextStyle(fontSize: 11, color: Color(0xFF059669), fontWeight: FontWeight.w700)),
+            Text('• Status: Terverifikasi & Aktif (Online)', style: TextStyle(fontSize: 10.5, color: Color(0xFF059669), fontWeight: FontWeight.w700)),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Tutup', style: TextStyle(fontWeight: FontWeight.w800)),
-          ),
-        ],
       ),
     );
   }

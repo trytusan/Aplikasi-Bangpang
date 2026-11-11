@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/app_confirmation_dialog.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import 'widgets/bast_success_dialog.dart';
@@ -75,36 +76,30 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
   Future<void> _handleSubmitBast() async {
     // Jika tanda tangan belum ada, ingatkan terlebih dahulu
     if (_signaturePoints == null || _signaturePoints!.isEmpty) {
-      final proceed = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Tanda Tangan Belum Diisi'),
-          content: const Text(
-            'Apakah Anda ingin membubuhkan tanda tangan penerima terlebih dahulu agar BAST sah secara hukum?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx, true); // lewati jika dipaksa
-              },
-              child: const Text('Kirim Tanpa TTD'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE88B00),
-                foregroundColor: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.pop(ctx, false);
-                _openSignaturePad();
-              },
-              child: const Text('Tanda Tangan Sekarang'),
-            ),
-          ],
-        ),
+      final signFirst = await AppConfirmationDialog.show(
+        context,
+        icon: Icons.draw_rounded,
+        iconColor: const Color(0xFFD97706),
+        iconBackgroundColor: const Color(0xFFFEF3C7),
+        title: 'Tanda Tangan Belum Diisi',
+        message: 'Apakah Anda ingin membubuhkan tanda tangan penerima terlebih dahulu agar BAST sah secara hukum?',
+        confirmText: 'Tanda Tangan Sekarang',
+        confirmColor: const Color(0xFFE88B00),
+        confirmTextColor: const Color(0xFF0F172A),
+        cancelText: 'Kirim Tanpa TTD',
+        stackedButtons: true,
       );
 
-      if (proceed != true) return;
+      if (signFirst == null) {
+        // Pengguna menutup / membatalkan dialog
+        return;
+      }
+      if (signFirst == true) {
+        // Pengguna memilih untuk tanda tangan terlebih dahulu
+        _openSignaturePad();
+        return;
+      }
+      // Jika signFirst == false, berarti pengguna memilih "Kirim Tanpa TTD", lanjutkan
     }
 
     // Tampilkan Loading Sinkronisasi BAST

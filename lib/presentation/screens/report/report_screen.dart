@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/app_confirmation_dialog.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import 'widgets/bast_download_card.dart';
@@ -152,39 +153,27 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  void _sendBroadcastReminder() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Kirim Pengingat ke 5 KPM?'),
-        content: const Text(
-          'Sistem akan mengirimkan pesan notifikasi WhatsApp/SMS otomatis kepada 5 KPM yang belum mengambil beras bantuan di Balai Desa Banjar Bali.',
-          style: TextStyle(fontSize: 12, height: 1.3),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFE88B00),
-              foregroundColor: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.pop(ctx);
-              CenterAlert.showSuccess(
-                context,
-                title: 'Pengingat Terkirim',
-                message: 'Pesan notifikasi berhasil disebarkan ke 5 warga KPM.',
-              );
-            },
-            child: const Text('Kirim Sekarang'),
-          ),
-        ],
-      ),
+  void _sendBroadcastReminder() async {
+    final confirmed = await AppConfirmationDialog.show(
+      context,
+      icon: Icons.notifications_active_rounded,
+      iconColor: const Color(0xFFE88B00),
+      iconBackgroundColor: const Color(0xFFFEF3C7),
+      title: 'Kirim Pengingat ke 5 KPM?',
+      message: 'Sistem akan mengirimkan pesan notifikasi WhatsApp/SMS otomatis kepada 5 KPM yang belum mengambil beras bantuan di Balai Desa Banjar Bali.',
+      confirmText: 'Kirim Sekarang',
+      confirmColor: const Color(0xFFE88B00),
+      confirmTextColor: const Color(0xFF0F172A),
+      cancelText: 'Batal',
     );
+
+    if (confirmed == true && mounted) {
+      CenterAlert.showSuccess(
+        context,
+        title: 'Pengingat Terkirim',
+        message: 'Pesan notifikasi berhasil disebarkan ke 5 warga KPM.',
+      );
+    }
   }
 
   @override
