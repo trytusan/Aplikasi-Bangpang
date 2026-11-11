@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../widgets/common/app_confirmation_dialog.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
@@ -214,26 +215,45 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             ),
 
-            // Bottom Sticky Action Button
+            // Bottom Sticky Action Dock
             Container(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-              decoration: const BoxDecoration(
+              padding: const EdgeInsets.fromLTRB(18, 12, 18, 16),
+              decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF0F172A).withValues(alpha: 0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
               ),
               child: SizedBox(
                 width: double.infinity,
-                height: 48,
+                height: 50,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE88B00),
-                    foregroundColor: Colors.black,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    foregroundColor: const Color(0xFF0F172A),
+                    elevation: 1.5,
+                    shadowColor: const Color(0xFFE88B00).withValues(alpha: 0.35),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                  onPressed: _sendBroadcastReminder,
-                  icon: const Icon(Icons.forward_to_inbox, size: 18, color: Colors.black),
-                  label: const Text('Kirim Pengingat KPM Sisa (5)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black)),
+                  onPressed: () {
+                    HapticFeedback.mediumImpact();
+                    _sendBroadcastReminder();
+                  },
+                  icon: const Icon(Icons.forward_to_inbox_rounded, size: 20, color: Color(0xFF0F172A)),
+                  label: const Text(
+                    'Kirim Pengingat KPM Sisa (5)',
+                    style: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF0F172A),
+                      letterSpacing: -0.2,
+                    ),
+                  ),
                 ),
               ),
             ),

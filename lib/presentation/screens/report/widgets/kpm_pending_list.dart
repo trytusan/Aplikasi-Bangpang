@@ -135,17 +135,58 @@ class KpmPendingList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Daftar Penerima Bantuan\n(PBP)',
-              style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), height: 1.15),
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Daftar Penerima Bantuan (PBP)',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF0F172A),
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Monitoring status penyerahan beras fisik per KPM',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF64748B),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-            Text('Update 10:24\nWITA', textAlign: TextAlign.right, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: Color(0xFF64748B))),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.access_time_rounded, size: 11, color: Color(0xFF64748B)),
+                  SizedBox(width: 4),
+                  Text(
+                    '10:24 WITA',
+                    style: TextStyle(
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF475569),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
 
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -154,17 +195,22 @@ class KpmPendingList extends StatelessWidget {
               _filterChip('Semua (48)', isSelected: activeFilter == 0, onTap: () => onFilterChanged(0)),
               const SizedBox(width: 8),
               _filterChip(
-                '• Sisa Belum Diambil (5)',
+                'Sisa Belum Diambil (5)',
                 isSelected: activeFilter == 1,
-                selectedBg: const Color(0xFF991B1B),
+                selectedBg: const Color(0xFFE11D48),
                 onTap: () => onFilterChanged(1),
               ),
               const SizedBox(width: 8),
-              _filterChip('Sudah Diterima (43)', isSelected: activeFilter == 2, onTap: () => onFilterChanged(2)),
+              _filterChip(
+                'Sudah Diterima (43)',
+                isSelected: activeFilter == 2,
+                selectedBg: const Color(0xFF059669),
+                onTap: () => onFilterChanged(2),
+              ),
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
 
         // Jika Tab "Sudah Diterima" (2)
         if (activeFilter == 2) ...[
@@ -180,16 +226,23 @@ class KpmPendingList extends StatelessWidget {
             badgeTextColor: const Color(0xFF065F46),
             actions: [
               Expanded(
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xFFEFF6FF), side: BorderSide.none, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () {
-                    HapticFeedback.selectionClick();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('BAST: BAST-2026095108062005 (10 kg Beras CBP Diserahkan)')),
-                    );
-                  },
-                  icon: const Icon(Icons.check_circle_outline, size: 14, color: Color(0xFF059669)),
-                  label: const Text('Bukti BAST Sah', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
+                child: SizedBox(
+                  height: 38,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEFF6FF),
+                      side: const BorderSide(color: Color(0xFFDBEAFE)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('BAST: BAST-2026095108062005 (10 kg Beras CBP Diserahkan)')),
+                      );
+                    },
+                    icon: const Icon(Icons.check_circle_rounded, size: 15, color: Color(0xFF059669)),
+                    label: const Text('Bukti BAST Sah', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
+                  ),
                 ),
               ),
             ],
@@ -207,16 +260,23 @@ class KpmPendingList extends StatelessWidget {
             badgeTextColor: const Color(0xFF065F46),
             actions: [
               Expanded(
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xFFEFF6FF), side: BorderSide.none, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () {
-                    HapticFeedback.selectionClick();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('BAST: BAST-2026095108062006 (Pengganti Sah)')),
-                    );
-                  },
-                  icon: const Icon(Icons.check_circle_outline, size: 14, color: Color(0xFF059669)),
-                  label: const Text('Bukti BAST Sah', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
+                child: SizedBox(
+                  height: 38,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEFF6FF),
+                      side: const BorderSide(color: Color(0xFFDBEAFE)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('BAST: BAST-2026095108062006 (Pengganti Sah)')),
+                      );
+                    },
+                    icon: const Icon(Icons.check_circle_rounded, size: 15, color: Color(0xFF059669)),
+                    label: const Text('Bukti BAST Sah', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
+                  ),
                 ),
               ),
             ],
@@ -238,23 +298,38 @@ class KpmPendingList extends StatelessWidget {
             badgeTextColor: const Color(0xFFE11D48),
             actions: [
               Expanded(
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xFFEFF6FF), side: BorderSide.none, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () => _showContactDialog(context, 'I KETUT WIDIA', '0812-3456-7890'),
-                  icon: const Icon(Icons.phone_outlined, size: 14, color: Color(0xFF1E3A8A)),
-                  label: const Text('Hubungi', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                child: SizedBox(
+                  height: 38,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEFF6FF),
+                      side: const BorderSide(color: Color(0xFFBFDBFE)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () => _showContactDialog(context, 'I KETUT WIDIA', '0812-3456-7890'),
+                    icon: const Icon(Icons.phone_outlined, size: 15, color: Color(0xFF1E3A8A)),
+                    label: const Text('Hubungi', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE88B00), foregroundColor: Colors.black, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()));
-                  },
-                  icon: const Icon(Icons.inventory_2_outlined, size: 14),
-                  label: const Text('Salurkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
+                child: SizedBox(
+                  height: 38,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFE88B00),
+                      foregroundColor: const Color(0xFF0F172A),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()));
+                    },
+                    icon: const Icon(Icons.inventory_2_outlined, size: 15),
+                    label: const Text('Salurkan', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900)),
+                  ),
                 ),
               ),
             ],
@@ -275,11 +350,19 @@ class KpmPendingList extends StatelessWidget {
             note: 'Perlu distribusi kolektif / diantar ke rumah melalui satgas desa.',
             actions: [
               Expanded(
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E3A8A), foregroundColor: Colors.white, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () => _showDeliveryScheduleDialog(context, 'NI MADE WARTI'),
-                  icon: const Icon(Icons.delivery_dining, size: 16),
-                  label: const Text('Jadwal Antar', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
+                child: SizedBox(
+                  height: 38,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1E3A8A),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () => _showDeliveryScheduleDialog(context, 'NI MADE WARTI'),
+                    icon: const Icon(Icons.delivery_dining, size: 17),
+                    label: const Text('Jadwal Antar', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800)),
+                  ),
                 ),
               ),
             ],
@@ -299,14 +382,21 @@ class KpmPendingList extends StatelessWidget {
             badgeTextColor: const Color(0xFFE11D48),
             actions: [
               Expanded(
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xFFEEF2FF), side: BorderSide.none, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ReplacementScreen()));
-                  },
-                  icon: const Icon(Icons.cancel_outlined, size: 14, color: Color(0xFFE11D48)),
-                  label: const Text('Ajukan Pengganti SPTJM', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFFE11D48))),
+                child: SizedBox(
+                  height: 38,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFEF2F2),
+                      side: const BorderSide(color: Color(0xFFFECACA)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const ReplacementScreen()));
+                    },
+                    icon: const Icon(Icons.cancel_outlined, size: 15, color: Color(0xFFE11D48)),
+                    label: const Text('Ajukan Pengganti SPTJM', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFFE11D48))),
+                  ),
                 ),
               ),
             ],
@@ -326,23 +416,38 @@ class KpmPendingList extends StatelessWidget {
             badgeTextColor: const Color(0xFFE11D48),
             actions: [
               Expanded(
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xFFEFF6FF), side: BorderSide.none, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () => _callQueue(context, '4', 'DESAK PUTU SUCI'),
-                  icon: const Icon(Icons.campaign_outlined, size: 16, color: Color(0xFF1E3A8A)),
-                  label: const Text('Panggil', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                child: SizedBox(
+                  height: 38,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEFF6FF),
+                      side: const BorderSide(color: Color(0xFFBFDBFE)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () => _callQueue(context, '4', 'DESAK PUTU SUCI'),
+                    icon: const Icon(Icons.campaign_outlined, size: 17, color: Color(0xFF1E3A8A)),
+                    label: const Text('Panggil', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE88B00), foregroundColor: Colors.black, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()));
-                  },
-                  icon: const Icon(Icons.inventory_2_outlined, size: 14),
-                  label: const Text('Salurkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
+                child: SizedBox(
+                  height: 38,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFE88B00),
+                      foregroundColor: const Color(0xFF0F172A),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()));
+                    },
+                    icon: const Icon(Icons.inventory_2_outlined, size: 15),
+                    label: const Text('Salurkan', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900)),
+                  ),
                 ),
               ),
             ],
@@ -362,23 +467,38 @@ class KpmPendingList extends StatelessWidget {
             badgeTextColor: const Color(0xFFE11D48),
             actions: [
               Expanded(
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(backgroundColor: const Color(0xFFEFF6FF), side: BorderSide.none, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () => _callQueue(context, '5', 'WAYAN GEDE SUKA'),
-                  icon: const Icon(Icons.campaign_outlined, size: 16, color: Color(0xFF1E3A8A)),
-                  label: const Text('Panggil', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                child: SizedBox(
+                  height: 38,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEFF6FF),
+                      side: const BorderSide(color: Color(0xFFBFDBFE)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () => _callQueue(context, '5', 'WAYAN GEDE SUKA'),
+                    icon: const Icon(Icons.campaign_outlined, size: 17, color: Color(0xFF1E3A8A)),
+                    label: const Text('Panggil', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE88B00), foregroundColor: Colors.black, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()));
-                  },
-                  icon: const Icon(Icons.inventory_2_outlined, size: 14),
-                  label: const Text('Salurkan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
+                child: SizedBox(
+                  height: 38,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFE88B00),
+                      foregroundColor: const Color(0xFF0F172A),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()));
+                    },
+                    icon: const Icon(Icons.inventory_2_outlined, size: 15),
+                    label: const Text('Salurkan', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900)),
+                  ),
                 ),
               ),
             ],
@@ -389,21 +509,46 @@ class KpmPendingList extends StatelessWidget {
   }
 
   Widget _filterChip(String label, {required bool isSelected, Color? selectedBg, required VoidCallback onTap}) {
-    return GestureDetector(
+    final effectiveColor = selectedBg ?? const Color(0xFF1E3A8A);
+    return InkWell(
       onTap: () {
         HapticFeedback.selectionClick();
         onTap();
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+      borderRadius: BorderRadius.circular(20),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
         decoration: BoxDecoration(
-          color: isSelected ? (selectedBg ?? const Color(0xFF1E3A8A)) : Colors.white,
+          color: isSelected ? effectiveColor : Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? Colors.transparent : const Color(0xFFCBD5E1)),
+          border: Border.all(
+            color: isSelected ? Colors.transparent : const Color(0xFFCBD5E1),
+            width: 1.2,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: effectiveColor.withValues(alpha: 0.28),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  )
+                ]
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  )
+                ],
         ),
         child: Text(
           label,
-          style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: isSelected ? Colors.white : const Color(0xFF64748B)),
+          style: TextStyle(
+            fontSize: 11.5,
+            fontWeight: FontWeight.w800,
+            color: isSelected ? Colors.white : const Color(0xFF64748B),
+          ),
         ),
       ),
     );
@@ -425,59 +570,123 @@ class KpmPendingList extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: Container(
           decoration: BoxDecoration(
             border: Border(left: BorderSide(color: accentColor, width: 4.5)),
           ),
-          padding: const EdgeInsets.all(13),
+          padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 12,
-                        backgroundColor: const Color(0xFFEFF6FF),
-                        child: Text(number, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900, color: Color(0xFF1E3A8A))),
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(nama, style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-                          Text('PBP: $pbp', style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontFamily: 'monospace')),
-                        ],
-                      ),
-                    ],
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: accentColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            number,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w900,
+                              color: accentColor,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                nama,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF0F172A),
+                                  letterSpacing: -0.2,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 1),
+                              Text(
+                                'PBP: $pbp',
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFF64748B),
+                                  fontFamily: 'monospace',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(color: badgeColor, borderRadius: BorderRadius.circular(6)),
-                    child: Text(badge, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: badgeTextColor)),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: badgeColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      badge,
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w800,
+                        color: badgeTextColor,
+                      ),
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
 
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFFF1F5F9)),
+                ),
                 child: Row(
                   children: [
-                    const Icon(Icons.location_on_outlined, size: 13, color: Color(0xFF64748B)),
-                    const SizedBox(width: 5),
-                    Expanded(child: Text(alamat, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600))),
+                    const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF64748B)),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        alamat,
+                        style: const TextStyle(
+                          fontSize: 10.5,
+                          color: Color(0xFF475569),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -485,20 +694,33 @@ class KpmPendingList extends StatelessWidget {
               if (note != null) ...[
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(color: const Color(0xFFFFFBEB), borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFFBEB),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: const Color(0xFFFDE68A)),
+                  ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.info_outline, size: 13, color: Color(0xFFD97706)),
+                      const Icon(Icons.info_outline, size: 14, color: Color(0xFFD97706)),
                       const SizedBox(width: 6),
-                      Expanded(child: Text(note, style: const TextStyle(fontSize: 10, color: Color(0xFF92400E), fontWeight: FontWeight.w600))),
+                      Expanded(
+                        child: Text(
+                          note,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Color(0xFF92400E),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               Row(children: actions),
             ],
           ),
