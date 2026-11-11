@@ -56,7 +56,7 @@ class ReasonPicker extends StatelessWidget {
               ),
               Switch(
                 value: useMusdesData,
-                activeColor: const Color(0xFFE88B00),
+                activeThumbColor: const Color(0xFFE88B00),
                 activeTrackColor: const Color(0xFFFDE68A),
                 onChanged: onToggleMusdes,
               ),

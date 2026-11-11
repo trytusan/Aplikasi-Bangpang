@@ -59,7 +59,7 @@ class OfflineSync extends StatelessWidget {
                   ),
                   Switch(
                     value: offlineMode,
-                    activeColor: const Color(0xFFE88B00),
+                    activeThumbColor: const Color(0xFFE88B00),
                     onChanged: onToggleOfflineMode,
                   ),
                 ],

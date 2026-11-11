@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
 import '../../widgets/common/center_alert.dart';
 import '../login/login_screen.dart';
 import 'widgets/otp_input.dart';

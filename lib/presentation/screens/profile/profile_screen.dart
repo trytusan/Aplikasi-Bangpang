@@ -27,19 +27,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         canPop: false,
         child: Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircularProgressIndicator(color: Color(0xFFE88B00), strokeWidth: 3),
-                const SizedBox(height: 18),
-                const Text(
+                CircularProgressIndicator(color: Color(0xFFE88B00), strokeWidth: 3),
+                SizedBox(height: 18),
+                Text(
                   'Menyinkronkan Berkas BAST...',
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                 ),
-                const SizedBox(height: 6),
-                const Text(
+                SizedBox(height: 6),
+                Text(
                   'Mengunggah 14 berkas foto KPM dan 3 tanda tangan digital ke server cloud BULOG...',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 10, color: Color(0xFF64748B), height: 1.3),

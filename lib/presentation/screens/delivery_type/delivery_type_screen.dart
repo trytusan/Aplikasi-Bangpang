@@ -200,9 +200,9 @@ class _DeliveryTypeScreenState extends State<DeliveryTypeScreen> {
                         children: [
                           Icon(Icons.touch_app_rounded, size: 16, color: _selectedAccentColor),
                           const SizedBox(width: 6),
-                          Text(
+                          const Text(
                             'Alur: ',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 11.5,
                               color: Color(0xFF64748B),
                               fontWeight: FontWeight.w600,

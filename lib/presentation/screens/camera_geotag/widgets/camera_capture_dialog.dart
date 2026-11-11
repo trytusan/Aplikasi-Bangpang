@@ -105,11 +105,11 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.white24, width: 1),
                       ),
-                      child: Column(
+                      child: const Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Divider(color: Colors.white24, height: 1),
-                          const Divider(color: Colors.white24, height: 1),
+                          Divider(color: Colors.white24, height: 1),
+                          Divider(color: Colors.white24, height: 1),
                         ],
                       ),
                     ),

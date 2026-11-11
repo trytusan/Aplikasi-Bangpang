@@ -93,11 +93,11 @@ class BastSuccessDialog extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Bantuan Diserahkan', style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
-                      const Text('10 Kg Beras CPP (1 Karung)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
+                      Text('Bantuan Diserahkan', style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+                      Text('10 Kg Beras CPP (1 Karung)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF059669))),
                     ],
                   ),
                   const SizedBox(height: 4),
