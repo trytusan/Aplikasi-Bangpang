@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/theme/app_theme.dart';
-import 'presentation/screens/login/login_screen.dart';
+import 'presentation/screens/welcome/welcome_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +33,7 @@ class BanpangMobileApp extends StatelessWidget {
       title: 'Banpang Mobile',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const LoginScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/common/app_confirmation_dialog.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
 import '../../widgets/common/center_alert.dart';
+import '../loading/loading_screen.dart';
 import '../login/login_screen.dart';
 import 'widgets/offline_sync.dart';
 import 'widgets/server_status.dart';
@@ -244,7 +245,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (confirmed == true && mounted) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        MaterialPageRoute(
+          builder: (_) => const LoadingScreen(
+            title: 'MEMPROSES KELUAR SISTEM...',
+            subtitle: 'Mengamankan sesi data lapangan & menutup sesi aktif...',
+            targetScreen: LoginScreen(),
+            clearStack: true,
+          ),
+        ),
         (route) => false,
       );
     }

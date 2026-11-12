@@ -3,7 +3,22 @@ import '../../../core/constants/app_colors.dart';
 import '../dashboard/dashboard_screen.dart';
 
 class LoadingScreen extends StatefulWidget {
-  const LoadingScreen({super.key});
+  final Widget? targetScreen;
+  final String title;
+  final String subtitle;
+  final Duration duration;
+  final bool clearStack;
+  final String logoPath;
+
+  const LoadingScreen({
+    super.key,
+    this.targetScreen,
+    this.title = 'MEMVALIDASI DATA LAPANGAN...',
+    this.subtitle = 'Menghubungkan ke Server BULOG Titik Bagi Desa Banjar Bali',
+    this.duration = const Duration(milliseconds: 1300),
+    this.clearStack = false,
+    this.logoPath = 'assets/images/logo.png',
+  });
 
   @override
   State<LoadingScreen> createState() => _LoadingScreenState();
@@ -17,13 +32,22 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat();
 
-    // Auto transisi langsung ke Dashboard setelah validasi login cepat
-    Future.delayed(const Duration(milliseconds: 1300), () {
+    // Auto transisi setelah durasi loading
+    Future.delayed(widget.duration, () {
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const DashboardScreen()),
-        );
+        final destination = widget.targetScreen ?? const DashboardScreen();
+        if (widget.clearStack) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => destination),
+            (route) => false,
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => destination),
+          );
+        }
       }
     });
   }
@@ -47,8 +71,8 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
               children: [
                 // Amber Glow
                 Container(
-                  width: 120,
-                  height: 120,
+                  width: 140,
+                  height: 140,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: AppColors.primaryAmber.withValues(alpha: 0.15),
@@ -58,44 +82,58 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                 RotationTransition(
                   turns: _controller,
                   child: Container(
-                    width: 76,
-                    height: 76,
-                    decoration: BoxDecoration(
+                    width: 104,
+                    height: 104,
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.transparent),
                     ),
                     child: const CircularProgressIndicator(
-                      strokeWidth: 4,
+                      strokeWidth: 3.5,
                       valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryAmber),
                     ),
                   ),
                 ),
-                // Emblem Beras di Tengah
+                // Logo 1 Lingkaran Penuh, Besar & Jelas
                 Container(
-                  width: 50,
-                  height: 50,
+                  width: 88,
+                  height: 88,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 10, offset: const Offset(0, 3)),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.10),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                      ),
                     ],
                   ),
-                  child: const Center(
-                    child: Text('🌾', style: TextStyle(fontSize: 22)),
+                  child: ClipOval(
+                    child: Image.asset(
+                      widget.logoPath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Center(
+                        child: Text('🌾', style: TextStyle(fontSize: 38)),
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-            const Text(
-              'MEMVALIDASI DATA LAPANGAN...',
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textMain, letterSpacing: 1),
+            Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textMain, letterSpacing: 1),
             ),
             const SizedBox(height: 6),
-            const Text(
-              'Menghubungkan ke Server BULOG Titik Bagi Desa Banjar Bali',
-              style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                widget.subtitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+              ),
             ),
           ],
         ),
