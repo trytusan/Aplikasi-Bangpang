@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../widgets/common/center_alert.dart';
+import '../../../widgets/common/bast_document_preview_dialog.dart';
 import '../../dashboard/dashboard_screen.dart';
 
 class BastSuccessDialog extends StatelessWidget {
@@ -8,6 +8,8 @@ class BastSuccessDialog extends StatelessWidget {
   final String nik;
   final String deliveryType;
   final String address;
+  final String imageUrl;
+  final List<Offset?>? signaturePoints;
 
   const BastSuccessDialog({
     super.key,
@@ -16,10 +18,15 @@ class BastSuccessDialog extends StatelessWidget {
     this.nik = '5108065209840002',
     this.deliveryType = 'Alur Pengganti (SPTJM Sah)',
     this.address = 'Banjar Dinas Bale Agung, RT 02 / RW 01, Banjar Bali',
+    this.imageUrl = 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600',
+    this.signaturePoints,
   });
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final waktu = 'Hari ini, ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')} WITA';
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       backgroundColor: Colors.white,
@@ -113,25 +120,36 @@ class BastSuccessDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Tombol Unduh Bukti PDF
+            // Tombol Lihat & Cetak Formulir Dokumen Resmi BAST
             SizedBox(
               width: double.infinity,
-              height: 44,
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Color(0xFFE88B00)),
+              height: 46,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1E3A8A),
+                  foregroundColor: Colors.white,
+                  elevation: 0,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  foregroundColor: const Color(0xFFB45309),
                 ),
                 onPressed: () {
-                  CenterAlert.showSuccess(
+                  BastDocumentPreviewDialog.show(
                     context,
-                    title: 'Data Berhasil Disimpan',
-                    message: 'Bukti BAST "$bastNumber.pdf" berhasil diunduh ke perangkat.',
+                    bastNo: bastNumber,
+                    nama: recipientName,
+                    nik: nik,
+                    pbpNo: nik.substring(0, 14.clamp(0, nik.length)),
+                    waktu: waktu,
+                    jenis: deliveryType,
+                    alamat: address,
+                    imageUrl: imageUrl,
+                    signaturePoints: signaturePoints,
                   );
                 },
-                icon: const Icon(Icons.download_for_offline_outlined, size: 18),
-                label: const Text('Unduh Berita Acara (PDF)', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800)),
+                icon: const Icon(Icons.picture_as_pdf_rounded, size: 18, color: Color(0xFFFDE68A)),
+                label: const Text(
+                  'Lihat & Cetak Dokumen BAST (PDF)',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -140,11 +158,10 @@ class BastSuccessDialog extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: 44,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFE88B00),
-                  foregroundColor: Colors.black,
-                  elevation: 0,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+                  foregroundColor: const Color(0xFF475569),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: () {
@@ -154,8 +171,8 @@ class BastSuccessDialog extends StatelessWidget {
                     (route) => false,
                   );
                 },
-                icon: const Icon(Icons.home_outlined, size: 18, color: Colors.black),
-                label: const Text('Selesai & Ke Beranda', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.black)),
+                icon: const Icon(Icons.home_outlined, size: 18, color: Color(0xFF475569)),
+                label: const Text('Selesai & Ke Beranda', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
               ),
             ),
           ],

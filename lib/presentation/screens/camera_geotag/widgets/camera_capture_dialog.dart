@@ -5,12 +5,14 @@ class CameraCaptureDialog extends StatefulWidget {
   final String title;
   final String guideText;
   final ValueChanged<String> onPhotoCaptured;
+  final bool isKtp;
 
   const CameraCaptureDialog({
     super.key,
     required this.title,
     required this.guideText,
     required this.onPhotoCaptured,
+    this.isKtp = false,
   });
 
   @override
@@ -22,12 +24,25 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
   bool _flashAnimation = false;
   int _sampleIndex = 0;
 
-  // Daftar sampel gambar realistis KTP atau Penerima
-  final List<String> _sampleImages = [
-    'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600',
-    'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=600',
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600',
-  ];
+  // Daftar sampel foto KTP & Foto Warga Beras yang tajam & realistis
+  late final List<String> _sampleImages;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isKtp) {
+      _sampleImages = [
+        'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=600',
+        'https://images.unsplash.com/photo-1618042164219-62c820f10723?q=80&w=600',
+      ];
+    } else {
+      _sampleImages = [
+        'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600',
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600',
+        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600',
+      ];
+    }
+  }
 
   Future<void> _takePicture() async {
     HapticFeedback.heavyImpact();
@@ -36,13 +51,13 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
       _isCapturing = true;
     });
 
-    await Future.delayed(const Duration(milliseconds: 150));
+    await Future.delayed(const Duration(milliseconds: 120));
     if (!mounted) return;
     setState(() {
       _flashAnimation = false;
     });
 
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 400));
     if (!mounted) return;
 
     final selected = _sampleImages[_sampleIndex % _sampleImages.length];
@@ -52,6 +67,9 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final timeStr = 'WITA ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
+
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 20),
       backgroundColor: Colors.black,
@@ -89,15 +107,21 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
 
               // Viewfinder Kamera
               SizedBox(
-                height: 280,
+                height: 290,
                 width: double.infinity,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Simulasi viewfinder preview
+                    // Preview Kamera
                     Image.network(
                       _sampleImages[_sampleIndex % _sampleImages.length],
                       fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: const Color(0xFF1E293B),
+                        child: const Center(
+                          child: Icon(Icons.camera_rounded, color: Colors.white38, size: 48),
+                        ),
+                      ),
                     ),
 
                     // Grid panduan
@@ -117,11 +141,11 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
                     // Sudut target (Focus brackets)
                     Center(
                       child: Container(
-                        width: 220,
-                        height: 180,
+                        width: widget.isKtp ? 240 : 200,
+                        height: widget.isKtp ? 150 : 200,
                         decoration: BoxDecoration(
                           border: Border.all(color: const Color(0xFFE88B00), width: 2),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
                     ),
@@ -133,17 +157,17 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
                       right: 0,
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        color: Colors.black.withValues(alpha: 0.75),
-                        child: const Row(
+                        color: Colors.black.withValues(alpha: 0.8),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '📍 GPS: -8.109613, 115.0914146 (±3.2m)',
-                              style: TextStyle(color: Color(0xFF34D399), fontSize: 8.5, fontWeight: FontWeight.w700),
+                            const Text(
+                              '📍 GPS: -8.1124, 115.0876 (±2.4m RTK)',
+                              style: TextStyle(color: Color(0xFF34D399), fontSize: 9, fontWeight: FontWeight.w700),
                             ),
                             Text(
-                              'WITA 09:44:10',
-                              style: TextStyle(color: Colors.white70, fontSize: 8.5, fontWeight: FontWeight.w600),
+                              timeStr,
+                              style: const TextStyle(color: Colors.white70, fontSize: 9, fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),
@@ -157,16 +181,16 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
                     // Loading overlay saat memproses
                     if (_isCapturing && !_flashAnimation)
                       Container(
-                        color: Colors.black.withValues(alpha: 0.6),
+                        color: Colors.black.withValues(alpha: 0.7),
                         child: const Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              CircularProgressIndicator(color: Color(0xFFE88B00), strokeWidth: 3),
-                              SizedBox(height: 10),
+                              CircularProgressIndicator(color: Color(0xFFE88B00), strokeWidth: 3.5),
+                              SizedBox(height: 12),
                               Text(
-                                'Memvalidasi Geotag & Standar BAST...',
-                                style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                                'Menyematkan Geotag & Watermark...',
+                                style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
                               ),
                             ],
                           ),
@@ -185,42 +209,73 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
                     Text(
                       widget.guideText,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
+                      style: const TextStyle(fontSize: 10.5, color: Color(0xFF94A3B8), fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        // Tombol ganti kamera / sampel
-                        IconButton(
-                          onPressed: () {
+                        // Tombol ganti kamera / sudut sampel
+                        InkWell(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
                             setState(() {
                               _sampleIndex++;
                             });
                           },
-                          icon: const Icon(Icons.flip_camera_android, color: Colors.white, size: 24),
-                          tooltip: 'Ganti Sudut / Kamera',
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.flip_camera_android_rounded, color: Colors.white, size: 22),
+                          ),
                         ),
 
                         // Shutter Button
                         GestureDetector(
                           onTap: _isCapturing ? null : _takePicture,
                           child: Container(
-                            width: 62,
-                            height: 62,
+                            width: 66,
+                            height: 66,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(color: Colors.white, width: 4),
                               color: const Color(0xFFE88B00),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFFE88B00).withValues(alpha: 0.4),
+                                  blurRadius: 10,
+                                ),
+                              ],
                             ),
                             child: const Center(
-                              child: Icon(Icons.camera_alt, color: Colors.black, size: 28),
+                              child: Icon(Icons.camera_alt_rounded, color: Colors.black, size: 28),
                             ),
                           ),
                         ),
 
-                        // Flash icon
-                        const Icon(Icons.flash_auto, color: Colors.white70, size: 24),
+                        // Tombol Galeri Lokal
+                        InkWell(
+                          onTap: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _sampleIndex = (_sampleIndex + 1) % _sampleImages.length;
+                            });
+                            _takePicture();
+                          },
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.photo_library_rounded, color: Colors.white70, size: 22),
+                          ),
+                        ),
                       ],
                     ),
                   ],

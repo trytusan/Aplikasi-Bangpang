@@ -58,12 +58,14 @@ class _LoginFormState extends State<LoginForm> {
                   child: const Icon(Icons.lock_reset, color: Color(0xFF1E3A8A), size: 20),
                 ),
                 const SizedBox(width: 10),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Lupa Kata Sandi?', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
-                    Text('Kirim kode verifikasi OTP untuk reset kata sandi', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
-                  ],
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Lupa Kata Sandi?', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A))),
+                      Text('Kirim kode verifikasi OTP untuk reset kata sandi', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+                    ],
+                  ),
                 ),
               ],
             ),

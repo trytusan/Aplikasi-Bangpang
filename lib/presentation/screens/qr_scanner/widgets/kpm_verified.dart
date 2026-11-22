@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../../data/models/kpm_model.dart';
 import '../../../widgets/common/center_alert.dart';
 
 class KpmVerified extends StatelessWidget {
-  const KpmVerified({super.key});
+  final KpmModel kpm;
+
+  const KpmVerified({
+    super.key,
+    required this.kpm,
+  });
+
+  String _maskNumber(String value) {
+    if (value.length <= 6) return value;
+    return '******${value.substring(value.length - 6)}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,15 +121,15 @@ class KpmVerified extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Nomor PBP Registrasi',
+                        'Nomor Registrasi PBP',
                         style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 2),
                       Row(
                         children: [
-                          const Text(
-                            '510806200500019',
-                            style: TextStyle(
+                          Text(
+                            kpm.nik.substring(0, 14.clamp(0, kpm.nik.length)),
+                            style: const TextStyle(
                               fontSize: 16.5,
                               fontWeight: FontWeight.w900,
                               color: Color(0xFF1E3A8A),
@@ -128,11 +139,11 @@ class KpmVerified extends StatelessWidget {
                           const SizedBox(width: 6),
                           InkWell(
                             onTap: () {
-                              Clipboard.setData(const ClipboardData(text: '510806200500019'));
+                              Clipboard.setData(ClipboardData(text: kpm.nik));
                               CenterAlert.show(
                                 context,
                                 title: 'Disalin ke Papan Klip',
-                                message: 'No. PBP 510806200500019 berhasil disalin.',
+                                message: 'No. Identitas KPM ${kpm.nik} berhasil disalin.',
                                 type: CenterAlertType.info,
                                 duration: const Duration(milliseconds: 1200),
                               );
@@ -195,18 +206,20 @@ class KpmVerified extends StatelessWidget {
                           child: const Icon(Icons.person_rounded, size: 18, color: Color(0xFF1E3A8A)),
                         ),
                         const SizedBox(width: 10),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Nama Kepala Keluarga / KPM',
-                              style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              'JRO NYOMAN SETIASIH',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-                            ),
-                          ],
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Nama Kepala Keluarga / KPM',
+                                style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                kpm.nama,
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -215,15 +228,18 @@ class KpmVerified extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     // Grid NIK & KK
-                    const Row(
+                    Row(
                       children: [
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('NIK (Tersamar)', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
-                              SizedBox(height: 1),
-                              Text('******7108550001', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, fontFamily: 'monospace')),
+                              const Text('NIK (Tersamar)', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                              const SizedBox(height: 1),
+                              Text(
+                                _maskNumber(kpm.nik),
+                                style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, fontFamily: 'monospace'),
+                              ),
                             ],
                           ),
                         ),
@@ -231,9 +247,12 @@ class KpmVerified extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('No. Kartu Keluarga', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
-                              SizedBox(height: 1),
-                              Text('******2409120008', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, fontFamily: 'monospace')),
+                              const Text('No. Kartu Keluarga', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                              const SizedBox(height: 1),
+                              Text(
+                                _maskNumber(kpm.noKk),
+                                style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, fontFamily: 'monospace'),
+                              ),
                             ],
                           ),
                         ),
@@ -241,13 +260,17 @@ class KpmVerified extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
 
-                    // Nomor BAST
-                    const Row(
+                    // Alamat / Dusun
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Nomor Dokumen BAST: ', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
-                        Text(
-                          'BAST-2026095108062005',
-                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, fontFamily: 'monospace', color: Color(0xFF1E3A8A)),
+                        const Text('Alamat Domisili: ', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B))),
+                        Expanded(
+                          child: Text(
+                            '${kpm.alamat}, ${kpm.dusun}',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: Color(0xFF1E3A8A)),
+                          ),
                         ),
                       ],
                     ),
@@ -276,14 +299,14 @@ class KpmVerified extends StatelessWidget {
                       child: const Center(child: Text('🌾', style: TextStyle(fontSize: 18))),
                     ),
                     const SizedBox(width: 10),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Komoditas Bantuan Pangan', style: TextStyle(fontSize: 9.5, color: Color(0xFF92400E), fontWeight: FontWeight.w700)),
+                          const Text('Komoditas Bantuan Pangan', style: TextStyle(fontSize: 9.5, color: Color(0xFF92400E), fontWeight: FontWeight.w700)),
                           Text(
-                            '10 Kg Beras Medium CPP (Tahap III / 2024)',
-                            style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF78350F)),
+                            '${kpm.alokasiKg} Kg Beras Medium CPP (Tahap III / 2024)',
+                            style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFF78350F)),
                           ),
                         ],
                       ),

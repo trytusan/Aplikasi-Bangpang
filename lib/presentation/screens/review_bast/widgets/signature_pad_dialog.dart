@@ -27,8 +27,36 @@ class _SignaturePadDialogState extends State<SignaturePadDialog> {
   }
 
   void _clearSignature() {
+    HapticFeedback.lightImpact();
     setState(() {
       _points.clear();
+    });
+  }
+
+  void _generateSampleSignature() {
+    HapticFeedback.selectionClick();
+    setState(() {
+      _points.clear();
+      // Pola garis tanda tangan artistik realistis
+      const startX = 40.0;
+      const startY = 90.0;
+      _points.add(const Offset(startX, startY));
+      _points.add(const Offset(startX + 20, startY - 40));
+      _points.add(const Offset(startX + 35, startY + 30));
+      _points.add(const Offset(startX + 50, startY - 30));
+      _points.add(const Offset(startX + 65, startY + 15));
+      _points.add(const Offset(startX + 90, startY - 10));
+      _points.add(const Offset(startX + 120, startY));
+      _points.add(null);
+
+      // Garis bawah tanda tangan
+      _points.add(const Offset(startX - 10, startY + 35));
+      _points.add(const Offset(startX + 160, startY + 35));
+      _points.add(null);
+
+      // Titik aksen
+      _points.add(const Offset(startX + 170, startY + 25));
+      _points.add(null);
     });
   }
 
@@ -90,29 +118,46 @@ class _SignaturePadDialogState extends State<SignaturePadDialog> {
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: GestureDetector(
-                        onPanUpdate: (DragUpdateDetails details) {
-                          RenderBox referenceBox = context.findRenderObject() as RenderBox;
-                          Offset localPosition = details.localPosition;
-                          setState(() {
-                            _points.add(localPosition);
-                          });
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return GestureDetector(
+                            onPanStart: (DragStartDetails details) {
+                              setState(() {
+                                final p = details.localPosition;
+                                final clamped = Offset(
+                                  p.dx.clamp(0.0, constraints.maxWidth),
+                                  p.dy.clamp(0.0, constraints.maxHeight),
+                                );
+                                _points.add(clamped);
+                              });
+                            },
+                            onPanUpdate: (DragUpdateDetails details) {
+                              setState(() {
+                                final p = details.localPosition;
+                                final clamped = Offset(
+                                  p.dx.clamp(0.0, constraints.maxWidth),
+                                  p.dy.clamp(0.0, constraints.maxHeight),
+                                );
+                                _points.add(clamped);
+                              });
+                            },
+                            onPanEnd: (DragEndDetails details) {
+                              setState(() {
+                                _points.add(null);
+                              });
+                            },
+                            child: CustomPaint(
+                              painter: SignaturePainter(points: _points),
+                              size: Size.infinite,
+                            ),
+                          );
                         },
-                        onPanEnd: (DragEndDetails details) {
-                          setState(() {
-                            _points.add(null);
-                          });
-                        },
-                        child: CustomPaint(
-                          painter: SignaturePainter(points: _points),
-                          size: Size.infinite,
-                        ),
                       ),
                     ),
                     if (_points.isEmpty)
                       const Center(
                         child: Text(
-                          'Coretkan tanda tangan di sini',
+                          'Coretkan tanda tangan dengan jari / stylus di sini',
                           style: TextStyle(
                             fontSize: 12,
                             color: Color(0xFF94A3B8),
@@ -120,6 +165,26 @@ class _SignaturePadDialogState extends State<SignaturePadDialog> {
                           ),
                         ),
                       ),
+
+                    // Tombol Contoh TTD Cepat (Kiri Bawah)
+                    Positioned(
+                      bottom: 8,
+                      left: 8,
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xFFEFF6FF),
+                          foregroundColor: const Color(0xFF1E3A8A),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        onPressed: _generateSampleSignature,
+                        icon: const Icon(Icons.auto_fix_high_rounded, size: 13),
+                        label: const Text('Contoh TTD', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700)),
+                      ),
+                    ),
+
+                    // Tombol Hapus (Kanan Bawah)
                     Positioned(
                       bottom: 8,
                       right: 8,
@@ -193,23 +258,97 @@ class _SignaturePadDialogState extends State<SignaturePadDialog> {
 
 class SignaturePainter extends CustomPainter {
   final List<Offset?> points;
+  final Color color;
+  final double strokeWidth;
+  final bool fit;
 
-  SignaturePainter({required this.points});
+  SignaturePainter({
+    required this.points,
+    this.color = const Color(0xFF0F172A),
+    this.strokeWidth = 2.8,
+    this.fit = false,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (points.isEmpty) return;
+
     final paint = Paint()
-      ..color = const Color(0xFF0F172A)
+      ..color = color
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 3.0;
+      ..strokeJoin = StrokeJoin.round
+      ..strokeWidth = strokeWidth;
+
+    if (!fit) {
+      // Gambar langsung 1:1 di kanvas input
+      for (int i = 0; i < points.length - 1; i++) {
+        if (points[i] != null && points[i + 1] != null) {
+          canvas.drawLine(points[i]!, points[i + 1]!, paint);
+        } else if (points[i] != null && points[i + 1] == null) {
+          canvas.drawCircle(points[i]!, strokeWidth / 2, paint);
+        }
+      }
+      return;
+    }
+
+    // Auto-fit & Auto-center ke dalam kotak pratinjau (agar tidak lewat dari kotak)
+    final validPoints = points.whereType<Offset>().toList();
+    if (validPoints.isEmpty) return;
+
+    double minX = validPoints.first.dx;
+    double maxX = validPoints.first.dx;
+    double minY = validPoints.first.dy;
+    double maxY = validPoints.first.dy;
+
+    for (final p in validPoints) {
+      if (p.dx < minX) minX = p.dx;
+      if (p.dx > maxX) maxX = p.dx;
+      if (p.dy < minY) minY = p.dy;
+      if (p.dy > maxY) maxY = p.dy;
+    }
+
+    final origWidth = maxX - minX;
+    final origHeight = maxY - minY;
+
+    const padding = 6.0;
+    final availWidth = size.width - (padding * 2);
+    final availHeight = size.height - (padding * 2);
+
+    if (availWidth <= 0 || availHeight <= 0) return;
+
+    double scale = 1.0;
+    if (origWidth > 0 && origHeight > 0) {
+      final scaleX = availWidth / origWidth;
+      final scaleY = availHeight / origHeight;
+      scale = scaleX < scaleY ? scaleX : scaleY;
+    }
+
+    final scaledWidth = origWidth * scale;
+    final scaledHeight = origHeight * scale;
+    final offsetX = padding + (availWidth - scaledWidth) / 2 - (minX * scale);
+    final offsetY = padding + (availHeight - scaledHeight) / 2 - (minY * scale);
+
+    paint.strokeWidth = (strokeWidth * scale).clamp(1.4, 2.5);
+
+    // Kunci agar goresan gambar TIDAK LEWAT dari kotak gambar
+    canvas.save();
+    canvas.clipRect(Rect.fromLTWH(0, 0, size.width, size.height));
 
     for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null) {
-        canvas.drawLine(points[i]!, points[i + 1]!, paint);
-      } else if (points[i] != null && points[i + 1] == null) {
-        canvas.drawCircle(points[i]!, 1.5, paint);
+      final p1 = points[i];
+      final p2 = points[i + 1];
+
+      if (p1 != null && p2 != null) {
+        final sp1 = Offset(p1.dx * scale + offsetX, p1.dy * scale + offsetY);
+        final sp2 = Offset(p2.dx * scale + offsetX, p2.dy * scale + offsetY);
+        canvas.drawLine(sp1, sp2, paint);
+      } else if (p1 != null && p2 == null) {
+        final sp1 = Offset(p1.dx * scale + offsetX, p1.dy * scale + offsetY);
+        canvas.drawCircle(sp1, paint.strokeWidth / 2, paint);
       }
     }
+
+    canvas.restore();
   }
 
   @override

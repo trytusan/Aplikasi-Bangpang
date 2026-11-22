@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../widgets/common/bast_document_preview_dialog.dart';
 import '../../../widgets/common/center_alert.dart';
 
 class BastDetailSheet extends StatelessWidget {
@@ -79,9 +80,15 @@ class BastDetailSheet extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
                   imageUrl,
-                  width: 72,
-                  height: 72,
+                  width: 64,
+                  height: 64,
                   fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    width: 64,
+                    height: 64,
+                    color: const Color(0xFFE2E8F0),
+                    child: const Icon(Icons.person, color: Color(0xFF94A3B8)),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -91,21 +98,23 @@ class BastDetailSheet extends StatelessWidget {
                   children: [
                     Text(
                       nama,
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                      style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                     ),
                     const SizedBox(height: 2),
-                    Text('NIK: $nik', style: const TextStyle(fontSize: 10, fontFamily: 'monospace', color: Color(0xFF64748B))),
-                    Text('No. PBP: $pbp', style: const TextStyle(fontSize: 10, fontFamily: 'monospace', color: Color(0xFF64748B))),
-                    const SizedBox(height: 4),
+                    Text(
+                      'NIK: $nik',
+                      style: const TextStyle(fontSize: 11, fontFamily: 'monospace', color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 6),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFD1FAE5),
+                        color: const Color(0xFFEFF6FF),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         jenis,
-                        style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF065F46)),
+                        style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A)),
                       ),
                     ),
                   ],
@@ -120,30 +129,32 @@ class BastDetailSheet extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
             child: Column(
               children: [
+                _rowItem('Nomor Registrasi PBP', pbp),
+                const Divider(height: 12),
                 _rowItem('Waktu Penyerahan', waktu),
-                const SizedBox(height: 6),
-                _rowItem('Komoditas', '10 Kg Beras CPP Medium'),
-                const SizedBox(height: 6),
-                _rowItem('Lokasi Titik Bagi', 'Banjar Dinas Bale Agung, Banjar Bali'),
-                const SizedBox(height: 6),
-                _rowItem('Status Sinkronisasi', 'Tersinkronisasi ke Server Pusat BULOG'),
+                const Divider(height: 12),
+                _rowItem('Komoditas', '10 Kg Beras Medium CPP'),
+                const Divider(height: 12),
+                _rowItem('Titik Lokasi', 'Desa Banjar Bali, Buleleng'),
+                const Divider(height: 12),
+                _rowItem('Status Sinkronisasi', 'Tersinkronisasi ke Server BULOG'),
               ],
             ),
           ),
           const SizedBox(height: 16),
 
-          // Tombol Unduh & Bagikan
+          // Tombol Aksi
           Row(
             children: [
               Expanded(
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF1E3A8A)),
+                    side: const BorderSide(color: Color(0xFFCBD5E1)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: () {
@@ -154,7 +165,7 @@ class BastDetailSheet extends StatelessWidget {
                       message: 'Tautan dokumen "$bastNo" siap dibagikan.',
                     );
                   },
-                  icon: const Icon(Icons.share, size: 16, color: Color(0xFF1E3A8A)),
+                  icon: const Icon(Icons.share_rounded, size: 16, color: Color(0xFF1E3A8A)),
                   label: const Text('Bagikan', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A))),
                 ),
               ),
@@ -163,20 +174,26 @@ class BastDetailSheet extends StatelessWidget {
                 flex: 2,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE88B00),
-                    foregroundColor: Colors.black,
+                    backgroundColor: const Color(0xFF1E3A8A),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
-                    CenterAlert.showSuccess(
+                    BastDocumentPreviewDialog.show(
                       context,
-                      title: 'Data Berhasil Disimpan',
-                      message: 'Dokumen BAST "$bastNo.pdf" berhasil diunduh ke memori perangkat.',
+                      bastNo: bastNo,
+                      nama: nama,
+                      nik: nik,
+                      pbpNo: pbp,
+                      waktu: waktu,
+                      jenis: jenis,
+                      imageUrl: imageUrl,
                     );
                   },
-                  icon: const Icon(Icons.picture_as_pdf, size: 16, color: Colors.black),
-                  label: const Text('Unduh PDF BAST', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.black)),
+                  icon: const Icon(Icons.picture_as_pdf_rounded, size: 16, color: Color(0xFFFDE68A)),
+                  label: const Text('Pratinjau BAST (PDF)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
                 ),
               ),
             ],
@@ -190,8 +207,16 @@ class BastDetailSheet extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
-        Flexible(
+        Expanded(
+          flex: 4,
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          flex: 5,
           child: Text(
             value,
             textAlign: TextAlign.right,

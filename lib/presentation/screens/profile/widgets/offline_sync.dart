@@ -5,6 +5,8 @@ class OfflineSync extends StatelessWidget {
   final ValueChanged<bool> onToggleOfflineMode;
   final VoidCallback onSyncNow;
   final VoidCallback onRefreshCoordinates;
+  final String cacheSize;
+  final int pendingCount;
 
   const OfflineSync({
     super.key,
@@ -12,10 +14,16 @@ class OfflineSync extends StatelessWidget {
     required this.onToggleOfflineMode,
     required this.onSyncNow,
     required this.onRefreshCoordinates,
+    this.cacheSize = '0.0 MB',
+    this.pendingCount = 0,
   });
 
   @override
   Widget build(BuildContext context) {
+    final int photoCount = pendingCount * 2;
+    final int signatureCount = pendingCount;
+    final bool hasPending = pendingCount > 0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -72,23 +80,45 @@ class OfflineSync extends StatelessWidget {
                   Container(
                     width: 34,
                     height: 34,
-                    decoration: BoxDecoration(color: const Color(0xFFFFFBEB), borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.cloud_sync_outlined, color: Color(0xFFD97706), size: 18),
+                    decoration: BoxDecoration(
+                      color: hasPending ? const Color(0xFFFFFBEB) : const Color(0xFFECFDF5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      hasPending ? Icons.cloud_sync_outlined : Icons.cloud_done_rounded,
+                      color: hasPending ? const Color(0xFFD97706) : const Color(0xFF059669),
+                      size: 18,
+                    ),
                   ),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Sinkronisasi Manual & Cache', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
-                        Text('14 berkas foto KPM dan 3 tanda tangan digital tersimpan di memori aman perangkat.', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), height: 1.25)),
+                        const Text('Sinkronisasi Manual & Cache', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
+                        Text(
+                          hasPending
+                              ? '$pendingCount data BAST ($photoCount berkas foto & $signatureCount TTD) tersimpan di memori lokal.'
+                              : 'Semua data BAST telah tersinkronisasi. Antrean memori bersih.',
+                          style: const TextStyle(fontSize: 9.5, color: Color(0xFF64748B), height: 1.25),
+                        ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                    decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(10)),
-                    child: const Text('34.2 MB', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF1E3A8A))),
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
+                    decoration: BoxDecoration(
+                      color: hasPending ? const Color(0xFFEFF6FF) : const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      cacheSize,
+                      style: TextStyle(
+                        fontSize: 8.5,
+                        fontWeight: FontWeight.w900,
+                        color: hasPending ? const Color(0xFF1E3A8A) : const Color(0xFF64748B),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -97,14 +127,17 @@ class OfflineSync extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE88B00),
-                    foregroundColor: Colors.black,
+                    backgroundColor: hasPending ? const Color(0xFFE88B00) : const Color(0xFF1E3A8A),
+                    foregroundColor: hasPending ? const Color(0xFF0F172A) : Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: onSyncNow,
-                  icon: const Icon(Icons.cloud_upload_outlined, size: 16),
-                  label: const Text('Sinkronkan Sekarang', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900)),
+                  icon: Icon(hasPending ? Icons.cloud_upload_outlined : Icons.sync_rounded, size: 16),
+                  label: Text(
+                    hasPending ? 'Sinkronkan $pendingCount BAST Sekarang' : 'Cek Status Server Pusat',
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                  ),
                 ),
               ),
               const Divider(height: 20),
@@ -127,7 +160,7 @@ class OfflineSync extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Text('🎯 Akurasi 3m', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF047857))),
+                  const Text('🎯 Akurasi ±2.4m', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF047857))),
                 ],
               ),
               const SizedBox(height: 6),
@@ -135,7 +168,7 @@ class OfflineSync extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(color: const Color(0xFFF8FAFC), borderRadius: BorderRadius.circular(8)),
-                child: const Text('Lat: -8.109613, Long: 115.0914146', style: TextStyle(fontSize: 9.5, fontFamily: 'monospace', color: Color(0xFF64748B))),
+                child: const Text('Lat: -8.109613, Long: 115.0914146 (Desa Banjar Bali)', style: TextStyle(fontSize: 9.5, fontFamily: 'monospace', color: Color(0xFF64748B))),
               ),
               const SizedBox(height: 8),
               SizedBox(

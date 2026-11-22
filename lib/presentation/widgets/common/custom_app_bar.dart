@@ -6,14 +6,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String subtitle;
   final VoidCallback? onBack;
+  final Widget? leading;
   final Widget? trailing;
+  final bool showBackButton;
+  final double? leadingWidth;
+  final double? titleSpacing;
 
   const CustomAppBar({
     super.key,
     this.title = 'Verifikasi KPM',
     this.subtitle = 'Badan Pangan Nasional / Perum BULOG',
     this.onBack,
+    this.leading,
     this.trailing,
+    this.showBackButton = true,
+    this.leadingWidth,
+    this.titleSpacing,
   });
 
   void _showOfficerProfile(BuildContext context) {
@@ -54,23 +62,39 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final bool canPop = Navigator.canPop(context);
+    final bool willShowBack = showBackButton && (canPop || onBack != null);
+    final bool showLeading = leading != null || willShowBack;
 
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      leading: (canPop || onBack != null)
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
-              onPressed: () {
-                HapticFeedback.lightImpact();
-                if (onBack != null) {
-                  onBack!();
-                } else if (canPop) {
-                  Navigator.pop(context);
-                }
-              },
-            )
-          : null,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
+      shape: const Border(
+        bottom: BorderSide(color: Color(0xFFF1F5F9), width: 1.2),
+      ),
+      leadingWidth: leadingWidth ?? (showLeading ? 52 : 0),
+      titleSpacing: titleSpacing ?? (showLeading ? 0 : 16),
+      automaticallyImplyLeading: false,
+      leading: leading ??
+          (willShowBack
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF0F172A), size: 22),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    if (onBack != null) {
+                      onBack!();
+                    } else if (canPop) {
+                      Navigator.pop(context);
+                    }
+                  },
+                )
+              : null),
       title: Row(
         children: [
           Expanded(
@@ -89,6 +113,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     letterSpacing: -0.3,
                   ),
                 ),
+                const SizedBox(height: 1),
                 Text(
                   subtitle,
                   maxLines: 1,
@@ -102,23 +127,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          trailing ??
-              GestureDetector(
-                onTap: () => _showOfficerProfile(context),
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFFF59E0B), width: 1.5),
-                    image: const DecorationImage(
-                      image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
+          if (trailing != null) ...[
+            const SizedBox(width: 8),
+            trailing!,
+          ],
         ],
       ),
     );

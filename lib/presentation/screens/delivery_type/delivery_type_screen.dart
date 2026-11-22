@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../widgets/common/bottom_action_bar.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../qr_scanner/qr_scanner_screen.dart';
 import '../replacement/replacement_screen.dart';
@@ -173,118 +174,108 @@ class _DeliveryTypeScreenState extends State<DeliveryTypeScreen> {
                 ),
               ),
             ),
-
-            // Bottom Sticky Bar: Jenis Terpilih & Tombol Lanjut
-            Container(
-              padding: const EdgeInsets.fromLTRB(18, 14, 18, 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 20,
-                    offset: const Offset(0, -4),
-                  ),
-                ],
-                border: const Border(
-                  top: BorderSide(color: Color(0xFFF1F5F9), width: 1.2),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ],
+        ),
+      ),
+      bottomNavigationBar: BanpangBottomActionBar(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          Icon(Icons.touch_app_rounded, size: 16, color: _selectedAccentColor),
-                          const SizedBox(width: 6),
-                          const Text(
-                            'Alur: ',
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              color: Color(0xFF64748B),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            _selectedLabel,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF0F172A),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFECFDF5),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: const Color(0xFFA7F3D0)),
+                      Icon(Icons.touch_app_rounded, size: 16, color: _selectedAccentColor),
+                      const SizedBox(width: 6),
+                      const Text(
+                        'Alur: ',
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          color: Color(0xFF64748B),
+                          fontWeight: FontWeight.w600,
                         ),
-                        child: const Text(
-                          'Siap',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF047857),
+                      ),
+                      Flexible(
+                        child: Text(
+                          _selectedLabel,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF0F172A),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFE88B00),
-                        foregroundColor: const Color(0xFF0F172A),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                      ),
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        if (_selectedOption == 'PENGGANTI') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const ReplacementScreen()),
-                          );
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-                          );
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            _selectedOption == 'PENGGANTI'
-                                ? 'Lanjut ke Form SPTJM'
-                                : 'Lanjut ke Scan PBP',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF0F172A),
-                              letterSpacing: -0.2,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward_rounded, size: 18, color: Color(0xFF0F172A)),
-                        ],
-                      ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFECFDF5),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFA7F3D0)),
+                  ),
+                  child: const Text(
+                    'Siap',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF047857),
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE88B00),
+                  foregroundColor: const Color(0xFF0F172A),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                ),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  if (_selectedOption == 'PENGGANTI') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ReplacementScreen()),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+                    );
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _selectedOption == 'PENGGANTI'
+                          ? 'Lanjut ke Form SPTJM'
+                          : 'Lanjut ke Scan PBP',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFF0F172A),
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.arrow_forward_rounded, size: 18, color: Color(0xFF0F172A)),
+                  ],
+                ),
               ),
             ),
           ],

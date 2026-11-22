@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../data/models/kpm_model.dart';
+import '../../widgets/common/bottom_action_bar.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../review_bast/review_bast_screen.dart';
@@ -10,29 +12,46 @@ import 'widgets/ktp_photo_card.dart';
 import 'widgets/recipient_photo_card.dart';
 
 class CameraGeotagScreen extends StatefulWidget {
-  const CameraGeotagScreen({super.key});
+  final KpmModel? kpm;
+  final String deliveryType;
+  final String? replacedName;
+
+  const CameraGeotagScreen({
+    super.key,
+    this.kpm,
+    this.deliveryType = 'PBP NORMAL',
+    this.replacedName,
+  });
 
   @override
   State<CameraGeotagScreen> createState() => _CameraGeotagScreenState();
 }
 
 class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
+  late KpmModel _currentKpm;
   String _ktpPhotoUrl = 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=600';
   String _recipientPhotoUrl = 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600';
 
-  void _openCamera(String title, String guide, ValueChanged<String> onCaptured) {
+  @override
+  void initState() {
+    super.initState();
+    _currentKpm = widget.kpm ?? KpmModel.sampleData.first;
+  }
+
+  void _openCamera(String title, String guide, bool isKtp, ValueChanged<String> onCaptured) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => CameraCaptureDialog(
         title: title,
         guideText: guide,
+        isKtp: isKtp,
         onPhotoCaptured: (newUrl) {
           onCaptured(newUrl);
           CenterAlert.showSuccess(
             context,
             title: 'Foto Berhasil Disimpan',
-            message: 'Watermark Geotag GPS (±3.2m) & verifikasi OCR valid.',
+            message: 'Watermark Geotag GPS (±2.4m RTK) & OCR telah diverifikasi sah.',
           );
         },
       ),
@@ -142,6 +161,7 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
                         _openCamera(
                           'Ambil Foto Fisik KTP/KK',
                           'Posisikan KTP / KK berada di dalam kotak bingkai oranye dan teks NIK terbaca jelas.',
+                          true,
                           (newUrl) => setState(() => _ktpPhotoUrl = newUrl),
                         );
                       },
@@ -156,6 +176,7 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
                         _openCamera(
                           'Ambil Foto Penerima Bersama Beras',
                           'Pastikan wajah penerima dan karung 10kg Beras Bantuan terlihat jelas bersamaan.',
+                          false,
                           (newUrl) => setState(() => _recipientPhotoUrl = newUrl),
                         );
                       },
@@ -164,95 +185,37 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
                     const SizedBox(height: 14),
 
                     // Ringkasan Data KPM
-                    const KpmSummary(),
+                    KpmSummary(
+                      name: _currentKpm.nama,
+                      nik: _currentKpm.nik,
+                      allocation: '${_currentKpm.alokasiKg} Kg Beras Medium CPP (Tahap III / 2024)',
+                    ),
                   ],
                 ),
               ),
             ),
-
-            // Bottom Sticky Bar (Kembali & Lanjut ke Review BAST)
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 20,
-                    offset: const Offset(0, -4),
-                  ),
-                ],
-                border: const Border(
-                  top: BorderSide(color: Color(0xFFF1F5F9), width: 1.2),
-                ),
-              ),
-              child: Row(
-                children: [
-                  // Tombol Kembali
-                  Expanded(
-                    child: SizedBox(
-                      height: 48,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: const Color(0xFFF8FAFC),
-                          foregroundColor: const Color(0xFF475569),
-                          side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.2),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        ),
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Kembali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-
-                  // Tombol Lanjut ke Review BAST
-                  Expanded(
-                    flex: 2,
-                    child: SizedBox(
-                      height: 48,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE88B00),
-                          foregroundColor: const Color(0xFF0F172A),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        ),
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const ReviewBastScreen()),
-                          );
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Lanjut ke Review BAST',
-                              style: TextStyle(
-                                fontSize: 13.5,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFF0F172A),
-                                letterSpacing: -0.2,
-                              ),
-                            ),
-                            SizedBox(width: 6),
-                            Icon(Icons.arrow_forward_rounded, size: 18, color: Color(0xFF0F172A)),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
+      ),
+      bottomNavigationBar: BanpangBottomActionBar.dual(
+        onBack: () => Navigator.pop(context),
+        onNext: () {
+          HapticFeedback.lightImpact();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ReviewBastScreen(
+                kpm: _currentKpm,
+                deliveryType: widget.deliveryType,
+                replacedName: widget.replacedName,
+                ktpPhotoUrl: _ktpPhotoUrl,
+                recipientPhotoUrl: _recipientPhotoUrl,
+              ),
+            ),
+          );
+        },
+        nextText: 'Lanjut ke Review BAST',
+        nextIcon: Icons.arrow_forward_rounded,
       ),
     );
   }

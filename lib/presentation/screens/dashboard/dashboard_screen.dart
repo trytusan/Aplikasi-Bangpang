@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../data/repositories/bast_repository.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
 import '../delivery_type/delivery_type_screen.dart';
 import '../history/history_screen.dart';
@@ -33,11 +34,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Kartu Statistik Kuota & Progress Bar
-                    const QuotaCard(
-                      totalQuota: 48,
-                      distributed: 43,
-                      remaining: 5,
+                    // Kartu Statistik Kuota & Progress Bar (Live In-Memory Database)
+                    AnimatedBuilder(
+                      animation: BastRepository.instance,
+                      builder: (context, _) {
+                        return QuotaCard(
+                          totalQuota: BastRepository.instance.totalQuota,
+                          distributed: BastRepository.instance.distributedCount,
+                          remaining: BastRepository.instance.remainingCount,
+                        );
+                      },
                     ),
                     const SizedBox(height: 18),
 

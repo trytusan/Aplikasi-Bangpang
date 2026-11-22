@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../data/models/kpm_model.dart';
+import '../../widgets/common/bottom_action_bar.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../camera_geotag/camera_geotag_screen.dart';
@@ -102,9 +104,25 @@ class _ReplacementScreenState extends State<ReplacementScreen> {
       return;
     }
 
+    final penggantiKpm = KpmModel(
+      nik: _nikPenggantiController.text.trim(),
+      noKk: _noKkPenggantiController.text.trim(),
+      nama: _namaPenggantiController.text.trim().toUpperCase(),
+      alamat: _alamatPengganti,
+      dusun: 'Desa Banjar Bali',
+      isSptjm: true,
+      namaPengganti: 'I Gede Suardika (Alm)',
+    );
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const CameraGeotagScreen()),
+      MaterialPageRoute(
+        builder: (_) => CameraGeotagScreen(
+          kpm: penggantiKpm,
+          deliveryType: 'ALUR PENGGANTI (SPTJM)',
+          replacedName: 'I Gede Suardika (Alm)',
+        ),
+      ),
     );
   }
 
@@ -185,58 +203,14 @@ class _ReplacementScreenState extends State<ReplacementScreen> {
                 ),
               ),
             ),
-
-            // Bottom Buttons
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 48,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFEEF2FF),
-                          foregroundColor: const Color(0xFF1E3A8A),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.arrow_back, size: 16),
-                        label: const Text('Kembali', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: SizedBox(
-                      height: 48,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE88B00),
-                          foregroundColor: Colors.black,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        onPressed: _proceedToDocumentation,
-                        icon: const Icon(Icons.camera_alt, size: 16, color: Colors.black),
-                        label: const Text(
-                          'Dokumentasi',
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
+      ),
+      bottomNavigationBar: BanpangBottomActionBar.dual(
+        onBack: () => Navigator.pop(context),
+        onNext: _proceedToDocumentation,
+        nextText: 'Lanjut ke Dokumentasi',
+        nextIcon: Icons.camera_alt_rounded,
       ),
     );
   }

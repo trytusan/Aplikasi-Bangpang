@@ -3,6 +3,15 @@ import 'package:flutter/services.dart';
 import 'signature_pad_dialog.dart';
 
 class BeneficiaryCard extends StatelessWidget {
+  final String nama;
+  final String nik;
+  final String noKk;
+  final String alamat;
+  final String jenis;
+  final bool isPengganti;
+  final String? replacedName;
+  final String ricePhotoUrl;
+  final String sptjmPhotoUrl;
   final List<Offset?>? signaturePoints;
   final VoidCallback? onTapSignature;
   final VoidCallback? onTapRicePhoto;
@@ -10,6 +19,15 @@ class BeneficiaryCard extends StatelessWidget {
 
   const BeneficiaryCard({
     super.key,
+    this.nama = 'LUH SUMANTRI ARYANI',
+    this.nik = '5108065209840002',
+    this.noKk = '5108061204090011',
+    this.alamat = 'Banjar Dinas Bale Agung, RT 02 / RW 01, Banjar Bali, Buleleng, Bali',
+    this.jenis = 'PBP NORMAL',
+    this.isPengganti = false,
+    this.replacedName,
+    this.ricePhotoUrl = 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200',
+    this.sptjmPhotoUrl = 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=200',
     this.signaturePoints,
     this.onTapSignature,
     this.onTapRicePhoto,
@@ -81,7 +99,7 @@ class BeneficiaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
 
-          // Profil KPM Pengganti
+          // Profil Penerima
           Row(
             children: [
               Container(
@@ -90,8 +108,8 @@ class BeneficiaryCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: const Color(0xFFE2E8F0)),
-                  image: const DecorationImage(
-                    image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
+                  image: DecorationImage(
+                    image: NetworkImage(ricePhotoUrl),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -101,28 +119,34 @@ class BeneficiaryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'LUH SUMANTRI ARYANI',
-                      style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                    Text(
+                      nama,
+                      style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                     ),
                     const SizedBox(height: 2),
-                    Row(
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEF3C7),
+                            color: isPengganti ? const Color(0xFFFEF3C7) : const Color(0xFFEFF6FF),
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          child: const Text(
-                            'KPM Pengganti Sah',
-                            style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFFB45309)),
+                          child: Text(
+                            isPengganti ? 'KPM Pengganti Sah' : 'PBP Terverifikasi',
+                            style: TextStyle(
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w800,
+                              color: isPengganti ? const Color(0xFFB45309) : const Color(0xFF1E3A8A),
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 6),
-                        const Text(
-                          'NIK: 5108065209840002',
-                          style: TextStyle(fontSize: 11, fontFamily: 'monospace', color: Color(0xFF475569), fontWeight: FontWeight.w600),
+                        Text(
+                          'NIK: $nik',
+                          style: const TextStyle(fontSize: 11, fontFamily: 'monospace', color: Color(0xFF475569), fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),
@@ -133,7 +157,7 @@ class BeneficiaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Grid KK & KPM Sebelumnya
+          // Grid KK & (jika pengganti) KPM Sebelumnya
           Row(
             children: [
               Expanded(
@@ -144,36 +168,38 @@ class BeneficiaryCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: const Color(0xFFE2E8F0)),
                   ),
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Nomor Kartu Keluarga', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
-                      SizedBox(height: 3),
-                      Text('5108061204090011', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, fontFamily: 'monospace', color: Color(0xFF0F172A))),
+                      const Text('Nomor Kartu Keluarga', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 3),
+                      Text(noKk, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, fontFamily: 'monospace', color: Color(0xFF0F172A))),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(11),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF1F2),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFFECDD3)),
-                  ),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('KPM Sebelumnya (Diganti)', style: TextStyle(fontSize: 9.5, color: Color(0xFF9F1239), fontWeight: FontWeight.w600)),
-                      SizedBox(height: 3),
-                      Text('I GEDE SUARDIKA', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
-                      Text('(Meninggal Dunia)', style: TextStyle(fontSize: 9.5, color: Color(0xFFBE123C))),
-                    ],
+              if (isPengganti) ...[
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(11),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF1F2),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFFECDD3)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('KPM Sebelumnya (Diganti)', style: TextStyle(fontSize: 9.5, color: Color(0xFF9F1239), fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 3),
+                        Text(replacedName ?? 'I GEDE SUARDIKA', style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900, color: Color(0xFFE11D48))),
+                        const Text('(Meninggal Dunia)', style: TextStyle(fontSize: 9.5, color: Color(0xFFBE123C))),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
           const SizedBox(height: 12),
@@ -232,20 +258,20 @@ class BeneficiaryCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
-            child: const Row(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.location_on_rounded, size: 16, color: Color(0xFFE88B00)),
-                SizedBox(width: 8),
+                const Icon(Icons.location_on_rounded, size: 16, color: Color(0xFFE88B00)),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Alamat Domisili KPM', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w700)),
-                      SizedBox(height: 2),
+                      const Text('Alamat Domisili KPM', style: TextStyle(fontSize: 9.5, color: Color(0xFF64748B), fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 2),
                       Text(
-                        'Banjar Dinas Bale Agung, RT 02 / RW 01, Banjar Bali, Buleleng, Kabupaten Buleleng, Bali',
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F172A), height: 1.35),
+                        alamat,
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF0F172A), height: 1.35),
                       ),
                     ],
                   ),
@@ -279,8 +305,8 @@ class BeneficiaryCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: const Color(0xFFE2E8F0)),
-                      image: const DecorationImage(
-                        image: NetworkImage('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200'),
+                      image: DecorationImage(
+                        image: NetworkImage(ricePhotoUrl),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -299,7 +325,7 @@ class BeneficiaryCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
 
-              // Lampiran 2: Surat SPTJM
+              // Lampiran 2: Fisik KTP / SPTJM
               Expanded(
                 child: GestureDetector(
                   onTap: () {
@@ -311,8 +337,8 @@ class BeneficiaryCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: const Color(0xFFE2E8F0)),
-                      image: const DecorationImage(
-                        image: NetworkImage('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=200'),
+                      image: DecorationImage(
+                        image: NetworkImage(sptjmPhotoUrl),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -324,7 +350,11 @@ class BeneficiaryCard extends StatelessWidget {
                         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(11)),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: const Text('Surat SPTJM', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.w800)),
+                      child: Text(
+                        isPengganti ? 'Surat SPTJM' : 'Foto KTP / KK',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.w800),
+                      ),
                     ),
                   ),
                 ),
@@ -349,28 +379,39 @@ class BeneficiaryCard extends StatelessWidget {
                       ),
                     ),
                     child: hasSignature
-                        ? Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              CustomPaint(
-                                size: const Size(60, 40),
-                                painter: SignaturePainter(points: signaturePoints!),
-                              ),
-                              Positioned(
-                                bottom: 4,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF059669),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: const Text(
-                                    '✓ TTD Sah',
-                                    style: TextStyle(color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.w900),
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Positioned.fill(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(6, 6, 6, 22),
+                                    child: CustomPaint(
+                                      painter: SignaturePainter(
+                                        points: signaturePoints!,
+                                        fit: true,
+                                        strokeWidth: 2.4,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  bottom: 4,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF059669),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Text(
+                                      '✓ TTD Sah',
+                                      style: TextStyle(color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.w900),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         : const Column(
                             mainAxisAlignment: MainAxisAlignment.center,

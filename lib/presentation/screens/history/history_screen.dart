@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../widgets/common/center_alert.dart';
+import 'package:flutter/services.dart';
+import '../../../data/repositories/bast_repository.dart';
 import '../../widgets/common/custom_app_bar.dart';
-import '../camera_geotag/camera_geotag_screen.dart';
 import '../delivery_type/delivery_type_screen.dart';
 import 'widgets/bast_detail_sheet.dart';
 import 'widgets/history_card_items.dart';
@@ -16,9 +16,7 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  int _selectedFilter = 1; // 0: Semua, 1: Diterima, 2: Belum Verifikasi
-  bool _isKetutSynced = false;
-  bool _isKetutSyncing = false;
+  int _selectedFilter = 0; // 0: Semua, 1: PBP Normal, 2: Pengganti SPTJM, 3: Perwakilan KK
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
 
@@ -53,48 +51,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
-  Future<void> _syncKetut() async {
-    setState(() => _isKetutSyncing = true);
-    await Future.delayed(const Duration(milliseconds: 900));
-    if (!mounted) return;
-
-    setState(() {
-      _isKetutSyncing = false;
-      _isKetutSynced = true;
-    });
-
-    CenterAlert.showSuccess(
-      context,
-      title: 'Sinkronisasi Berhasil',
-      message: 'Data penyerahan Ketut Artika telah terkirim ke Server BULOG Pusat.',
-    );
-  }
-
-  void _navigateToFixPhoto() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const CameraGeotagScreen()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Logika filter tampilan kartu
     final query = _searchQuery.toLowerCase().trim();
-
-    final showNormal = (_selectedFilter == 0 || _selectedFilter == 1) &&
-        (query.isEmpty || 'jro nyoman setiasih'.contains(query) || '510806'.contains(query));
-
-    final showReplacement = (_selectedFilter == 0 || _selectedFilter == 1) &&
-        (query.isEmpty || 'luh sumantri aryani'.contains(query) || 'i gede suardika'.contains(query));
-
-    final showKetut = (_selectedFilter == 0 ||
-            (_selectedFilter == 1 && _isKetutSynced) ||
-            (_selectedFilter == 2 && !_isKetutSynced)) &&
-        (query.isEmpty || 'ketut artika'.contains(query) || 'putu eka'.contains(query));
-
-    final showRejected = (_selectedFilter == 0 || _selectedFilter == 2) &&
-        (query.isEmpty || 'wayan sujana'.contains(query));
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
@@ -103,133 +62,230 @@ class _HistoryScreenState extends State<HistoryScreen> {
         subtitle: 'Monitoring Penyerahan Beras Bapanas',
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Filter Pills
-            HistoryFilter(
-              selectedFilter: _selectedFilter,
-              onSelectFilter: (val) => setState(() => _selectedFilter = val),
-            ),
+        child: AnimatedBuilder(
+          animation: BastRepository.instance,
+          builder: (context, _) {
+            final repo = BastRepository.instance;
+            final allRecords = repo.records;
 
-            // Search Bar Input Modern
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
-              child: Container(
-                height: 44,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xFFCBD5E1)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.02),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+            // Hitung statistik kategori
+            final normalCount = repo.normalCount;
+            final replacementCount = repo.replacementCount;
+            final representativeCount = repo.representativeCount;
+
+            // Logika Penyaringan Kategori & Pencarian
+            final filtered = allRecords.where((r) {
+              // 1. Filter Kategori
+              if (_selectedFilter == 1 && !r.jenis.contains('NORMAL')) return false;
+              if (_selectedFilter == 2 && !r.jenis.contains('PENGGANTI')) return false;
+              if (_selectedFilter == 3 && !r.jenis.contains('PERWAKILAN')) return false;
+
+              // 2. Filter Pencarian Teks
+              if (query.isNotEmpty) {
+                final matchName = r.nama.toLowerCase().contains(query);
+                final matchNik = r.nik.contains(query);
+                final matchBast = r.bastNo.toLowerCase().contains(query);
+                final matchPbp = r.pbpNo.contains(query);
+                final matchReplaced = r.replacedName != null && r.replacedName!.toLowerCase().contains(query);
+
+                if (!matchName && !matchNik && !matchBast && !matchPbp && !matchReplaced) {
+                  return false;
+                }
+              }
+
+              return true;
+            }).toList();
+
+            return Column(
+              children: [
+                // Filter Kategori Chips
+                HistoryFilter(
+                  selectedFilter: _selectedFilter,
+                  onSelectFilter: (val) => setState(() => _selectedFilter = val),
+                  totalCount: allRecords.length,
+                  normalCount: normalCount,
+                  replacementCount: replacementCount,
+                  representativeCount: representativeCount,
                 ),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (val) => setState(() => _searchQuery = val),
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
-                  decoration: InputDecoration(
-                    hintText: 'Cari nama KPM, NIK, atau No. BAST...',
-                    hintStyle: const TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
-                    prefixIcon: const Icon(Icons.search_rounded, size: 20, color: Color(0xFF1E3A8A)),
-                    suffixIcon: _searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.cancel_rounded, size: 18, color: Color(0xFF64748B)),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() => _searchQuery = '');
-                            },
-                          )
-                        : null,
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 11),
+
+                // Search Bar Input Modern
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Container(
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: query.isNotEmpty ? const Color(0xFFE88B00) : const Color(0xFFCBD5E1),
+                        width: query.isNotEmpty ? 1.5 : 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.02),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (val) => setState(() => _searchQuery = val),
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+                      decoration: InputDecoration(
+                        hintText: 'Cari nama KPM, 16 digit NIK, atau No. BAST...',
+                        hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
+                        prefixIcon: const Icon(Icons.search_rounded, size: 20, color: Color(0xFF1E3A8A)),
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.cancel_rounded, size: 18, color: Color(0xFF64748B)),
+                                onPressed: () {
+                                  HapticFeedback.lightImpact();
+                                  _searchController.clear();
+                                  setState(() => _searchQuery = '');
+                                },
+                              )
+                            : null,
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 11),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
 
-            // Daftar Kartu Riwayat
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                children: [
-                  if (showNormal)
-                    HistoryCardNormal(
-                      onViewDetail: () => _showBastDetail(
-                        bastNo: 'BAST-2026095108062005',
-                        nama: 'JRO NYOMAN SETIASIH',
-                        nik: '5108060101750001',
-                        pbp: '5108062005000012',
-                        waktu: '23 Juli 2025, 09:44 WITA',
-                        jenis: 'Penerima Utama (Normal)',
-                        imageUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200',
-                      ),
-                    ),
-                  if (showReplacement)
-                    HistoryCardReplacement(
-                      onViewDetail: () => _showBastDetail(
-                        bastNo: 'BAST-2026095108062006',
-                        nama: 'LUH SUMANTRI ARYANI',
-                        nik: '5108065209840002',
-                        pbp: '5108062005000024',
-                        waktu: '23 Juli 2025, 09:15 WITA',
-                        jenis: 'Pengganti SPTJM Sah',
-                        imageUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200',
-                      ),
-                    ),
-                  if (showKetut)
-                    HistoryCardRepresentative(
-                      isSynced: _isKetutSynced,
-                      isSyncing: _isKetutSyncing,
-                      onSync: _syncKetut,
-                      onViewDetail: () => _showBastDetail(
-                        bastNo: 'BAST-2026095108062007',
-                        nama: 'KETUT ARTIKA',
-                        nik: '510806192700029',
-                        pbp: '510806192700029',
-                        waktu: '23 Juli 2025, 08:30 WITA',
-                        jenis: 'Perwakilan (1 KK: Putu Eka)',
-                        imageUrl: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=200',
-                      ),
-                    ),
-                  if (showRejected)
-                    HistoryCardRejected(
-                      onFixPhoto: _navigateToFixPhoto,
-                    ),
-                  if (!showNormal && !showReplacement && !showKetut && !showRejected)
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 40),
-                      alignment: Alignment.center,
-                      child: const Column(
-                        children: [
-                          Icon(Icons.search_off, size: 40, color: Color(0xFF94A3B8)),
-                          SizedBox(height: 8),
-                          Text(
-                            'Tidak ada data transaksi yang sesuai filter.',
-                            style: TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                // Konten Daftar Transaksi
+                Expanded(
+                  child: allRecords.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 72,
+                                  height: 72,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFFF1F5F9),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.inventory_2_outlined, size: 36, color: Color(0xFF94A3B8)),
+                                ),
+                                const SizedBox(height: 16),
+                                const Text(
+                                  'Database Masih Kosong',
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                ),
+                                const SizedBox(height: 6),
+                                const Text(
+                                  'Belum ada data penyerahan BAST yang diinput (Opsi A).\nSilakan lakukan input penyerahan untuk melihat riwayat di sini.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 11, color: Color(0xFF64748B), height: 1.4),
+                                ),
+                                const SizedBox(height: 18),
+                                SizedBox(
+                                  height: 40,
+                                  child: ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFE88B00),
+                                      foregroundColor: const Color(0xFF0F172A),
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.add_circle_outline, size: 16),
+                                    label: const Text('Input Penyerahan BAST', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800)),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-            ),
-
-            // Summary Bottom Bar
-            HistorySummaryBar(
-              onNewDelivery: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()),
-                );
-              },
-            ),
-          ],
+                        )
+                      : filtered.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 60,
+                                      height: 60,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFFFEF3C7),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.search_off_rounded, size: 30, color: Color(0xFFD97706)),
+                                    ),
+                                    const SizedBox(height: 14),
+                                    const Text(
+                                      'Tidak Ada Hasil yang Cocok',
+                                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      query.isNotEmpty
+                                          ? 'Tidak ditemukan KPM dengan kata kunci "$query".'
+                                          : 'Tidak ada data transaksi pada kategori ini.',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                                    ),
+                                    const SizedBox(height: 14),
+                                    OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      ),
+                                      onPressed: () {
+                                        _searchController.clear();
+                                        setState(() {
+                                          _searchQuery = '';
+                                          _selectedFilter = 0;
+                                        });
+                                      },
+                                      child: const Text('Reset Filter & Pencarian', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF1E3A8A))),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : ListView.builder(
+                              padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                              itemCount: filtered.length,
+                              itemBuilder: (ctx, index) {
+                                final item = filtered[index];
+                                return HistoryCardDynamic(
+                                  record: item,
+                                  onViewDetail: () => _showBastDetail(
+                                    bastNo: item.bastNo,
+                                    nama: item.nama,
+                                    nik: item.nik,
+                                    pbp: item.pbpNo,
+                                    waktu: item.waktu,
+                                    jenis: item.jenis,
+                                    imageUrl: item.imageUrl,
+                                  ),
+                                );
+                              },
+                            ),
+                ),
+              ],
+            );
+          },
         ),
+      ),
+      bottomNavigationBar: HistorySummaryBar(
+        onNewDelivery: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const DeliveryTypeScreen()),
+          );
+        },
       ),
     );
   }

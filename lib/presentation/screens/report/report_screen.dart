@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../data/repositories/bast_repository.dart';
 import '../../widgets/common/app_confirmation_dialog.dart';
+import '../../widgets/common/bottom_action_bar.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import 'widgets/bast_download_card.dart';
@@ -154,14 +156,24 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  void _sendBroadcastReminder() async {
+  void _sendBroadcastReminder(int remainingCount) async {
+    if (remainingCount == 0) {
+      CenterAlert.show(
+        context,
+        title: 'Semua Telah Tersalurkan',
+        message: 'Seluruh beras bantuan telah diserahkan 100% ke penerima.',
+        type: CenterAlertType.info,
+      );
+      return;
+    }
+
     final confirmed = await AppConfirmationDialog.show(
       context,
       icon: Icons.notifications_active_rounded,
       iconColor: const Color(0xFFE88B00),
       iconBackgroundColor: const Color(0xFFFEF3C7),
-      title: 'Kirim Pengingat ke 5 KPM?',
-      message: 'Sistem akan mengirimkan pesan notifikasi WhatsApp/SMS otomatis kepada 5 KPM yang belum mengambil beras bantuan di Balai Desa Banjar Bali.',
+      title: 'Kirim Pengingat ke $remainingCount KPM?',
+      message: 'Sistem akan mengirimkan pesan notifikasi WhatsApp/SMS otomatis kepada $remainingCount KPM yang belum mengambil beras bantuan di Balai Desa Banjar Bali.',
       confirmText: 'Kirim Sekarang',
       confirmColor: const Color(0xFFE88B00),
       confirmTextColor: const Color(0xFF0F172A),
@@ -172,94 +184,66 @@ class _ReportScreenState extends State<ReportScreen> {
       CenterAlert.showSuccess(
         context,
         title: 'Pengingat Terkirim',
-        message: 'Pesan notifikasi berhasil disebarkan ke 5 warga KPM.',
+        message: 'Pesan notifikasi berhasil disebarkan ke $remainingCount warga KPM.',
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const CustomAppBar(
-        title: 'Laporan Distribusi Beras',
-        subtitle: 'Realisasi Penyaluran CPP Titik Bagi',
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    LocationCard(
-                      village: _selectedVillage,
-                      regency: _selectedRegency,
-                      onTap: _chooseLocation,
-                    ),
-                    const SizedBox(height: 14),
-                    const DonutChart(),
-                    const SizedBox(height: 16),
-                    KpmPendingList(
-                      activeFilter: _activeFilter,
-                      onFilterChanged: (val) => setState(() => _activeFilter = val),
-                    ),
-                    const SizedBox(height: 16),
-                    BastDownloadCard(
-                      onDownload: _handleDownloadReport,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+    return AnimatedBuilder(
+      animation: BastRepository.instance,
+      builder: (context, _) {
+        final repo = BastRepository.instance;
+        final int remainingCount = repo.remainingCount;
 
-            // Bottom Sticky Action Dock
-            Container(
-              padding: const EdgeInsets.fromLTRB(18, 12, 18, 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF0F172A).withValues(alpha: 0.06),
-                    blurRadius: 16,
-                    offset: const Offset(0, -4),
-                  ),
-                ],
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE88B00),
-                    foregroundColor: const Color(0xFF0F172A),
-                    elevation: 1.5,
-                    shadowColor: const Color(0xFFE88B00).withValues(alpha: 0.35),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  ),
-                  onPressed: () {
-                    HapticFeedback.mediumImpact();
-                    _sendBroadcastReminder();
-                  },
-                  icon: const Icon(Icons.forward_to_inbox_rounded, size: 20, color: Color(0xFF0F172A)),
-                  label: const Text(
-                    'Kirim Pengingat KPM Sisa (5)',
-                    style: TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF0F172A),
-                      letterSpacing: -0.2,
+        return Scaffold(
+          backgroundColor: const Color(0xFFF8FAFC),
+          appBar: const CustomAppBar(
+            title: 'Laporan Distribusi Beras',
+            subtitle: 'Realisasi Penyaluran CPP Titik Bagi',
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LocationCard(
+                          village: _selectedVillage,
+                          regency: _selectedRegency,
+                          onTap: _chooseLocation,
+                        ),
+                        const SizedBox(height: 14),
+                        const DonutChart(),
+                        const SizedBox(height: 16),
+                        KpmPendingList(
+                          activeFilter: _activeFilter,
+                          onFilterChanged: (val) => setState(() => _activeFilter = val),
+                        ),
+                        const SizedBox(height: 16),
+                        BastDownloadCard(
+                          onDownload: _handleDownloadReport,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+          bottomNavigationBar: BanpangBottomActionBar.single(
+            onPressed: () => _sendBroadcastReminder(remainingCount),
+            text: remainingCount > 0
+                ? 'Kirim Pengingat KPM Sisa ($remainingCount)'
+                : 'Seluruh Bantuan Telah Tersalurkan (100%)',
+            icon: remainingCount > 0 ? Icons.forward_to_inbox_rounded : Icons.check_circle_rounded,
+          ),
+        );
+      },
     );
   }
 }

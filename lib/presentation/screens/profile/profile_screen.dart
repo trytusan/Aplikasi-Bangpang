@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../../data/repositories/bast_repository.dart';
 import '../../widgets/common/app_confirmation_dialog.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
 import '../../widgets/common/center_alert.dart';
+import '../dashboard/widgets/dashboard_header.dart';
 import '../loading/loading_screen.dart';
 import '../login/login_screen.dart';
 import 'widgets/offline_sync.dart';
@@ -18,9 +20,40 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _offlineMode = false;
-  String _cacheSize = '34.2 MB';
+  bool _alreadySynced = false;
+
+  @override
+  void initState() {
+    super.initState();
+    BastRepository.instance.addListener(_onRepositoryChanged);
+  }
+
+  @override
+  void dispose() {
+    BastRepository.instance.removeListener(_onRepositoryChanged);
+    super.dispose();
+  }
+
+  void _onRepositoryChanged() {
+    if (mounted) setState(() {});
+  }
 
   void _handleSyncNow() {
+    final pendingCount = _alreadySynced ? 0 : BastRepository.instance.distributedCount;
+    final photoCount = pendingCount * 2;
+    final signatureCount = pendingCount;
+
+    if (pendingCount == 0) {
+      CenterAlert.show(
+        context,
+        title: 'Data Sudah Termutakhir',
+        message: 'Seluruh berkas BAST telah tersinkronisasi ke server pusat BULOG & BAPANAS.',
+        type: CenterAlertType.success,
+        duration: const Duration(milliseconds: 1500),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -28,22 +61,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
         canPop: false,
         child: Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(color: Color(0xFFE88B00), strokeWidth: 3),
-                SizedBox(height: 18),
+                const CircularProgressIndicator(color: Color(0xFFE88B00), strokeWidth: 3),
+                const SizedBox(height: 18),
                 Text(
-                  'Menyinkronkan Berkas BAST...',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                  'Menyinkronkan $pendingCount Berkas BAST...',
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Text(
-                  'Mengunggah 14 berkas foto KPM dan 3 tanda tangan digital ke server cloud BULOG...',
+                  'Mengunggah $photoCount berkas foto KPM dan $signatureCount tanda tangan digital ke server cloud BULOG...',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 10, color: Color(0xFF64748B), height: 1.3),
+                  style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), height: 1.3),
                 ),
               ],
             ),
@@ -55,11 +88,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Future.delayed(const Duration(milliseconds: 1200), () {
       if (!mounted) return;
       Navigator.pop(context); // Tutup dialog loading
-      setState(() => _cacheSize = '0.0 MB');
+      setState(() => _alreadySynced = true);
       CenterAlert.showSuccess(
         context,
-        title: 'Data Berhasil Disimpan',
-        message: '14 berkas foto KPM dan 3 tanda tangan telah tersinkronisasi ke server pusat.',
+        title: 'Sinkronisasi Berhasil',
+        message: '$pendingCount berkas BAST ($photoCount foto KPM & $signatureCount TTD) telah tersinkronisasi ke server pusat.',
       );
     });
   }
@@ -68,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     CenterAlert.showInfo(
       context,
       title: 'Titik Lokasi Diperbarui',
-      message: 'Koordinat GPS terkunci: -8.109613, 115.0914146 (Akurasi: ±2.8m)',
+      message: 'Koordinat GPS terkunci: -8.109613, 115.0914146 (Akurasi: ±2.4m RTK)',
     );
   }
 
@@ -260,81 +293,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final repo = BastRepository.instance;
+    final int pendingCount = _alreadySynced ? 0 : repo.distributedCount;
+    final String cacheSize = pendingCount > 0 ? '${(pendingCount * 2.4).toStringAsFixed(1)} MB' : '0.0 MB';
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
         child: Column(
           children: [
-            // Header Top Bar
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              color: Colors.white,
-              child: Row(
-                children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEFF6FF),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: const Color(0xFFDBEAFE)),
-                    ),
-                    child: const Icon(
-                      Icons.account_balance,
-                      color: Color(0xFF1E3A8A),
-                      size: 22,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Text(
-                              'Banpang Mobile',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFF0F172A),
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Icon(Icons.circle, size: 6, color: _offlineMode ? const Color(0xFFD97706) : const Color(0xFF059669)),
-                            const SizedBox(width: 3),
-                            Text(
-                              _offlineMode ? 'OFFLINE' : 'ONLINE',
-                              style: TextStyle(
-                                fontSize: 8.5,
-                                fontWeight: FontWeight.w800,
-                                color: _offlineMode ? const Color(0xFFD97706) : const Color(0xFF059669),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 1),
-                        const Text(
-                          'Pengaturan & Akun Petugas Lapangan',
-                          style: TextStyle(
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF64748B),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const CircleAvatar(
-                    radius: 17,
-                    backgroundImage: NetworkImage(
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Divider(height: 1, color: Color(0xFFE2E8F0)),
+            // Header sama persis dengan yang ada di Beranda
+            DashboardHeader(isOnline: !_offlineMode),
 
             if (_offlineMode)
               Container(
@@ -364,10 +333,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     const ServerStatus(),
                     const SizedBox(height: 12),
-                    const StatCard(),
+                    StatCard(
+                      totalBast: repo.distributedCount,
+                      remainingQuota: repo.remainingCount,
+                    ),
                     const SizedBox(height: 16),
                     OfflineSync(
                       offlineMode: _offlineMode,
+                      cacheSize: cacheSize,
+                      pendingCount: pendingCount,
                       onToggleOfflineMode: (val) {
                         setState(() => _offlineMode = val);
                         ScaffoldMessenger.of(context).showSnackBar(

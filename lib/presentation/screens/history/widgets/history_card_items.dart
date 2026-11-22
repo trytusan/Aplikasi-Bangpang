@@ -1,5 +1,278 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../../data/repositories/bast_repository.dart';
+
+class HistoryCardDynamic extends StatelessWidget {
+  final BastRecord record;
+  final VoidCallback? onViewDetail;
+
+  const HistoryCardDynamic({
+    super.key,
+    required this.record,
+    this.onViewDetail,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isReplacement = record.jenis.contains('PENGGANTI');
+    final bool isRepresentative = record.jenis.contains('PERWAKILAN');
+
+    final Color accentColor = isReplacement
+        ? const Color(0xFFE88B00)
+        : (isRepresentative ? const Color(0xFF2563EB) : const Color(0xFF059669));
+
+    final Color tagBgColor = isReplacement
+        ? const Color(0xFFFFFBEB)
+        : (isRepresentative ? const Color(0xFFEFF6FF) : const Color(0xFFEFF6FF));
+
+    final Color tagTextColor = isReplacement
+        ? const Color(0xFFB45309)
+        : (isRepresentative ? const Color(0xFF1E3A8A) : const Color(0xFF1E3A8A));
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.025),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(left: BorderSide(color: accentColor, width: 4.5)),
+          ),
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Baris Tag Alur & Status
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: tagBgColor,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      record.jenis,
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w800,
+                        color: tagTextColor,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFECFDF5),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFA7F3D0)),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.check_circle_rounded, size: 12, color: Color(0xFF059669)),
+                        SizedBox(width: 4),
+                        Text(
+                          'Diterima (Terverifikasi)',
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF047857)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+
+              // Baris Nama KPM & Geotag Photo Thumbnail
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          record.nama,
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'NIK: ${record.nik} • PBP: ${record.pbpNo}',
+                          style: const TextStyle(fontSize: 10.5, fontFamily: 'monospace', color: Color(0xFF64748B)),
+                        ),
+                        if (record.replacedName != null) ...[
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF1F2),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              'Menggantikan: ${record.replacedName}',
+                              style: const TextStyle(fontSize: 10, color: Color(0xFFBE123C), fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Stack(
+                    children: [
+                      Container(
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          image: DecorationImage(
+                            image: NetworkImage(record.imageUrl),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.75),
+                            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(9)),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 1),
+                          child: const Text(
+                            'GEOTAG OK',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Color(0xFF34D399), fontSize: 7.5, fontWeight: FontWeight.w900),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+
+              // Kotak Detail Distribusi
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFF1F5F9)),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Row(
+                          children: [
+                            Text('🌾', style: TextStyle(fontSize: 12)),
+                            SizedBox(width: 6),
+                            Text(
+                              '10 kg Beras CBP (1 Karung)',
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          record.bastNo,
+                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, fontFamily: 'monospace', color: Color(0xFF1E3A8A)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.access_time_rounded, size: 12, color: Color(0xFF64748B)),
+                            const SizedBox(width: 4),
+                            Text(record.waktu, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+                          ],
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.location_on_rounded, size: 12, color: Color(0xFF64748B)),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  record.lokasi,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Footer
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.check_circle_rounded, size: 13, color: Color(0xFF059669)),
+                      SizedBox(width: 4),
+                      Text(
+                        'Tersinkronisasi ke Pusat',
+                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Color(0xFF059669)),
+                      ),
+                    ],
+                  ),
+                  InkWell(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      onViewDetail?.call();
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Lihat Detail BAST',
+                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A)),
+                          ),
+                          SizedBox(width: 2),
+                          Icon(Icons.chevron_right_rounded, size: 16, color: Color(0xFF1E3A8A)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class HistoryCardNormal extends StatelessWidget {
   final VoidCallback? onViewDetail;
@@ -160,19 +433,29 @@ class HistoryCardNormal extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
+                        const Row(
                           children: [
                             Icon(Icons.access_time_rounded, size: 12, color: Color(0xFF64748B)),
                             SizedBox(width: 4),
                             Text('23 Juli 2025, 09:44 WITA', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Icon(Icons.location_on_rounded, size: 12, color: Color(0xFF64748B)),
-                            SizedBox(width: 4),
-                            Text('Banjar Bali, Buleleng', style: TextStyle(fontSize: 10, color: Color(0xFF64748B))),
-                          ],
+                        const SizedBox(width: 8),
+                        const Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.location_on_rounded, size: 12, color: Color(0xFF64748B)),
+                              SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  'Banjar Bali, Buleleng',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -383,16 +666,23 @@ class HistoryCardReplacement extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Row(
-                    children: [
-                      Icon(Icons.description_rounded, size: 15, color: Color(0xFF059669)),
-                      SizedBox(width: 6),
-                      Text(
-                        'Dokumen SPTJM Terlampir',
-                        style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
-                      ),
-                    ],
+                  const Flexible(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.description_rounded, size: 15, color: Color(0xFF059669)),
+                        SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            'Dokumen SPTJM Terlampir',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   InkWell(
                     onTap: () {
                       HapticFeedback.lightImpact();

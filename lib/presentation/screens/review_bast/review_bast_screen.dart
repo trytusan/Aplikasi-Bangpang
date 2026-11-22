@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../data/models/kpm_model.dart';
+import '../../../data/repositories/bast_repository.dart';
 import '../../widgets/common/app_confirmation_dialog.dart';
+import '../../widgets/common/bottom_action_bar.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import 'widgets/bast_success_dialog.dart';
@@ -11,15 +14,35 @@ import 'widgets/officer_notice.dart';
 import 'widgets/signature_pad_dialog.dart';
 
 class ReviewBastScreen extends StatefulWidget {
-  const ReviewBastScreen({super.key});
+  final KpmModel? kpm;
+  final String deliveryType;
+  final String? replacedName;
+  final String? ktpPhotoUrl;
+  final String? recipientPhotoUrl;
+
+  const ReviewBastScreen({
+    super.key,
+    this.kpm,
+    this.deliveryType = 'PBP NORMAL',
+    this.replacedName,
+    this.ktpPhotoUrl,
+    this.recipientPhotoUrl,
+  });
 
   @override
   State<ReviewBastScreen> createState() => _ReviewBastScreenState();
 }
 
 class _ReviewBastScreenState extends State<ReviewBastScreen> {
+  late KpmModel _currentKpm;
   List<Offset?>? _signaturePoints;
   bool _isSubmitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentKpm = widget.kpm ?? KpmModel.sampleData.first;
+  }
 
   void _openSignaturePad() {
     showDialog(
@@ -33,7 +56,7 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
           });
           CenterAlert.showSuccess(
             context,
-            title: 'Data Berhasil Disimpan',
+            title: 'Tanda Tangan Tersimpan',
             message: 'Tanda tangan digital penerima telah tercatat sah dalam BAST.',
           );
         },
@@ -92,15 +115,14 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
       );
 
       if (signFirst == null) {
-        // Pengguna menutup / membatalkan dialog
+        // Pengguna membatalkan dialog
         return;
       }
       if (signFirst == true) {
-        // Pengguna memilih untuk tanda tangan terlebih dahulu
         _openSignaturePad();
         return;
       }
-      // Jika signFirst == false, berarti pengguna memilih "Kirim Tanpa TTD", lanjutkan
+      // Jika signFirst == false, pengguna memilih "Kirim Tanpa TTD"
     }
 
     // Tampilkan Loading Sinkronisasi BAST
@@ -141,6 +163,26 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
     await Future.delayed(const Duration(milliseconds: 1400));
     if (!mounted) return;
 
+    final now = DateTime.now();
+    final bastNo = 'BAST-${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}${now.millisecondsSinceEpoch.toString().substring(7)}';
+
+    // Simpan ke In-Memory Database (Opsi A)
+    final newRecord = BastRecord(
+      id: UniqueKey().toString(),
+      bastNo: bastNo,
+      nama: _currentKpm.nama,
+      nik: _currentKpm.nik,
+      noKk: _currentKpm.noKk,
+      pbpNo: _currentKpm.nik.substring(0, 14.clamp(0, _currentKpm.nik.length)),
+      waktu: 'Hari ini, ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')} WITA',
+      jenis: widget.deliveryType,
+      imageUrl: widget.recipientPhotoUrl ?? 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=200',
+      lokasi: '${_currentKpm.dusun}, Banjar Bali',
+      isSynced: true,
+      replacedName: widget.replacedName ?? _currentKpm.namaPengganti,
+    );
+    BastRepository.instance.addRecord(newRecord);
+
     Navigator.pop(context); // Tutup dialog loading
     setState(() => _isSubmitting = false);
 
@@ -148,12 +190,24 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const BastSuccessDialog(),
+      builder: (_) => BastSuccessDialog(
+        bastNumber: bastNo,
+        recipientName: newRecord.nama,
+        nik: newRecord.nik,
+        deliveryType: widget.deliveryType,
+        address: '${_currentKpm.alamat}, ${_currentKpm.dusun}',
+        imageUrl: newRecord.imageUrl,
+        signaturePoints: _signaturePoints,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isPengganti = widget.deliveryType.contains('PENGGANTI') || _currentKpm.isSptjm;
+    final String riceImg = widget.recipientPhotoUrl ?? 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600';
+    final String ktpImg = widget.ktpPhotoUrl ?? 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=600';
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: const CustomAppBar(
@@ -172,15 +226,24 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
                     const DistributionTimeCard(),
                     const SizedBox(height: 14),
                     BeneficiaryCard(
+                      nama: _currentKpm.nama,
+                      nik: _currentKpm.nik,
+                      noKk: _currentKpm.noKk,
+                      alamat: '${_currentKpm.alamat}, ${_currentKpm.dusun}, Banjar Bali, Buleleng',
+                      jenis: widget.deliveryType,
+                      isPengganti: isPengganti,
+                      replacedName: widget.replacedName ?? _currentKpm.namaPengganti,
+                      ricePhotoUrl: riceImg,
+                      sptjmPhotoUrl: ktpImg,
                       signaturePoints: _signaturePoints,
                       onTapSignature: _openSignaturePad,
                       onTapRicePhoto: () => _showImageLightbox(
                         'Foto Fisik Beras & Penerima',
-                        'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=800',
+                        riceImg,
                       ),
                       onTapSptjmPhoto: () => _showImageLightbox(
-                        'Dokumen Surat SPTJM Terverifikasi',
-                        'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=800',
+                        isPengganti ? 'Dokumen Surat SPTJM Terverifikasi' : 'Foto Fisik KTP/KK',
+                        ktpImg,
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -191,81 +254,46 @@ class _ReviewBastScreenState extends State<ReviewBastScreen> {
                 ),
               ),
             ),
-
-            // Bottom Buttons (Kembali & Kirim Penyerahan)
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 20,
-                    offset: const Offset(0, -4),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BanpangBottomActionBar(
+        child: Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF8FAFC),
+                    foregroundColor: const Color(0xFF475569),
+                    side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.2),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                ],
-                border: const Border(
-                  top: BorderSide(color: Color(0xFFF1F5F9), width: 1.2),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Kembali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
                 ),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 48,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: const Color(0xFFF8FAFC),
-                          foregroundColor: const Color(0xFF475569),
-                          side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.2),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        ),
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          Navigator.pop(context);
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.arrow_back_rounded, size: 16, color: Color(0xFF64748B)),
-                            SizedBox(width: 4),
-                            Text('Kembali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
-                          ],
-                        ),
-                      ),
-                    ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 2,
+              child: SizedBox(
+                height: 48,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFE88B00),
+                    foregroundColor: const Color(0xFF0F172A),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: SizedBox(
-                      height: 48,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE88B00),
-                          foregroundColor: const Color(0xFF0F172A),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        ),
-                        onPressed: _isSubmitting ? null : () {
-                          HapticFeedback.lightImpact();
-                          _handleSubmitBast();
-                        },
-                        icon: const Icon(Icons.cloud_upload_rounded, size: 18, color: Color(0xFF0F172A)),
-                        label: const Text(
-                          'Kirim Penyerahan',
-                          style: TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xFF0F172A),
-                            letterSpacing: -0.2,
-                          ),
-                        ),
-                      ),
-                    ),
+                  onPressed: _isSubmitting ? null : _handleSubmitBast,
+                  icon: const Icon(Icons.verified_rounded, size: 18, color: Color(0xFF0F172A)),
+                  label: const Text(
+                    'Sahkan & Terbitkan BAST',
+                    style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), letterSpacing: -0.2),
                   ),
-                ],
+                ),
               ),
             ),
           ],

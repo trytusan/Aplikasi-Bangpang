@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
+import '../../../../data/repositories/bast_repository.dart';
 
 class DonutChart extends StatelessWidget {
   const DonutChart({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedBuilder(
+      animation: BastRepository.instance,
+      builder: (context, _) {
+        final total = BastRepository.instance.totalQuota;
+        final distributed = BastRepository.instance.distributedCount;
+        final remaining = BastRepository.instance.remainingCount;
+        final percent = BastRepository.instance.percentage;
+        final totalKg = BastRepository.instance.totalKg;
+        final totalTargetKg = BastRepository.instance.totalTargetKg;
+        final normalCount = BastRepository.instance.normalCount;
+        final replacementCount = BastRepository.instance.replacementCount;
+
+        final normalPct = total > 0 ? (normalCount / total) * 100 : 0.0;
+        final replPct = total > 0 ? (replacementCount / total) * 100 : 0.0;
+        final remainPct = total > 0 ? (remaining / total) * 100 : 0.0;
+
+        return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -70,45 +87,29 @@ class DonutChart extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Horizontal Bar Breakdown Chart (Menggantikan diagram lingkaran)
+          // Horizontal Bar Breakdown Chart
           _buildCategoryBarItem(
             title: 'Diserahkan Langsung',
             subtitle: 'PBP Normal',
-            count: 41,
+            count: normalCount,
             unit: 'KPM',
-            percentage: 85,
+            percentage: normalPct,
             barColor: const Color(0xFF059669),
           ),
           _buildCategoryBarItem(
             title: 'Penerima Pengganti',
             subtitle: 'SPTJM Sah',
-            count: 2,
+            count: replacementCount,
             unit: 'KPM',
-            percentage: 4,
+            percentage: replPct,
             barColor: const Color(0xFF4F46E5),
-          ),
-          _buildCategoryBarItem(
-            title: 'Keluarga Sakit',
-            subtitle: 'Antar ke Rumah',
-            count: 1,
-            unit: 'KPM',
-            percentage: 2,
-            barColor: const Color(0xFFF59E0B),
-          ),
-          _buildCategoryBarItem(
-            title: 'Alamat Tdk Ditemukan',
-            subtitle: 'Verifikasi Desa',
-            count: 1,
-            unit: 'KPM',
-            percentage: 2,
-            barColor: const Color(0xFFE11D48),
           ),
           _buildCategoryBarItem(
             title: 'Belum Hadir / Antre',
             subtitle: 'Meja Penyaluran',
-            count: 3,
+            count: remaining,
             unit: 'KPM',
-            percentage: 7,
+            percentage: remainPct,
             barColor: const Color(0xFF0284C7),
           ),
           const SizedBox(height: 6),
@@ -122,14 +123,14 @@ class DonutChart extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: const Color(0xFFDBEAFE)),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.inventory_2_rounded, size: 14, color: Color(0xFF1E3A8A)),
-                SizedBox(width: 6),
+                const Icon(Icons.inventory_2_rounded, size: 14, color: Color(0xFF1E3A8A)),
+                const SizedBox(width: 6),
                 Text(
-                  'Total Disalurkan: 430 Kg / 480 Kg Beras CBP (89.6%)',
-                  style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A)),
+                  'Total Disalurkan: $totalKg Kg / $totalTargetKg Kg Beras CBP (${percent.toStringAsFixed(1)}%)',
+                  style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Color(0xFF1E3A8A)),
                 ),
               ],
             ),
@@ -160,10 +161,10 @@ class DonutChart extends StatelessWidget {
                       ),
                       const SizedBox(height: 3),
                       RichText(
-                        text: const TextSpan(
-                          text: '43 ',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF047857)),
-                          children: [
+                        text: TextSpan(
+                          text: '$distributed ',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF047857)),
+                          children: const [
                             TextSpan(text: 'KPM', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF065F46))),
                           ],
                         ),
@@ -171,19 +172,19 @@ class DonutChart extends StatelessWidget {
                       const SizedBox(height: 6),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(3),
-                        child: const LinearProgressIndicator(
-                          value: 0.896,
+                        child: LinearProgressIndicator(
+                          value: total > 0 ? distributed / total : 0.0,
                           minHeight: 4,
-                          backgroundColor: Color(0xFFBBF7D0),
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF059669)),
+                          backgroundColor: const Color(0xFFBBF7D0),
+                          valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF059669)),
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Realisasi', style: TextStyle(fontSize: 8.5, color: Color(0xFF065F46), fontWeight: FontWeight.w600)),
-                          Text('89.6%', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF047857))),
+                          const Text('Realisasi', style: TextStyle(fontSize: 8.5, color: Color(0xFF065F46), fontWeight: FontWeight.w600)),
+                          Text('${percent.toStringAsFixed(1)}%', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF047857))),
                         ],
                       ),
                     ],
@@ -213,10 +214,10 @@ class DonutChart extends StatelessWidget {
                       ),
                       const SizedBox(height: 3),
                       RichText(
-                        text: const TextSpan(
-                          text: '5 ',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFFBE123C)),
-                          children: [
+                        text: TextSpan(
+                          text: '$remaining ',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFFBE123C)),
+                          children: const [
                             TextSpan(text: 'KPM', style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: Color(0xFF9F1239))),
                           ],
                         ),
@@ -224,19 +225,19 @@ class DonutChart extends StatelessWidget {
                       const SizedBox(height: 6),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(3),
-                        child: const LinearProgressIndicator(
-                          value: 0.104,
+                        child: LinearProgressIndicator(
+                          value: total > 0 ? remaining / total : 0.0,
                           minHeight: 4,
-                          backgroundColor: Color(0xFFFFCDD2),
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE11D48)),
+                          backgroundColor: const Color(0xFFFFCDD2),
+                          valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFE11D48)),
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Sisa Stok', style: TextStyle(fontSize: 8.5, color: Color(0xFF9F1239), fontWeight: FontWeight.w600)),
-                          Text('10.4%', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFFBE123C))),
+                          const Text('Sisa Stok', style: TextStyle(fontSize: 8.5, color: Color(0xFF9F1239), fontWeight: FontWeight.w600)),
+                          Text('${remainPct.toStringAsFixed(1)}%', style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFFBE123C))),
                         ],
                       ),
                     ],
@@ -247,6 +248,8 @@ class DonutChart extends StatelessWidget {
           ),
         ],
       ),
+    );
+      },
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/common/center_alert.dart';
+import '../../widgets/common/custom_app_bar.dart';
 import '../login/login_screen.dart';
 import 'widgets/otp_input.dart';
 
@@ -201,10 +202,9 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        title: const Text('Verifikasi Lupa Sandi', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
-        backgroundColor: Colors.white,
-        elevation: 0.5,
+      appBar: const CustomAppBar(
+        title: 'Verifikasi Lupa Sandi',
+        subtitle: 'Atur Ulang Sandi Akun Petugas Lapangan',
       ),
       body: SafeArea(
         child: Padding(

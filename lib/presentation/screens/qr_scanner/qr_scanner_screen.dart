@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../data/models/kpm_model.dart';
+import '../../widgets/common/bottom_action_bar.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../camera_geotag/camera_geotag_screen.dart';
@@ -15,14 +17,81 @@ class QrScannerScreen extends StatefulWidget {
 }
 
 class _QrScannerScreenState extends State<QrScannerScreen> {
+  final GlobalKey<CameraViewfinderState> _viewfinderKey = GlobalKey<CameraViewfinderState>();
   int _activeTab = 0;
-  bool _flashOn = true;
-  final TextEditingController _manualPbpController = TextEditingController(text: '51080610270001');
+  bool _flashOn = false;
+  final TextEditingController _manualPbpController = TextEditingController(text: '5108051205780004');
+
+  late List<KpmModel> _availableKpmList;
+  late KpmModel _selectedKpm;
+  int _scanIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _availableKpmList = KpmModel.sampleData;
+    _selectedKpm = _availableKpmList[0];
+  }
 
   @override
   void dispose() {
     _manualPbpController.dispose();
     super.dispose();
+  }
+
+  void _handleScannedCode(String rawCode) {
+    final query = rawCode.trim();
+    if (query.isEmpty) return;
+
+    // Cari kecocokan di basis data KPM
+    KpmModel? match;
+    for (final k in _availableKpmList) {
+      if (k.nik == query ||
+          query.contains(k.nik) ||
+          k.noKk == query ||
+          query.contains(k.noKk) ||
+          k.nama.toLowerCase() == query.toLowerCase()) {
+        match = k;
+        break;
+      }
+    }
+
+    // Jika kode QR fisik baru yang tidak ada di sampel, parsing NIK / buat KPM dinamis
+    if (match == null) {
+      final digits = query.replaceAll(RegExp(r'\D'), '');
+      final formattedNik = digits.length >= 16
+          ? digits.substring(0, 16)
+          : (digits.isNotEmpty ? digits.padRight(16, '0') : '5108051205780099');
+
+      match = KpmModel(
+        nik: formattedNik,
+        noKk: '5108051901080033',
+        nama: 'KPM FISIK ($formattedNik)',
+        alamat: 'Banjar Dinas Bale Agung, RT 01',
+        dusun: 'Desa Banjar Bali',
+      );
+    }
+
+    _triggerScanSuccess(match);
+  }
+
+  void _triggerScanSuccess([KpmModel? specificKpm]) {
+    HapticFeedback.heavyImpact();
+    setState(() {
+      if (specificKpm != null) {
+        _selectedKpm = specificKpm;
+      } else {
+        _scanIndex = (_scanIndex + 1) % _availableKpmList.length;
+        _selectedKpm = _availableKpmList[_scanIndex];
+      }
+      _manualPbpController.text = _selectedKpm.nik;
+    });
+
+    CenterAlert.showSuccess(
+      context,
+      title: 'QR KPM Terverifikasi',
+      message: '${_selectedKpm.nama} (${_selectedKpm.nik}) terdaftar sebagai penerima bantuan 10 Kg.',
+    );
   }
 
   void _handleUploadGallery() {
@@ -64,54 +133,76 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            InkWell(
-              onTap: () {
-                Navigator.pop(ctx);
-                CenterAlert.showSuccess(
-                  context,
-                  title: 'QR KPM Terverifikasi',
-                  message: 'I Made Sukadana (51080610270001) terdaftar sebagai penerima bantuan.',
-                );
-              },
-              borderRadius: BorderRadius.circular(14),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
+            ..._availableKpmList.take(3).map((kpm) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _triggerScanSuccess(kpm);
+                  },
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFDBEAFE),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(Icons.qr_code_2_rounded, color: Color(0xFF1E3A8A), size: 22),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
                     ),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Foto Undangan PBP (QR_01.jpg)', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: Color(0xFF0F172A))),
-                          SizedBox(height: 2),
-                          Text('Terdeteksi: No. PBP 51080610270001', style: TextStyle(fontSize: 10.5, color: Color(0xFF059669), fontWeight: FontWeight.w700)),
-                        ],
-                      ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDBEAFE),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.qr_code_2_rounded, color: Color(0xFF1E3A8A), size: 22),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(kpm.nama, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: Color(0xFF0F172A))),
+                              const SizedBox(height: 2),
+                              Text('NIK: ${kpm.nik} • ${kpm.dusun}', style: const TextStyle(fontSize: 10.5, color: Color(0xFF059669), fontWeight: FontWeight.w700)),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.check_circle_rounded, color: Color(0xFF10B981), size: 20),
+                      ],
                     ),
-                    const Icon(Icons.check_circle_rounded, color: Color(0xFF10B981), size: 20),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           ],
         ),
       ),
     );
+  }
+
+  void _handleManualSearch() {
+    final query = _manualPbpController.text.trim();
+    if (query.isEmpty) {
+      CenterAlert.showWarning(context, title: 'Nomor Kosong', message: 'Masukkan nomor PBP atau NIK KPM terlebih dahulu.');
+      return;
+    }
+
+    final match = _availableKpmList.firstWhere(
+      (k) => k.nik.contains(query) || k.noKk.contains(query) || k.nama.toLowerCase().contains(query.toLowerCase()),
+      orElse: () => KpmModel(
+        nik: query.length >= 16 ? query : '${query}0000000000000000'.substring(0, 16),
+        noKk: '5108051901080033',
+        nama: 'KPM HASIL INPUT MANUAL',
+        alamat: 'RT 01 / RW 01',
+        dusun: 'Desa Banjar Bali',
+      ),
+    );
+
+    _triggerScanSuccess(match);
   }
 
   @override
@@ -139,11 +230,15 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                     const SizedBox(height: 12),
 
                     if (_activeTab == 0) ...[
-                      // Kamera Viewfinder Interaktif
-                      const CameraViewfinder(),
+                      // Kamera Viewfinder Hardware Asli (Real Camera Stream)
+                      CameraViewfinder(
+                        key: _viewfinderKey,
+                        onScanTriggered: () => _triggerScanSuccess(),
+                        onCodeScanned: _handleScannedCode,
+                      ),
                       const SizedBox(height: 12),
 
-                      // Controls: Flash & Unggah Galeri (Proporsional & Seimbang)
+                      // Controls: Flash & Unggah Galeri
                       Row(
                         children: [
                           // Tombol Flash
@@ -151,6 +246,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                             child: InkWell(
                               onTap: () {
                                 HapticFeedback.lightImpact();
+                                _viewfinderKey.currentState?.toggleTorch();
                                 setState(() => _flashOn = !_flashOn);
                                 CenterAlert.show(
                                   context,
@@ -311,14 +407,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 ),
-                                onPressed: () {
-                                  HapticFeedback.lightImpact();
-                                  CenterAlert.showSuccess(
-                                    context,
-                                    title: 'Data PBP Ditemukan',
-                                    message: 'No. PBP ${_manualPbpController.text} cocok dengan basis data Bapanas.',
-                                  );
-                                },
+                                onPressed: _handleManualSearch,
                                 icon: const Icon(Icons.search_rounded, size: 18),
                                 label: const Text('Cari & Verifikasi KPM', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800)),
                               ),
@@ -329,86 +418,68 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                     ],
                     const SizedBox(height: 14),
 
-                    // Kartu Hasil Verifikasi KPM
-                    const KpmVerified(),
+                    // Kartu Hasil Verifikasi KPM Interaktif
+                    KpmVerified(kpm: _selectedKpm),
                   ],
                 ),
               ),
             ),
-
-            // Bottom Buttons (Scan Ulang & Gunakan Hasil Scan)
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 20,
-                    offset: const Offset(0, -4),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BanpangBottomActionBar(
+        child: Row(
+          children: [
+            // Tombol Scan Ulang
+            Expanded(
+              child: SizedBox(
+                height: 48,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF8FAFC),
+                    foregroundColor: const Color(0xFF475569),
+                    side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.2),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                ],
-                border: const Border(
-                  top: BorderSide(color: Color(0xFFF1F5F9), width: 1.2),
+                  onPressed: () {
+                    _triggerScanSuccess();
+                  },
+                  icon: const Icon(Icons.refresh_rounded, size: 18, color: Color(0xFF64748B)),
+                  label: const Text('Scan Acak', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800)),
                 ),
               ),
-              child: Row(
-                children: [
-                  // Tombol Scan Ulang
-                  Expanded(
-                    child: SizedBox(
-                      height: 48,
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: const Color(0xFFF8FAFC),
-                          foregroundColor: const Color(0xFF475569),
-                          side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.2),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        ),
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          CenterAlert.showInfo(
-                            context,
-                            title: 'Sensor Direset',
-                            message: 'Pemindai kamera siap membaca kode QR baru.',
-                          );
-                        },
-                        icon: const Icon(Icons.refresh_rounded, size: 18, color: Color(0xFF64748B)),
-                        label: const Text('Scan Ulang', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
+            ),
+            const SizedBox(width: 10),
 
-                  // Tombol Gunakan Hasil Scan
-                  Expanded(
-                    flex: 2,
-                    child: SizedBox(
-                      height: 48,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE88B00),
-                          foregroundColor: const Color(0xFF0F172A),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        ),
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const CameraGeotagScreen()),
-                          );
-                        },
-                        icon: const Icon(Icons.check_circle_rounded, size: 18, color: Color(0xFF0F172A)),
-                        label: const Text(
-                          'Gunakan Hasil Scan',
-                          style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), letterSpacing: -0.2),
+            // Tombol Gunakan Hasil Scan
+            Expanded(
+              flex: 2,
+              child: SizedBox(
+                height: 48,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFE88B00),
+                    foregroundColor: const Color(0xFF0F172A),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CameraGeotagScreen(
+                          kpm: _selectedKpm,
                         ),
                       ),
-                    ),
+                    );
+                  },
+                  icon: const Icon(Icons.check_circle_rounded, size: 18, color: Color(0xFF0F172A)),
+                  label: const Text(
+                    'Gunakan Hasil Scan',
+                    style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), letterSpacing: -0.2),
                   ),
-                ],
+                ),
               ),
             ),
           ],

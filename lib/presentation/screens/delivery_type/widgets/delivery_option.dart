@@ -135,15 +135,22 @@ class DeliveryOption extends StatelessWidget {
                   if (requirement != null) ...[
                     const SizedBox(height: 6),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.attachment_rounded, size: 12, color: accentColor),
-                        const SizedBox(width: 4),
-                        Text(
-                          requirement!,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: accentColor,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1.5),
+                          child: Icon(Icons.attachment_rounded, size: 12, color: accentColor),
+                        ),
+                        const SizedBox(width: 5),
+                        Expanded(
+                          child: Text(
+                            requirement!,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: accentColor,
+                              height: 1.25,
+                            ),
                           ),
                         ),
                       ],
