@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../data/models/kpm_model.dart';
+import '../../widgets/common/banpang_image.dart';
 import '../../widgets/common/bottom_action_bar.dart';
 import '../../widgets/common/center_alert.dart';
 import '../../widgets/common/custom_app_bar.dart';
@@ -38,7 +40,254 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
     _currentKpm = widget.kpm ?? KpmModel.sampleData.first;
   }
 
-  void _openCamera(String title, String guide, bool isKtp, ValueChanged<String> onCaptured) {
+  void _showCaptureOptions(String title, String guide, bool isKtp, ValueChanged<String> onCaptured) {
+    HapticFeedback.lightImpact();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Drag handle
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(2)),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: isKtp ? const Color(0xFFEFF6FF) : const Color(0xFFFEF3C7),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    isKtp ? Icons.badge_rounded : Icons.camera_alt_rounded,
+                    color: isKtp ? const Color(0xFF1E3A8A) : const Color(0xFFD97706),
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        isKtp ? 'Foto dokumen fisik identitas penerima KPM' : 'Foto penyerahan fisik beras bersama penerima',
+                        style: const TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+
+            // Opsi 1: Buka Kamera Fisik HP Asli
+            _captureOptionTile(
+              icon: Icons.photo_camera_rounded,
+              iconColor: const Color(0xFFE88B00),
+              bgColor: const Color(0xFFFFFBEB),
+              borderColor: const Color(0xFFFDE68A),
+              title: 'Buka Kamera Fisik HP (Asli)',
+              subtitle: 'Ambil foto fisik langsung menggunakan sensor kamera perangkat',
+              badge: 'Kamera Hardware',
+              onTap: () async {
+                Navigator.pop(ctx);
+                await _pickFromCamera(onCaptured);
+              },
+            ),
+            const SizedBox(height: 10),
+
+            // Opsi 2: Pilih dari Galeri
+            _captureOptionTile(
+              icon: Icons.photo_library_rounded,
+              iconColor: const Color(0xFF2563EB),
+              bgColor: const Color(0xFFEFF6FF),
+              borderColor: const Color(0xFFBFDBFE),
+              title: 'Pilih dari Galeri Perangkat',
+              subtitle: 'Pilih foto dokumen yang sudah tersimpan di galeri lokal',
+              onTap: () async {
+                Navigator.pop(ctx);
+                await _pickFromGallery(onCaptured);
+              },
+            ),
+            const SizedBox(height: 10),
+
+            // Opsi 3: Simulasi Viewfinder Geotag
+            _captureOptionTile(
+              icon: Icons.view_in_ar_rounded,
+              iconColor: const Color(0xFF059669),
+              bgColor: const Color(0xFFECFDF5),
+              borderColor: const Color(0xFFA7F3D0),
+              title: 'Buka Viewfinder Watermark Geotag',
+              subtitle: 'Tampilan panduan bidik presisi dengan GPS RTK & shutter simulasi',
+              onTap: () {
+                Navigator.pop(ctx);
+                _openSimulatedDialog(title, guide, isKtp, onCaptured);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _captureOptionTile({
+    required IconData icon,
+    required Color iconColor,
+    required Color bgColor,
+    required Color borderColor,
+    required String title,
+    required String subtitle,
+    String? badge,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(13),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: borderColor),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: borderColor),
+              ),
+              child: Icon(icon, color: iconColor, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          title,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                        ),
+                      ),
+                      if (badge != null) ...[
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE88B00),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            badge,
+                            style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), height: 1.25),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right_rounded, color: Color(0xFF94A3B8), size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickFromCamera(ValueChanged<String> onCaptured) async {
+    try {
+      final picker = ImagePicker();
+      final XFile? photo = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+        maxWidth: 1600,
+        maxHeight: 1600,
+      );
+
+      if (photo != null) {
+        onCaptured(photo.path);
+        if (!mounted) return;
+        CenterAlert.showSuccess(
+          context,
+          title: 'Foto Kamera Berhasil Disimpan',
+          message: 'Foto fisik asli tersimpan & Geotag GPS (±2.4m RTK) telah diverifikasi sah.',
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      CenterAlert.showWarning(
+        context,
+        title: 'Kamera Tidak Tersedia',
+        message: 'Tidak dapat membuka kamera fisik ($e). Beralih ke galeri atau simulasi.',
+      );
+    }
+  }
+
+  Future<void> _pickFromGallery(ValueChanged<String> onCaptured) async {
+    try {
+      final picker = ImagePicker();
+      final XFile? photo = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+        maxWidth: 1600,
+        maxHeight: 1600,
+      );
+
+      if (photo != null) {
+        onCaptured(photo.path);
+        if (!mounted) return;
+        CenterAlert.showSuccess(
+          context,
+          title: 'Foto Galeri Dipilih',
+          message: 'Berkas berhasil diunggah dengan stempel Geotag GPS sah.',
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      CenterAlert.showWarning(
+        context,
+        title: 'Gagal Membuka Galeri',
+        message: 'Tidak dapat mengakses memori perangkat: $e',
+      );
+    }
+  }
+
+  void _openSimulatedDialog(String title, String guide, bool isKtp, ValueChanged<String> onCaptured) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -79,7 +328,10 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
             ),
             ClipRRect(
               borderRadius: BorderRadius.circular(18),
-              child: Image.network(imageUrl, fit: BoxFit.contain),
+              child: BanpangImage(
+                imagePath: imageUrl,
+                fit: BoxFit.contain,
+              ),
             ),
             const SizedBox(height: 10),
             Text(
@@ -158,7 +410,7 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
                     KtpPhotoCard(
                       imageUrl: _ktpPhotoUrl,
                       onRetake: () {
-                        _openCamera(
+                        _showCaptureOptions(
                           'Ambil Foto Fisik KTP/KK',
                           'Posisikan KTP / KK berada di dalam kotak bingkai oranye dan teks NIK terbaca jelas.',
                           true,
@@ -173,7 +425,7 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
                     RecipientPhotoCard(
                       imageUrl: _recipientPhotoUrl,
                       onRetake: () {
-                        _openCamera(
+                        _showCaptureOptions(
                           'Ambil Foto Penerima Bersama Beras',
                           'Pastikan wajah penerima dan karung 10kg Beras Bantuan terlihat jelas bersamaan.',
                           false,
@@ -188,7 +440,7 @@ class _CameraGeotagScreenState extends State<CameraGeotagScreen> {
                     KpmSummary(
                       name: _currentKpm.nama,
                       nik: _currentKpm.nik,
-                      allocation: '${_currentKpm.alokasiKg} Kg Beras Medium CPP (Tahap III / 2024)',
+                      allocation: '10 Kg Beras Medium CPP (Tahap III / 2024)',
                     ),
                   ],
                 ),

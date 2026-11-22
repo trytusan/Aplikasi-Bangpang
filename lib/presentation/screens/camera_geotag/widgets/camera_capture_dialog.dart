@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CameraCaptureDialog extends StatefulWidget {
   final String title;
@@ -24,7 +25,6 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
   bool _flashAnimation = false;
   int _sampleIndex = 0;
 
-  // Daftar sampel foto KTP & Foto Warga Beras yang tajam & realistis
   late final List<String> _sampleImages;
 
   @override
@@ -63,6 +63,44 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
     final selected = _sampleImages[_sampleIndex % _sampleImages.length];
     widget.onPhotoCaptured(selected);
     Navigator.pop(context);
+  }
+
+  Future<void> _pickFromRealCamera() async {
+    try {
+      HapticFeedback.lightImpact();
+      final picker = ImagePicker();
+      final XFile? photo = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+        maxWidth: 1600,
+        maxHeight: 1600,
+      );
+      if (photo != null) {
+        widget.onPhotoCaptured(photo.path);
+        if (mounted) Navigator.pop(context);
+      }
+    } catch (e) {
+      debugPrint('Error camera: $e');
+    }
+  }
+
+  Future<void> _pickFromGallery() async {
+    try {
+      HapticFeedback.lightImpact();
+      final picker = ImagePicker();
+      final XFile? photo = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+        maxWidth: 1600,
+        maxHeight: 1600,
+      );
+      if (photo != null) {
+        widget.onPhotoCaptured(photo.path);
+        if (mounted) Navigator.pop(context);
+      }
+    } catch (e) {
+      debugPrint('Error gallery: $e');
+    }
   }
 
   @override
@@ -174,6 +212,29 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
                       ),
                     ),
 
+                    // Tombol Pintas Kamera Fisik (Melayang di Atas Kanan)
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFE88B00),
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        ),
+                        onPressed: _pickFromRealCamera,
+                        icon: const Icon(Icons.camera_rounded, size: 14, color: Colors.black),
+                        label: const Text(
+                          'Kamera HP Asli',
+                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+
                     // White Shutter Flash Effect
                     if (_flashAnimation)
                       Container(color: Colors.white),
@@ -225,7 +286,7 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
                           },
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: 0.1),
                               shape: BoxShape.circle,
@@ -234,7 +295,7 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
                           ),
                         ),
 
-                        // Shutter Button
+                        // Shutter Button (Jepret Foto Simulasi)
                         GestureDetector(
                           onTap: _isCapturing ? null : _takePicture,
                           child: Container(
@@ -257,23 +318,17 @@ class _CameraCaptureDialogState extends State<CameraCaptureDialog> {
                           ),
                         ),
 
-                        // Tombol Galeri Lokal
+                        // Tombol Galeri HP Asli
                         InkWell(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            setState(() {
-                              _sampleIndex = (_sampleIndex + 1) % _sampleImages.length;
-                            });
-                            _takePicture();
-                          },
+                          onTap: _pickFromGallery,
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: 0.1),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.photo_library_rounded, color: Colors.white70, size: 22),
+                            child: const Icon(Icons.photo_library_rounded, color: Colors.white, size: 22),
                           ),
                         ),
                       ],

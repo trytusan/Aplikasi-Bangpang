@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'banpang_image.dart';
 import 'center_alert.dart';
 
 class BastDocumentPreviewDialog extends StatelessWidget {
@@ -268,7 +269,7 @@ class BastDocumentPreviewDialog extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(6),
                                 border: Border.all(color: const Color(0xFFCBD5E1)),
                                 image: DecorationImage(
-                                  image: NetworkImage(imageUrl),
+                                  image: banpangImageProvider(imageUrl),
                                   fit: BoxFit.cover,
                                 ),
                               ),

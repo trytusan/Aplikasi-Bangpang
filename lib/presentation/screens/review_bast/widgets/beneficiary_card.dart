@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../widgets/common/banpang_image.dart';
 import 'signature_pad_dialog.dart';
 
 class BeneficiaryCard extends StatelessWidget {
@@ -109,7 +110,7 @@ class BeneficiaryCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: const Color(0xFFE2E8F0)),
                   image: DecorationImage(
-                    image: NetworkImage(ricePhotoUrl),
+                    image: banpangImageProvider(ricePhotoUrl),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -306,7 +307,7 @@ class BeneficiaryCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: const Color(0xFFE2E8F0)),
                       image: DecorationImage(
-                        image: NetworkImage(ricePhotoUrl),
+                        image: banpangImageProvider(ricePhotoUrl),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -338,7 +339,7 @@ class BeneficiaryCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: const Color(0xFFE2E8F0)),
                       image: DecorationImage(
-                        image: NetworkImage(sptjmPhotoUrl),
+                        image: banpangImageProvider(sptjmPhotoUrl),
                         fit: BoxFit.cover,
                       ),
                     ),

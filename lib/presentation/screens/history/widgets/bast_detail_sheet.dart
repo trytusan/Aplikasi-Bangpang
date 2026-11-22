@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../widgets/common/banpang_image.dart';
 import '../../../widgets/common/bast_document_preview_dialog.dart';
 import '../../../widgets/common/center_alert.dart';
 
@@ -76,20 +77,11 @@ class BastDetailSheet extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
+              BanpangImage(
+                imagePath: imageUrl,
+                width: 64,
+                height: 64,
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  imageUrl,
-                  width: 64,
-                  height: 64,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    width: 64,
-                    height: 64,
-                    color: const Color(0xFFE2E8F0),
-                    child: const Icon(Icons.person, color: Color(0xFF94A3B8)),
-                  ),
-                ),
               ),
               const SizedBox(width: 12),
               Expanded(

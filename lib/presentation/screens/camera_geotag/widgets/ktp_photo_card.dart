@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../widgets/common/banpang_image.dart';
 
 class KtpPhotoCard extends StatelessWidget {
   final String imageUrl;
@@ -89,8 +90,8 @@ class KtpPhotoCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               child: Stack(
                 children: [
-                  Image.network(
-                    imageUrl,
+                  BanpangImage(
+                    imagePath: imageUrl,
                     height: 160,
                     width: double.infinity,
                     fit: BoxFit.cover,
